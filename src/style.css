@@ -1,0 +1,58 @@
+:root {
+	font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+	font-size: 16px;
+	line-height: 24px;
+	font-weight: 400;
+
+	color-scheme: light dark;
+	color: rgba(255, 255, 255, 0.87);
+	background-color: #242424;
+
+	font-synthesis: none;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-text-size-adjust: 100%;
+}
+
+body {
+	margin: 0;
+	min-width: 320px;
+	min-height: 100vh;
+}
+
+#container {
+	display: flex;
+	flex-direction: column;
+	row-gap: 4px;
+	width: 400px;
+	border: 2px solid;
+	padding: 1em;
+	background-color: #fff2;
+}
+
+#container > * {
+	/* background-color: #fff2; */
+	padding: 0 12px;
+	word-break: break-all;
+}
+
+#container * {
+	outline: none;
+}
+
+div.todo-list {
+	display: flex;
+	align-items: flex-start;
+}
+
+div.todo-list input {
+	margin: 0;
+	margin-right: 1em;
+	cursor: pointer;
+	height: 1.8em;
+}
+
+div.todo-list div {
+	width: 100%;
+}
