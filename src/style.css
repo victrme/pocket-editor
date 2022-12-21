@@ -28,6 +28,7 @@ body {
 	width: 400px;
 	border: 2px solid;
 	padding: 1em;
+	margin-top: 10vh;
 	background-color: #fff2;
 }
 
@@ -41,18 +42,90 @@ body {
 	outline: none;
 }
 
+/*
+	Stylings
+*/
+
+.text-italics {
+	font-style: italic;
+}
+
+.text-bold {
+	font-weight: bold;
+}
+
+.text-strike {
+	text-decoration: line-through;
+}
+
+/*
+	Transforms
+*/
+
+div.unordered-list,
 div.todo-list {
 	display: flex;
 	align-items: flex-start;
 }
 
-div.todo-list input {
-	margin: 0;
-	margin-right: 1em;
-	cursor: pointer;
-	height: 1.8em;
+div.unordered-list .editable,
+div.todo-list .editable {
+	width: 100%;
 }
 
-div.todo-list div {
-	width: 100%;
+div.todo-list input {
+	margin: 0;
+	margin-right: 0.5em;
+	height: 1.3em;
+	width: 0.9em;
+	font-size: 1.2em;
+	cursor: pointer;
+}
+
+div.unordered-list .list-dot {
+	font-size: 1.2em;
+	margin-right: 0.5em;
+	width: 1em;
+	text-align: center;
+}
+
+div.unordered-list .list-dot::before {
+	content: attr(data-content);
+	width: 2em;
+}
+
+/*
+	Notes Toolbox
+*/
+
+#notes-toolbox {
+	position: absolute;
+	display: flex;
+	top: 1em;
+	left: 1em;
+	gap: 0.3em;
+	width: fit-content;
+	padding: 0.3em 0.6em;
+	background-color: #444;
+}
+
+#notes-toolbox.shown {
+	display: flex;
+}
+
+#notes-toolbox button {
+	border: none;
+	border-radius: 3px;
+	padding: 0 0.5em;
+	cursor: pointer;
+	background-color: #666;
+	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#notes-toolbox button:hover {
+	opacity: 0.75;
+}
+
+#notes-toolbox button:active {
+	opacity: 0.5;
 }
