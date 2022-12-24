@@ -16,7 +16,7 @@
 }
 
 body {
-	margin: 0;
+	margin: 0 4em;
 	min-width: 320px;
 	min-height: 100vh;
 }
@@ -25,11 +25,13 @@ body {
 	display: flex;
 	flex-direction: column;
 	row-gap: 4px;
-	width: 400px;
-	border: 2px solid;
-	padding: 1em;
+	border: 1px solid #555;
+	padding: 1em 1.5em;
 	margin-top: 10vh;
 	background-color: #fff2;
+	border-radius: 1em;
+	line-height: 1.7em;
+	letter-spacing: 0.4px;
 }
 
 #container > * {

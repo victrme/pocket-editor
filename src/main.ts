@@ -25,8 +25,7 @@ function generateLine(target?: HTMLElement) {
 
 	// for debug
 	if (!target) {
-		content.textContent =
-			"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec tempus, nunc ut faucibus placerat, mauris quam vehicula mauris, in volutpat risus diam in lectus. Aenean ultricies risus sit amet risus fermentum ullamcorper. Nulla tincidunt laoreet lorem non fermentum. Nulla libero quam, suscipit imperdiet orci non, malesuada auctor massa. Sed faucibus nulla vel nibh faucibus, vitae imperdiet nisl auctor. Etiam sit amet mi tincidunt, euismod velit a, mattis quam. Aliquam aliquet lacinia aliquam. Nunc sed nisi sed sapien fermentum pulvinar ac vel elit. Sed sed aliquam sapien, at ullamcorper metus. Donec finibus ante ut urna porttitor, et tincidunt augue sagittis. Curabitur nulla odio, tincidunt ut felis et, efficitur eleifend ex. "
+		content.textContent = "dombimbamcoolohhhl"
 	}
 }
 
@@ -122,66 +121,110 @@ function transformToUnorderedList(target: HTMLElement) {
 }
 
 function textStylingControl(range: Range, e: KeyboardEvent) {
-	const selectionLen = range.endOffset - range.startOffset
+	function getRangeOffsetFromParent(range: Range) {
+		function prevNodeLength() {
+			let node = range.startContainer
+			let res = 0
+
+			while (node.previousSibling) {
+				let text = node.textContent || node.nodeValue || ""
+				res += text.length
+				node = node.previousSibling
+			}
+
+			return res
+		}
+
+		let start = range.startOffset + prevNodeLength()
+		let end = range.endOffset + prevNodeLength()
+
+		return { start, end }
+	}
+
+	const trueRange = getRangeOffsetFromParent(range)
+	const selectionLen = trueRange.end - trueRange.start
 	if (selectionLen === 0) return
 
 	function splitTextNodeAsSpan(style: string) {
 		const target = e.target as HTMLDivElement
-		const editableText = target.innerText || ""
+		const splitarr: [string, string][] = []
 
-		console.log(target)
+		Object.values(target?.childNodes).forEach((node) => {
+			const val = node.textContent || node.nodeValue || ""
+			let mods = ""
 
-		const pre = document.createTextNode(editableText.slice(0, range.startOffset))
-		const post = document.createTextNode(editableText.slice(range.endOffset, editableText.length - 1))
-		const span = document.createElement("span")
+			// detect and add stylings to node object
+			if (node.nodeName === "SPAN") {
+				if ((node as Element).className === "text-italics") mods += "i"
+				if ((node as Element).className === "text-bold") mods += "b"
+				if ((node as Element).className === "text-strike") mods += "s"
+				if ((node as Element).className === "text-code") mods += "c"
+			}
 
-		span.textContent = editableText.slice(range.startOffset, range.endOffset)
+			const chars = val.split("")
+			const res: [string, string][] = chars.map((char) => [char, mods])
+			splitarr.push(...res)
+		})
 
-		if (style === "italics") {
-			span.className = "text-italics"
+		let newsplitarr = [...splitarr]
+
+		// Updates characters modifications
+		splitarr.forEach((split, i) => {
+			if (i >= trueRange.start && i < trueRange.end) {
+				if (split[1].includes("i")) return
+				newsplitarr[i][1] += "i"
+			}
+		})
+
+		target.innerHTML = ""
+
+		let joinstr: string
+		let lastmod: string
+
+		function createNode(str: string) {
+			let newnode: Element | Node
+
+			if (lastmod === "i") {
+				newnode = document.createElement("span")
+				;(newnode as Element).classList.add("text-italics")
+				;(newnode as Element).textContent = str
+			} else {
+				newnode = document.createTextNode(str)
+			}
+
+			return newnode
 		}
 
-		// type TextModifiers = {
-		// 	val: string
-		// 	pos: [number, number]
-		// 	bold?: true
-		// 	italics?: true
-		// 	strike?: true
-		// 	code?: true
-		// }
+		newsplitarr.forEach(([char, mod], i) => {
+			// First char, init all
+			if (i === 0) {
+				lastmod = mod
+				joinstr = char
+				return
+			}
 
-		// let nodeStartPos = 0
-		// let currentEditableText: TextModifiers[] = []
+			// last char, force node creation
+			if (i + 1 === newsplitarr.length) {
+				target.appendChild(createNode(joinstr + char))
+				return
+			}
 
-		// Object.values(target?.childNodes).forEach((node) => {
-		// 	const val = node.nodeValue || ""
-		// 	const pos: [number, number] = [nodeStartPos, nodeStartPos + val.length - 1]
-		// 	let res: TextModifiers = { pos, val }
+			// same modification, just add to string
+			if (mod === lastmod) {
+				joinstr += char
+				return
+			}
 
-		// 	// detect and add stylings to node object
-		// 	if (node.nodeName === "SPAN") {
-		// 		if ((node as Element).className === "text-italics") res.italics = true
-		// 		if ((node as Element).className === "text-bold") res.bold = true
-		// 		if ((node as Element).className === "text-strike") res.strike = true
-		// 		if ((node as Element).className === "text-code") res.code = true
-		// 	}
-
-		// 	// next node will start at the end of this one
-		// 	nodeStartPos += val.length
-		// 	currentEditableText.push(res)
-		// })
-
-		// suppr tout
-		target.innerHTML = ""
-		target.appendChild(pre)
-		target.appendChild(span)
-		target.appendChild(post)
-		target.focus()
+			// Not same, reset string and change mod
+			target.appendChild(createNode(joinstr))
+			joinstr = char
+			lastmod = mod
+		})
 	}
 
 	if (e.key === "i" && e.ctrlKey) {
 		e.preventDefault()
-		console.log("style selection to italics")
+		console.log(range)
 		splitTextNodeAsSpan("italics")
 	}
 
