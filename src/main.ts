@@ -1,4 +1,6 @@
 import "./style.css"
+import getRangeOffsetFromParent from "./getRangeOffsetFromParent"
+import jumpCaretToLine from "./jumpCaretToLine"
 
 function generateLine(target?: HTMLElement) {
 	const container = document.querySelector("#container")
@@ -25,7 +27,9 @@ function generateLine(target?: HTMLElement) {
 
 	// for debug
 	if (!target) {
-		content.textContent = "dombimbamcoolohhhl"
+		content.innerText = `uhoorughurhguorhgrz
+		GLRIHGLIRH iHRGIL Hlh LUHR LU
+		glrizhglihril ihzr uzr ugzhuoz hrg`
 	}
 }
 
@@ -121,26 +125,6 @@ function transformToUnorderedList(target: HTMLElement) {
 }
 
 function textStylingControl(range: Range, e: KeyboardEvent) {
-	function getRangeOffsetFromParent(range: Range) {
-		function prevNodeLength() {
-			let node = range.startContainer
-			let res = 0
-
-			while (node.previousSibling) {
-				let text = node.textContent || node.nodeValue || ""
-				res += text.length
-				node = node.previousSibling
-			}
-
-			return res
-		}
-
-		let start = range.startOffset + prevNodeLength()
-		let end = range.endOffset + prevNodeLength()
-
-		return { start, end }
-	}
-
 	const trueRange = getRangeOffsetFromParent(range)
 	const selectionLen = trueRange.end - trueRange.start
 	if (selectionLen === 0) return
@@ -304,6 +288,14 @@ function lineKeyboardEvent(e: Event) {
 	if ((e as KeyboardEvent).key === " " && target.textContent?.startsWith("-") && range.endOffset === 1) {
 		e.preventDefault()
 		transformToUnorderedList(target)
+	}
+
+	if ((e as KeyboardEvent).key === "ArrowUp") {
+		jumpCaretToLine("up", range, e as KeyboardEvent)
+	}
+
+	if ((e as KeyboardEvent).key === "ArrowDown") {
+		jumpCaretToLine("down", range, e as KeyboardEvent)
 	}
 
 	// if ((e as KeyboardEvent).key === " " && target.textContent?.startsWith("1.") && range.endOffset === 1) {
