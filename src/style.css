@@ -1,13 +1,10 @@
 :root {
-	font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+	font-family: "Segoe UI", Inter, Avenir, Helvetica, Arial, sans-serif;
+	color: #222;
+	background-color: #c7d2e544;
 	font-size: 16px;
 	line-height: 24px;
 	font-weight: 400;
-
-	color-scheme: light dark;
-	color: rgba(255, 255, 255, 0.87);
-	background-color: #242424;
-
 	font-synthesis: none;
 	text-rendering: optimizeLegibility;
 	-webkit-font-smoothing: antialiased;
@@ -18,18 +15,31 @@
 body {
 	margin: 0 4em;
 	min-width: 320px;
-	min-height: 100vh;
+	min-height: 60vh;
+	display: flex;
+	place-content: center center;
+	flex-direction: column;
+}
+
+h1 {
+	text-align: center;
+	color: slateblue;
+	font-size: 3em;
+	margin-bottom: 0em;
 }
 
 #container {
 	display: flex;
 	flex-direction: column;
 	row-gap: 4px;
-	border: 1px solid #555;
+	width: calc(100% - 3em);
+	max-width: 700px;
 	padding: 1em 1.5em;
-	margin-top: 10vh;
-	background-color: #fff2;
-	border-radius: 1em;
+	margin: 10vh auto 0 auto;
+	background-color: #fff;
+	/* box-shadow: 20px 20px 60px #aaa3; */
+	border: 1px solid #eee;
+	border-radius: 8px;
 	line-height: 1.7em;
 	letter-spacing: 0.4px;
 }
@@ -42,6 +52,14 @@ body {
 
 #container * {
 	outline: none;
+}
+
+.notes-line {
+	border-radius: 4px;
+}
+
+.notes-line.selected {
+	background-color: aliceblue;
 }
 
 /*
@@ -96,38 +114,14 @@ div.unordered-list .list-dot::before {
 	width: 2em;
 }
 
-/*
-	Notes Toolbox
-*/
+@media (prefers-color-scheme: dark) {
+	:root {
+		color: white;
+		background-color: #222;
+	}
 
-#notes-toolbox {
-	position: absolute;
-	display: flex;
-	top: 1em;
-	left: 1em;
-	gap: 0.3em;
-	width: fit-content;
-	padding: 0.3em 0.6em;
-	background-color: #444;
-}
-
-#notes-toolbox.shown {
-	display: flex;
-}
-
-#notes-toolbox button {
-	border: none;
-	border-radius: 3px;
-	padding: 0 0.5em;
-	cursor: pointer;
-	background-color: #666;
-	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-}
-
-#notes-toolbox button:hover {
-	opacity: 0.75;
-}
-
-#notes-toolbox button:active {
-	opacity: 0.5;
+	#container {
+		border-color: #fff2;
+		background-color: #333;
+	}
 }

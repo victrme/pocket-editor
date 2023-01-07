@@ -2,7 +2,7 @@ import "./style.css"
 import getRangeOffsetFromParent from "./getRangeOffsetFromParent"
 import jumpCaretToLine from "./jumpCaretToLine"
 
-function generateLine(target?: HTMLElement) {
+function generateLine(target?: HTMLElement, text?: string) {
 	const container = document.querySelector("#container")
 	const wrapper = document.createElement("div")
 	const content = document.createElement("div")
@@ -10,6 +10,9 @@ function generateLine(target?: HTMLElement) {
 	content.classList.add("editable")
 	content.setAttribute("contenteditable", "true")
 	content.addEventListener("keydown", lineKeyboardEvent)
+	// content.addEventListener("keyup", () => {
+	// 	console.log(window.getSelection())
+	// })
 
 	wrapper.classList.add("notes-line")
 	wrapper.appendChild(content)
@@ -26,10 +29,8 @@ function generateLine(target?: HTMLElement) {
 	content.focus()
 
 	// for debug
-	if (!target) {
-		content.innerText = `uhoorughurhguorhgrz
-		GLRIHGLIRH iHRGIL Hlh LUHR LU
-		glrizhglihril ihzr uzr ugzhuoz hrg`
+	if (!target && text) {
+		content.innerText = text
 	}
 }
 
@@ -132,6 +133,8 @@ function textStylingControl(range: Range, e: KeyboardEvent) {
 	function splitTextNodeAsSpan(style: string) {
 		const target = e.target as HTMLDivElement
 		const splitarr: [string, string][] = []
+
+		console.log(style)
 
 		Object.values(target?.childNodes).forEach((node) => {
 			const val = node.textContent || node.nodeValue || ""
@@ -313,5 +316,13 @@ function lineKeyboardEvent(e: Event) {
 }
 
 window.addEventListener("load", function () {
-	generateLine()
+	generateLine(undefined, "Lorem ipsum dolor sit amet")
+	generateLine(
+		undefined,
+		"Pellentesque sit amet purus vestibulum, egestas est quis, consequat ante. Proin tincidunt faucibus risus. Donec hendrerit enim tempor tellus lobortis, venenatis vestibulum enim facilisis."
+	)
+	generateLine(
+		undefined,
+		" Donec convallis lacinia lacus eu molestie. Quisque tempus magna ut varius euismod. In hac habitasse platea dictumst. Mauris egestas orci id justo molestie, vitae dignissim purus eleifend."
+	)
 })
