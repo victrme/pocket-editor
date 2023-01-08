@@ -21,11 +21,12 @@ body {
 	flex-direction: column;
 }
 
-h1 {
+h1#title {
 	text-align: center;
 	color: slateblue;
 	font-size: 3em;
 	margin-bottom: 0em;
+	line-height: 1.2em;
 }
 
 #container {
@@ -81,6 +82,10 @@ h1 {
 /*
 	Transforms
 */
+
+div.notes-line h1 {
+	line-height: 1.2em;
+}
 
 div.unordered-list,
 div.todo-list {

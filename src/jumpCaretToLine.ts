@@ -1,70 +1,49 @@
+// is working
 function setCaret(node: Node) {
-	var sel = window.getSelection()
-	var range = document.createRange()
+	let sel = window.getSelection()
+	let range = document.createRange()
+	let textlen = node.nodeValue?.length || 0
 
-	range.setStart(node, 0)
+	range.setStart(node, textlen)
+	range.setEnd(node, textlen)
 
 	sel?.removeAllRanges()
 	sel?.addRange(range)
-	sel?.collapse(node)
+	sel?.collapseToEnd()
+}
+
+function focusOnOtherLine(node: Node) {
+	let lastNode = node // gets deepest last child (to get textnode)
+	while (lastNode?.lastChild) lastNode = lastNode.lastChild
+
+	setCaret(lastNode)
 }
 
 export default function jumpCaretToLine(dir: "up" | "down", range: Range, e: KeyboardEvent) {
-	// const target = e.target as HTMLElement
-	const editable = range.startContainer?.parentElement
-	if (!editable) return
+	const notesline = (e.target as HTMLElement)?.parentElement
+	if (!notesline) return
 
-	// const caretPos = getRangeOffsetFromParent(range).start
-	// const lineLengths = getLineLength(target)
 	const rangeRects = range.getClientRects()[0]
-	const editableRects = editable?.getBoundingClientRect()
-	if (!editableRects || !rangeRects) return
+	const lineRects = notesline?.getBoundingClientRect()
+	let isOnFirstLine: boolean
+	let isOnLastLine: boolean
 
-	function focusOnOtherLine() {
-		const prevNode = editable?.parentElement?.previousElementSibling?.children[0]
-		const nextNode = editable?.parentElement?.nextElementSibling?.children[0]
-
-		// const { x, y, height } = rangeRects
-		// let line = document.elementFromPoint(x, dir === "up" ? y - height / 2 : y + height * 1.5)
-
-		if (dir === "down" && nextNode) {
-			// nextNode?.focus()
-			// line.click()
-			setCaret(nextNode)
-		}
-
-		if (dir === "up" && prevNode) {
-			// prevNode?.focus()
-			setCaret(prevNode)
-		}
+	if (!lineRects || !rangeRects) {
+		isOnFirstLine = true
+		isOnLastLine = true
+	} else {
+		// Detect if need of jump with range pos & line pos
+		isOnFirstLine = lineRects.top - rangeRects.top + rangeRects.height > 0
+		isOnLastLine = rangeRects.bottom + rangeRects.height - lineRects.bottom > 0
 	}
 
-	console.log(range)
-
-	const bottomBound = editableRects.y + editableRects.height - rangeRects.height
-	const topBound = editableRects.y + rangeRects.height / 2
-
-	if (dir === "down" && rangeRects.y + rangeRects.height > bottomBound) {
+	if (dir === "down" && isOnLastLine) {
 		e.preventDefault()
-		focusOnOtherLine()
-		console.log("Jump down")
+		focusOnOtherLine(notesline?.nextElementSibling as Node)
 	}
 
-	if (dir === "up" && rangeRects.y < topBound) {
+	if (dir === "up" && isOnFirstLine) {
 		e.preventDefault()
-		focusOnOtherLine()
-		console.log("Jump up")
+		focusOnOtherLine(notesline?.previousElementSibling as Node)
 	}
-
-	// if (dir === "up" && caretPos < lineLengths[0]) {
-	// 	console.log("Jump to previous line", range?.startOffset)
-	// 	focusOnOtherLine()
-	// 	e.preventDefault()
-	// }
-
-	// if (dir === "down" && caretPos > (lineLengths?.at(-2) || 0)) {
-	// 	console.log("Jump to next line", range?.startOffset)
-	// 	focusOnOtherLine()
-	// 	e.preventDefault()
-	// }
 }
