@@ -37,12 +37,12 @@ export default function jumpCaretToLine(dir: "up" | "down", range: Range, e: Key
 		isOnLastLine = rangeRects.bottom + rangeRects.height - lineRects.bottom > 0
 	}
 
-	if (dir === "down" && isOnLastLine) {
+	if (dir === "down" && isOnLastLine && notesline?.nextElementSibling) {
 		e.preventDefault()
 		focusOnOtherLine(notesline?.nextElementSibling as Node)
 	}
 
-	if (dir === "up" && isOnFirstLine) {
+	if (dir === "up" && isOnFirstLine && notesline?.previousElementSibling) {
 		e.preventDefault()
 		focusOnOtherLine(notesline?.previousElementSibling as Node)
 	}
