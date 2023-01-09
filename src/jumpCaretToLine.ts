@@ -1,3 +1,5 @@
+import lastNode from "./lastSiblingNode"
+
 // is working
 function setCaret(node: Node) {
 	let sel = window.getSelection()
@@ -12,13 +14,6 @@ function setCaret(node: Node) {
 	sel?.collapseToEnd()
 }
 
-function focusOnOtherLine(node: Node) {
-	let lastNode = node // gets deepest last child (to get textnode)
-	while (lastNode?.lastChild) lastNode = lastNode.lastChild
-
-	setCaret(lastNode)
-}
-
 export default function jumpCaretToLine(dir: "up" | "down", range: Range, e: KeyboardEvent) {
 	const notesline = (e.target as HTMLElement)?.parentElement
 	if (!notesline) return
@@ -28,6 +23,7 @@ export default function jumpCaretToLine(dir: "up" | "down", range: Range, e: Key
 	let isOnFirstLine: boolean
 	let isOnLastLine: boolean
 
+	// Rects undefined sometimes, just accept
 	if (!lineRects || !rangeRects) {
 		isOnFirstLine = true
 		isOnLastLine = true
@@ -38,12 +34,12 @@ export default function jumpCaretToLine(dir: "up" | "down", range: Range, e: Key
 	}
 
 	if (dir === "down" && isOnLastLine && notesline?.nextElementSibling) {
+		setCaret(lastNode(notesline?.nextElementSibling as Node).node)
 		e.preventDefault()
-		focusOnOtherLine(notesline?.nextElementSibling as Node)
 	}
 
 	if (dir === "up" && isOnFirstLine && notesline?.previousElementSibling) {
+		setCaret(lastNode(notesline?.previousElementSibling as Node).node)
 		e.preventDefault()
-		focusOnOtherLine(notesline?.previousElementSibling as Node)
 	}
 }

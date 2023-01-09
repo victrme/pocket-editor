@@ -1,3 +1,4 @@
+import deleteContentBackwardEvent from "./deleteContentBackwardEvent"
 import jumpCaretToLine from "./jumpCaretToLine"
 
 export default function editor(initWrapper: string) {
@@ -29,45 +30,6 @@ export default function editor(initWrapper: string) {
 		}
 	}
 
-	function removeLine(target: Element) {
-		const parent = target.parentElement as HTMLDivElement
-		const prevParent = parent.previousElementSibling as HTMLDivElement
-		const prevEditable = prevParent.querySelector(".editable") as HTMLDivElement
-		if (!prevEditable) return
-
-		prevEditable?.focus()
-
-		// put caret to end of previous line
-		const selection = window.getSelection()
-		const range = document.createRange()
-		range.selectNodeContents(prevEditable)
-		range.collapse(false)
-		selection?.removeAllRanges()
-		selection?.addRange(range)
-
-		parent.remove()
-	}
-
-	function removeModifier(target: Element) {
-		const content = document.createElement("div")
-		const parent = target.parentElement as HTMLElement
-		if (!parent) return
-
-		parent.className = "notes-line"
-		content.textContent = parent.textContent
-
-		content.classList.add("editable")
-		content.setAttribute("contenteditable", "true")
-		content.addEventListener("keydown", lineKeyboardEvent)
-
-		Object.values(parent.childNodes).forEach((node) => {
-			node.remove()
-		})
-
-		parent.appendChild(content)
-		content.focus()
-	}
-
 	function transformToHeading(target: HTMLElement, tag: string) {
 		const isTag = (h: number) => tag.includes(h.toString())
 		const heading = document.createElement(tag)
@@ -77,6 +39,7 @@ export default function editor(initWrapper: string) {
 		heading.textContent = heading.textContent?.replace(isTag(1) ? "#" : isTag(2) ? "##" : "###", "") || ""
 		heading.setAttribute("contenteditable", "true")
 		heading.addEventListener("keydown", lineKeyboardEvent)
+		heading.classList.add("editable")
 
 		target.parentElement?.classList.add("modif-line")
 		target.replaceWith(heading)
@@ -132,25 +95,6 @@ export default function editor(initWrapper: string) {
 			generateLine(target)
 		}
 
-		// Backspace + caret at first pos
-		if ((e as KeyboardEvent).key === "Backspace" && range.endOffset === 0) {
-			//
-			// It is a modified line
-			if (target.parentElement?.classList.contains("modif-line")) {
-				removeModifier(target)
-				console.log("Has modifier, remove modifier")
-			}
-
-			// Not modified + no text
-			else if (target.textContent === "") {
-				if (container.children.length === 1) return
-
-				e.preventDefault()
-				removeLine(target)
-				console.log("No modifier, remove line")
-			}
-		}
-
 		if ((e as KeyboardEvent).key === " " && target.textContent?.startsWith("#") && range.endOffset === 1) {
 			e.preventDefault()
 			transformToHeading(target, "h1")
@@ -200,17 +144,12 @@ export default function editor(initWrapper: string) {
 	const div = document.createElement("div")
 	div.id = "container"
 	div?.addEventListener("keydown", lineKeyboardEvent)
-	div?.addEventListener("beforeinput", (e) => console.log(e))
+	div?.addEventListener("beforeinput", deleteContentBackwardEvent)
 	document.getElementById(initWrapper)?.appendChild(div)
 
+	generateLine(undefined, "Bonjour je suis un test")
+	generateLine(undefined, "Enfin un autre, oui !")
 	generateLine(undefined, "Lorem ipsum dolor sit amet")
-	generateLine(undefined, "")
-	generateLine(undefined, "Pellentesque sit amet purus vestibulum, egestas est quis, consequat ante.")
-	generateLine(undefined, "### Donec convallis lacinia lacus eu molestie. vitae dignissim purus eleifend.")
-	generateLine(
-		undefined,
-		"Donec convallis lacinia lacus eu molestie. Quisque tempus magna ut varius euismod.In hac habitasse platea dictumst. Mauris egestas orci id justo molestie, vitae dignissim purus eleifend."
-	)
 
 	return
 }
