@@ -38,7 +38,6 @@ export default function editor(initWrapper: string) {
 		// Remove markdown characters
 		heading.textContent = heading.textContent?.replace(isTag(1) ? "#" : isTag(2) ? "##" : "###", "") || ""
 		heading.setAttribute("contenteditable", "true")
-		heading.addEventListener("keydown", lineKeyboardEvent)
 		heading.classList.add("editable")
 
 		target.parentElement?.classList.add("modif-line")
@@ -83,68 +82,86 @@ export default function editor(initWrapper: string) {
 		target.focus()
 	}
 
-	function lineKeyboardEvent(e: Event) {
+	function arrowMovement(e: KeyboardEvent) {
+		const range = window.getSelection()?.getRangeAt(0)
+		if (!range) return
+
+		if (e.key === "ArrowUp") jumpCaretToLine("up", range, e)
+		if (e.key === "ArrowDown") jumpCaretToLine("down", range, e)
+	}
+
+	function lineKeyboardEvent(e: InputEvent) {
 		const container = document.querySelector("#container")
 		const range = window.getSelection()?.getRangeAt(0)
 		const target = e.target as HTMLElement
 
 		if (!range || !target || !container) return
 
-		if ((e as KeyboardEvent).key === "Enter" && (e as KeyboardEvent).shiftKey === false) {
+		if (e.inputType === "insertParagraph") {
 			e.preventDefault()
 			generateLine(target)
+			return
 		}
 
-		if ((e as KeyboardEvent).key === " " && target.textContent?.startsWith("#") && range.endOffset === 1) {
-			e.preventDefault()
-			transformToHeading(target, "h1")
+		const { startOffset } = range
+		const targetText = target.textContent || ""
+		const textWithInput = targetText.slice(0, startOffset) + e.data + targetText.slice(startOffset)
+
+		// Big Heading
+		if (targetText.startsWith("#")) {
+			if (e.inputType === "insertText" && textWithInput.startsWith("# ")) {
+				transformToHeading(target, "h1")
+				e.preventDefault()
+			}
 		}
 
-		if ((e as KeyboardEvent).key === " " && target.textContent?.startsWith("##") && range.endOffset === 2) {
-			e.preventDefault()
-			transformToHeading(target, "h2")
+		// Medium Heading
+		if (targetText.startsWith("##")) {
+			if (e.inputType === "insertText" && textWithInput.startsWith("## ")) {
+				transformToHeading(target, "h2")
+				e.preventDefault()
+			}
 		}
 
-		if (
-			(e as KeyboardEvent).key === " " &&
-			target.textContent?.startsWith("###") &&
-			range.endOffset === 3
-		) {
-			e.preventDefault()
-			transformToHeading(target, "h3")
+		// Small Heading
+		if (targetText.startsWith("###")) {
+			if (e.inputType === "insertText" && textWithInput.startsWith("### ")) {
+				transformToHeading(target, "h3")
+				e.preventDefault()
+			}
 		}
 
-		if (
-			(e as KeyboardEvent).key === " " &&
-			target.textContent?.startsWith("[ ]") &&
-			range.endOffset === 3
-		) {
-			e.preventDefault()
-			transformToTodolist(target)
+		// Unordered List
+		if (targetText.startsWith("-")) {
+			if (e.inputType === "insertText" && textWithInput.startsWith("- ")) {
+				transformToUnorderedList(target)
+				e.preventDefault()
+			}
 		}
 
-		if ((e as KeyboardEvent).key === " " && target.textContent?.startsWith("-") && range.endOffset === 1) {
-			e.preventDefault()
-			transformToUnorderedList(target)
+		// Checkbox List
+		if (targetText.startsWith("[ ]")) {
+			if (e.inputType === "insertText" && textWithInput.startsWith("[ ] ")) {
+				transformToTodolist(target)
+				e.preventDefault()
+			}
 		}
-
-		if ((e as KeyboardEvent).key === "ArrowUp") {
-			jumpCaretToLine("up", range, e as KeyboardEvent)
-		}
-
-		if ((e as KeyboardEvent).key === "ArrowDown") {
-			jumpCaretToLine("down", range, e as KeyboardEvent)
-		}
-
-		// if ((e as KeyboardEvent).key === " " && target.textContent?.startsWith("1.") && range.endOffset === 1) {
-		// 	console.log("modify to ordered element")
-		// }
 	}
 
 	const div = document.createElement("div")
 	div.id = "container"
-	div?.addEventListener("keydown", lineKeyboardEvent)
-	div?.addEventListener("beforeinput", deleteContentBackwardEvent)
+
+	div?.addEventListener("keydown", function (e) {
+		arrowMovement(e)
+		console.log(e)
+	})
+
+	div?.addEventListener("beforeinput", function (e) {
+		deleteContentBackwardEvent(e)
+		lineKeyboardEvent(e)
+		console.log(e)
+	})
+
 	document.getElementById(initWrapper)?.appendChild(div)
 
 	generateLine(undefined, "Bonjour je suis un test")
