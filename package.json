@@ -1,15 +1,16 @@
 {
-	"name": "contenteditable",
-	"private": true,
-	"version": "0.0.0",
+	"name": "@victr/tiny-notes",
+	"description": "Tiny text editor to save tiny notes",
+	"version": "1.0.0",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"author": "Victor Azevedo",
 	"type": "module",
+	"license": "MIT",
 	"scripts": {
-		"dev": "vite",
-		"build": "tsc && vite build",
-		"preview": "vite preview"
+		"build": "tsc"
 	},
 	"devDependencies": {
-		"typescript": "^4.9.3",
-		"vite": "^4.0.0"
+		"typescript": "^4.9.3"
 	}
 }

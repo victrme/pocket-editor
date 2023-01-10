@@ -1,5 +1,7 @@
-import deleteContentBackwardEvent from "./deleteContentBackwardEvent"
-import jumpCaretToLine from "./jumpCaretToLine"
+import deleteContentBackwardEvent from "./lib/deleteContentBackwardEvent"
+import jumpCaretToLine from "./lib/jumpCaretToLine"
+import lastSiblingNode from "./lib/lastSiblingNode"
+import "./style.css"
 
 export default function editor(initWrapper: string) {
 	function generateLine(target?: HTMLElement, text?: string) {
@@ -106,6 +108,27 @@ export default function editor(initWrapper: string) {
 		const { startOffset } = range
 		const targetText = target.textContent || ""
 		const textWithInput = targetText.slice(0, startOffset) + e.data + targetText.slice(startOffset)
+
+		// Plaintext pasting
+		if (e.inputType === "insertFromPaste") {
+			e.preventDefault()
+			const plaintext = e.dataTransfer?.getData("text/plain")
+			const withPaste = targetText.slice(0, startOffset) + plaintext + targetText.slice(startOffset)
+			const { node, isTextNode } = lastSiblingNode(target)
+
+			// todo:
+			// puts plaintext in <br /> when a <br /> is present !!!
+
+			if (isTextNode) {
+				node.nodeValue = withPaste
+				range.setStart(node, startOffset + (plaintext?.length || 0))
+				range.setEnd(node, startOffset + (plaintext?.length || 0))
+			} else {
+				node.textContent = withPaste
+			}
+
+			console.log(range.startContainer, startOffset, withPaste.length)
+		}
 
 		// Big Heading
 		if (targetText.startsWith("#")) {

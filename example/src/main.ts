@@ -1,5 +1,4 @@
-import "./style.css"
-import editor from "./editor"
+import editor from "../../src/index"
 
 window.addEventListener("load", function () {
 	editor("wrapper")
