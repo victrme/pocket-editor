@@ -12,13 +12,13 @@ This is an editor using contenteditable
 -   [ ] Force plain text before pasting data
 -   [ ] Left / right arrow key line movement
 -   [ ] Paste insert & delete content line transform
--   [ ] Insert Paragraph on empty transform removes it
 -   [ ] Get markdown string from editors content
--   [ ] Set editors content from markdown string
 -   [ ] Add css style to build output
 
 ### Done
 
+-   [x] Insert Paragraph on empty transform removes it
+-   [x] Set editors content from markdown string
 -   [x] Text insert line transform
 -   [x] Insert paragraph between text
 -   [x] Up / down arrow key line movement

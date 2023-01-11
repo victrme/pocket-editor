@@ -1,6 +1,6 @@
 import deleteContentBackwardEvent from "./lib/deleteContentBackwardEvent"
 import jumpCaretToLine from "./lib/jumpCaretToLine"
-import lastSiblingNode from "./lib/lastSiblingNode"
+import removeModifier from "./lib/removeModifier"
 
 export default function tinyNotes(initWrapper: string) {
 	const container = document.createElement("div")
@@ -114,6 +114,13 @@ export default function tinyNotes(initWrapper: string) {
 
 	function classicParagraphInsert(target: HTMLElement, range: Range) {
 		const text = range.startContainer?.nodeValue || ""
+		const lineClasses = target.parentElement?.classList
+
+		// Remove mod if line is empty with modif
+		if (target.textContent === "" && lineClasses?.contains("modif-line")) {
+			removeModifier(target)
+			return
+		}
 
 		// create new line if or if br (for now)
 		if (range.startContainer.nodeType !== 3) {
@@ -123,8 +130,8 @@ export default function tinyNotes(initWrapper: string) {
 
 		// Does it need transformation ?
 		let modif
-		if (target?.parentElement?.classList.contains("todo-list")) modif = "todo"
-		if (target?.parentElement?.classList.contains("unordered-list")) modif = "unordered"
+		if (lineClasses?.contains("todo-list")) modif = "todo"
+		if (lineClasses?.contains("unordered-list")) modif = "unordered"
 
 		// put text between caret and EOL on new line
 		generateLine({ target, text: text.slice(range?.startOffset) || "", modif })
@@ -138,8 +145,6 @@ export default function tinyNotes(initWrapper: string) {
 	function lineKeyboardEvent(e: InputEvent) {
 		const range = window.getSelection()?.getRangeAt(0)
 		const target = e.target as HTMLElement
-
-		console.log(e)
 
 		if (!range || !target || !container) return
 
@@ -163,8 +168,6 @@ export default function tinyNotes(initWrapper: string) {
 			// 1) Output markdown from html line
 			// 2) Add paste content at position in markdown
 			// 3) Generate html from new markdown string
-
-			console.log(plaintext, withPaste)
 		}
 
 		// Big Heading

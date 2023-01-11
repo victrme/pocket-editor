@@ -1,4 +1,5 @@
 import lastNode from "./lastSiblingNode"
+import removeModifier from "./removeModifier"
 
 export default function deleteContentBackwardEvent(e: InputEvent) {
 	function removeLineNoText(editable: Element, prevLine: Element) {
@@ -37,23 +38,6 @@ export default function deleteContentBackwardEvent(e: InputEvent) {
 		;(editable.parentElement as HTMLDivElement).remove()
 
 		console.log("No modifier + text, append text to previous line")
-	}
-
-	function removeModifier(editable: Element) {
-		const content = document.createElement("div")
-		const parent = editable.parentElement as HTMLElement
-		if (!parent) return
-
-		parent.className = "notes-line"
-		content.textContent = parent.textContent
-
-		content.classList.add("editable")
-		content.setAttribute("contenteditable", "true")
-
-		Object.values(parent.childNodes).forEach((node) => node.remove())
-
-		parent.appendChild(content)
-		content.focus()
 	}
 
 	const range = window.getSelection()?.getRangeAt(0)
