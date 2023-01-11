@@ -21,12 +21,18 @@ body {
 	flex-direction: column;
 }
 
-h1#title {
+#title {
 	text-align: center;
-	color: slateblue;
-	font-size: 3em;
+	color: white;
 	margin-bottom: 0em;
-	line-height: 1.2em;
+	line-height: 3em;
+	font-family: "Covered By Your Grace", "Segoe UI", Inter, Avenir, Helvetica, Arial, sans-serif;
+}
+
+#title h1 {
+	font-size: 5em;
+	margin-top: 1em;
+	margin-bottom: 0;
 }
 
 #wrapper {

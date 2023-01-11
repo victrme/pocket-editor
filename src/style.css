@@ -3,6 +3,7 @@
 	flex-direction: column;
 	row-gap: 4px;
 	width: calc(100% - 3em);
+	min-width: 300px;
 	padding: 1em 1.5em;
 	background-color: #fff;
 	border: 1px solid #eee;
