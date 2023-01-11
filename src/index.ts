@@ -1,34 +1,43 @@
 import deleteContentBackwardEvent from "./lib/deleteContentBackwardEvent"
 import jumpCaretToLine from "./lib/jumpCaretToLine"
 import lastSiblingNode from "./lib/lastSiblingNode"
-import "./style.css"
 
 export default function editor(initWrapper: string) {
-	function generateLine(target?: HTMLElement, text?: string) {
+	const container = document.createElement("div")
+
+	function generateLine({
+		target,
+		text,
+		modif,
+	}: {
+		target?: HTMLElement
+		text?: string
+		modif?: "todo" | "unordered" | "h1" | "h2" | "h3"
+	}) {
 		const container = document.querySelector("#container")
-		const wrapper = document.createElement("div")
-		const content = document.createElement("div")
+		const notesline = document.createElement("div")
+		const editable = document.createElement("div")
 
-		content.classList.add("editable")
-		content.setAttribute("contenteditable", "true")
+		editable.classList.add("editable")
+		editable.setAttribute("contenteditable", "true")
 
-		wrapper.classList.add("notes-line")
-		wrapper.appendChild(content)
+		notesline.classList.add("notes-line")
+		notesline.appendChild(editable)
 
 		// Find where to put the new line
 		const parentSibling = target?.parentElement?.nextElementSibling
-		if (parentSibling) container?.insertBefore(wrapper, parentSibling)
-		else container?.appendChild(wrapper)
+		if (parentSibling) container?.insertBefore(notesline, parentSibling)
+		else container?.appendChild(notesline)
 
 		// Does it need transformation ?
-		if (target?.parentElement?.classList.contains("todo-list")) transformToTodolist(content)
-		if (target?.parentElement?.classList.contains("unordered-list")) transformToUnorderedList(content)
+		if (target?.parentElement?.classList.contains("todo-list")) transformToTodolist(editable)
+		if (target?.parentElement?.classList.contains("unordered-list")) transformToUnorderedList(editable)
 
-		content.focus()
+		editable.focus()
 
 		// for debug
-		if (!target && text) {
-			content.innerText = text
+		if (text) {
+			editable.textContent = text
 		}
 	}
 
@@ -92,6 +101,24 @@ export default function editor(initWrapper: string) {
 		if (e.key === "ArrowDown") jumpCaretToLine("down", range, e)
 	}
 
+	function classicParagraphInsert(target: HTMLElement, range: Range) {
+		const text = range.startContainer?.nodeValue || ""
+
+		// create new line if or if br (for now)
+		if (range.startContainer.nodeType !== 3) {
+			generateLine({ target })
+			return
+		}
+
+		// put text between caret and EOL on new line
+		generateLine({ target, text: text.slice(range?.startOffset) || "" })
+
+		// Remove newlined text to previous line
+		if (range.startContainer.textContent) {
+			range.startContainer.textContent = text.slice(0, range.startOffset)
+		}
+	}
+
 	function lineKeyboardEvent(e: InputEvent) {
 		const container = document.querySelector("#container")
 		const range = window.getSelection()?.getRangeAt(0)
@@ -99,10 +126,9 @@ export default function editor(initWrapper: string) {
 
 		if (!range || !target || !container) return
 
-		if (e.inputType === "insertParagraph") {
+		if (e.inputType) {
 			e.preventDefault()
-			generateLine(target)
-			return
+			classicParagraphInsert(target, range)
 		}
 
 		const { startOffset } = range
@@ -111,23 +137,17 @@ export default function editor(initWrapper: string) {
 
 		// Plaintext pasting
 		if (e.inputType === "insertFromPaste") {
-			e.preventDefault()
 			const plaintext = e.dataTransfer?.getData("text/plain")
 			const withPaste = targetText.slice(0, startOffset) + plaintext + targetText.slice(startOffset)
-			const { node, isTextNode } = lastSiblingNode(target)
 
 			// todo:
-			// puts plaintext in <br /> when a <br /> is present !!!
+			// Don't use lastSiblingNode, because you could paste from anywhere !!
+			// Must implement line generation from markdown before
+			// 1) Output markdown from html line
+			// 2) Add paste content at position in markdown
+			// 3) Generate html from new markdown string
 
-			if (isTextNode) {
-				node.nodeValue = withPaste
-				range.setStart(node, startOffset + (plaintext?.length || 0))
-				range.setEnd(node, startOffset + (plaintext?.length || 0))
-			} else {
-				node.textContent = withPaste
-			}
-
-			console.log(range.startContainer, startOffset, withPaste.length)
+			console.log(plaintext, withPaste)
 		}
 
 		// Big Heading
@@ -171,25 +191,22 @@ export default function editor(initWrapper: string) {
 		}
 	}
 
-	const div = document.createElement("div")
-	div.id = "container"
-
-	div?.addEventListener("keydown", function (e) {
+	container.id = "container"
+	container?.addEventListener("keydown", function (e) {
 		arrowMovement(e)
 		console.log(e)
 	})
-
-	div?.addEventListener("beforeinput", function (e) {
+	container?.addEventListener("beforeinput", function (e) {
 		deleteContentBackwardEvent(e)
 		lineKeyboardEvent(e)
 		console.log(e)
 	})
 
-	document.getElementById(initWrapper)?.appendChild(div)
+	document.getElementById(initWrapper)?.appendChild(container)
 
-	generateLine(undefined, "Bonjour je suis un test")
-	generateLine(undefined, "Enfin un autre, oui !")
-	generateLine(undefined, "Lorem ipsum dolor sit amet")
-
+	// For line generation
+	// "\n" is <br> in same line
+	// "\n\n" is a new line
+	generateLine({ text: "" })
 	return
 }
