@@ -1,11 +1,9 @@
-#container {
+#tiny-notes {
 	display: flex;
 	flex-direction: column;
 	row-gap: 4px;
 	width: calc(100% - 3em);
-	max-width: 700px;
 	padding: 1em 1.5em;
-	margin: 10vh auto 0 auto;
 	background-color: #fff;
 	border: 1px solid #eee;
 	border-radius: 8px;
@@ -13,12 +11,12 @@
 	letter-spacing: 0.4px;
 }
 
-#container > * {
+#tiny-notes > * {
 	padding: 0 12px;
 	word-break: break-all;
 }
 
-#container * {
+#tiny-notes * {
 	outline: none;
 }
 
@@ -87,7 +85,7 @@ div.unordered-list .list-dot::before {
 }
 
 @media (prefers-color-scheme: dark) {
-	#container {
+	#tiny-notes {
 		border-color: #fff2;
 		background-color: #333;
 	}

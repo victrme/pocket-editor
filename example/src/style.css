@@ -29,6 +29,11 @@ h1#title {
 	line-height: 1.2em;
 }
 
+#wrapper {
+	margin: 10vh auto;
+	max-width: 700px;
+}
+
 @media (prefers-color-scheme: dark) {
 	:root {
 		color: white;
