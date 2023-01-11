@@ -5,7 +5,7 @@ import removeModifier from "./lib/removeModifier"
 export default function tinyNotes(initWrapper: string) {
 	const container = document.createElement("div")
 
-	function generateLine({ target, text, modif }: { target?: HTMLElement; text?: string; modif?: string }) {
+	function generateLine({ text, modif }: { target?: HTMLElement; text?: string; modif?: string }) {
 		const notesline = document.createElement("div")
 		const editable = document.createElement("div")
 
@@ -38,15 +38,7 @@ export default function tinyNotes(initWrapper: string) {
 				break
 		}
 
-		// Put line where it is supposed to be
-		const parentSibling = target?.parentElement?.nextElementSibling
-		if (parentSibling) container.insertBefore(notesline, parentSibling)
-		else container.appendChild(notesline)
-
-		editable.focus()
-
-		// might be useful in the future
-		return editable
+		return notesline
 	}
 
 	function transformToHeading(target: HTMLElement, tag: string) {
@@ -116,15 +108,23 @@ export default function tinyNotes(initWrapper: string) {
 		const text = range.startContainer?.nodeValue || ""
 		const lineClasses = target.parentElement?.classList
 
+		function appendLine(line: HTMLElement) {
+			const nextLine = target.parentElement?.nextElementSibling
+
+			// append line where it is supposed to be, then focus
+			nextLine ? container.insertBefore(line, nextLine) : container?.appendChild(line)
+			line.querySelector<HTMLElement>(".editable")?.focus()
+		}
+
 		// Remove mod if line is empty with modif
-		if (target.textContent === "" && lineClasses?.contains("modif-line")) {
+		if (range.startOffset === 0 && lineClasses?.contains("modif-line")) {
 			removeModifier(target)
 			return
 		}
 
 		// create new line if or if br (for now)
 		if (range.startContainer.nodeType !== 3) {
-			generateLine({ target })
+			appendLine(generateLine({ target }))
 			return
 		}
 
@@ -134,12 +134,15 @@ export default function tinyNotes(initWrapper: string) {
 		if (lineClasses?.contains("unordered-list")) modif = "unordered"
 
 		// put text between caret and EOL on new line
-		generateLine({ target, text: text.slice(range?.startOffset) || "", modif })
+		const nextLineText = text.slice(range?.startOffset) || ""
 
 		// Remove newlined text to previous line
 		if (range.startContainer.textContent) {
 			range.startContainer.textContent = text.slice(0, range.startOffset)
 		}
+
+		// append line
+		appendLine(generateLine({ target, text: nextLineText, modif }))
 	}
 
 	function lineKeyboardEvent(e: InputEvent) {
@@ -241,19 +244,25 @@ export default function tinyNotes(initWrapper: string) {
 		// Delete all content before
 		Object.values(container.children).forEach((node) => node.remove())
 
+		// create fragment to append only once to real DOM
+		const fragment = document.createDocumentFragment()
+
 		markdown.split("\n\n").forEach((line) => {
 			// Finds modifs that use line breaks (list & todos)
 			// And create a line for them
 			if (line.split("\n").length > 1) {
 				line.split("\n").forEach((subline) => {
-					generateLine({ text: subline, modif: checkModifs(subline) })
+					fragment.appendChild(generateLine({ text: subline, modif: checkModifs(subline) }))
 				})
 				return
 			}
 
 			// Normal line
-			generateLine({ text: line, modif: checkModifs(line) })
+			fragment.appendChild(generateLine({ text: line, modif: checkModifs(line) }))
 		})
+
+		// append to real
+		container.appendChild(fragment)
 	}
 
 	container.id = "tiny-notes"
@@ -267,7 +276,7 @@ export default function tinyNotes(initWrapper: string) {
 		lineKeyboardEvent(e)
 	})
 
-	generateLine({ text: "" })
+	container.appendChild(generateLine({ text: "" }))
 	document.getElementById(initWrapper)?.appendChild(container)
 
 	return { set }
