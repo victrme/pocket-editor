@@ -2,43 +2,51 @@ import deleteContentBackwardEvent from "./lib/deleteContentBackwardEvent"
 import jumpCaretToLine from "./lib/jumpCaretToLine"
 import lastSiblingNode from "./lib/lastSiblingNode"
 
-export default function editor(initWrapper: string) {
+export default function tinyNotes(initWrapper: string) {
 	const container = document.createElement("div")
 
-	function generateLine({
-		target,
-		text,
-		modif,
-	}: {
-		target?: HTMLElement
-		text?: string
-		modif?: "todo" | "unordered" | "h1" | "h2" | "h3"
-	}) {
-		const container = document.querySelector("#container")
+	function generateLine({ target, text, modif }: { target?: HTMLElement; text?: string; modif?: string }) {
 		const notesline = document.createElement("div")
 		const editable = document.createElement("div")
 
 		editable.classList.add("editable")
-		editable.setAttribute("contenteditable", "true")
-
 		notesline.classList.add("notes-line")
+		editable.setAttribute("contenteditable", "true")
 		notesline.appendChild(editable)
 
-		// Find where to put the new line
-		const parentSibling = target?.parentElement?.nextElementSibling
-		if (parentSibling) container?.insertBefore(notesline, parentSibling)
-		else container?.appendChild(notesline)
+		// Add text if any
+		if (typeof text === "string") editable.innerText = text
 
-		// Does it need transformation ?
-		if (target?.parentElement?.classList.contains("todo-list")) transformToTodolist(editable)
-		if (target?.parentElement?.classList.contains("unordered-list")) transformToUnorderedList(editable)
+		// Transform line
+		switch (modif) {
+			case "todo":
+				transformToTodolist(editable)
+				break
+
+			case "todo-checked":
+				transformToTodolist(editable, true)
+				break
+
+			case "unordered":
+				transformToUnorderedList(editable)
+				break
+
+			case "h1":
+			case "h2":
+			case "h3":
+				transformToHeading(editable, modif)
+				break
+		}
+
+		// Put line where it is supposed to be
+		const parentSibling = target?.parentElement?.nextElementSibling
+		if (parentSibling) container.insertBefore(notesline, parentSibling)
+		else container.appendChild(notesline)
 
 		editable.focus()
 
-		// for debug
-		if (text) {
-			editable.textContent = text
-		}
+		// might be useful in the future
+		return editable
 	}
 
 	function transformToHeading(target: HTMLElement, tag: string) {
@@ -56,7 +64,7 @@ export default function editor(initWrapper: string) {
 		heading.focus()
 	}
 
-	function transformToTodolist(target: HTMLElement) {
+	function transformToTodolist(target: HTMLElement, checked?: true) {
 		const input = document.createElement("input")
 		const parent = target.parentElement
 
@@ -68,11 +76,14 @@ export default function editor(initWrapper: string) {
 			else input.removeAttribute("checked")
 		})
 
+		if (checked) input.checked = true
+
 		parent?.classList.add("modif-line")
 		parent?.classList.add("todo-list")
 		parent.prepend(input)
 
 		target.innerHTML = target.innerHTML.replace("[ ]", "")
+		target.innerHTML = target.innerHTML.replace("[x]", "")
 		target.focus()
 	}
 
@@ -110,8 +121,13 @@ export default function editor(initWrapper: string) {
 			return
 		}
 
+		// Does it need transformation ?
+		let modif
+		if (target?.parentElement?.classList.contains("todo-list")) modif = "todo"
+		if (target?.parentElement?.classList.contains("unordered-list")) modif = "unordered"
+
 		// put text between caret and EOL on new line
-		generateLine({ target, text: text.slice(range?.startOffset) || "" })
+		generateLine({ target, text: text.slice(range?.startOffset) || "", modif })
 
 		// Remove newlined text to previous line
 		if (range.startContainer.textContent) {
@@ -120,13 +136,14 @@ export default function editor(initWrapper: string) {
 	}
 
 	function lineKeyboardEvent(e: InputEvent) {
-		const container = document.querySelector("#container")
 		const range = window.getSelection()?.getRangeAt(0)
 		const target = e.target as HTMLElement
 
+		console.log(e)
+
 		if (!range || !target || !container) return
 
-		if (e.inputType) {
+		if (e.inputType === "insertParagraph") {
 			e.preventDefault()
 			classicParagraphInsert(target, range)
 		}
@@ -189,24 +206,66 @@ export default function editor(initWrapper: string) {
 				e.preventDefault()
 			}
 		}
+
+		if (targetText.startsWith("[x]")) {
+			if (e.inputType === "insertText" && textWithInput.startsWith("[x] ")) {
+				transformToTodolist(target)
+				e.preventDefault()
+			}
+		}
 	}
 
-	container.id = "container"
-	container?.addEventListener("keydown", function (e) {
+	function set(markdown: string) {
+		function checkModifs(text: string) {
+			const modList = {
+				h1: "# ",
+				h2: "## ",
+				h3: "### ",
+				todo: "[ ] ",
+				unordered: "- ",
+				"todo-checked": "[x] ",
+			}
+
+			let modif = ""
+
+			Object.entries(modList).forEach(([name, str]) => {
+				if (text.startsWith(str)) modif = name
+			})
+
+			return modif
+		}
+
+		// Delete all content before
+		Object.values(container.children).forEach((node) => node.remove())
+
+		markdown.split("\n\n").forEach((line) => {
+			// Finds modifs that use line breaks (list & todos)
+			// And create a line for them
+			if (line.split("\n").length > 1) {
+				line.split("\n").forEach((subline) => {
+					generateLine({ text: subline, modif: checkModifs(subline) })
+				})
+				return
+			}
+
+			// Normal line
+			generateLine({ text: line, modif: checkModifs(line) })
+		})
+	}
+
+	container.id = "tiny-notes"
+
+	container.addEventListener("keydown", function (e) {
 		arrowMovement(e)
-		console.log(e)
 	})
-	container?.addEventListener("beforeinput", function (e) {
+
+	container.addEventListener("beforeinput", function (e) {
 		deleteContentBackwardEvent(e)
 		lineKeyboardEvent(e)
-		console.log(e)
 	})
 
+	generateLine({ text: "" })
 	document.getElementById(initWrapper)?.appendChild(container)
 
-	// For line generation
-	// "\n" is <br> in same line
-	// "\n\n" is a new line
-	generateLine({ text: "" })
-	return
+	return { set }
 }
