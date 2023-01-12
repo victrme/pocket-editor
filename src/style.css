@@ -2,14 +2,10 @@
 	display: flex;
 	flex-direction: column;
 	row-gap: 4px;
-	width: calc(100% - 3em);
 	min-width: 300px;
-	padding: 1em 1.5em;
-	background-color: #fff;
-	border: 1px solid #eee;
-	border-radius: 8px;
+	padding: 2em;
 	line-height: 1.7em;
-	letter-spacing: 0.4px;
+	letter-spacing: 0.2px;
 }
 
 #tiny-notes > * {
@@ -22,10 +18,11 @@
 
 .notes-line {
 	border-radius: 4px;
+	transition: background-color 0.1s linear;
 }
 
-.notes-line.selected {
-	background-color: aliceblue;
+.notes-line.select-all {
+	background-color: rgba(96, 112, 113, 0.77);
 }
 
 /*
@@ -82,11 +79,4 @@ div.unordered-list .list-dot {
 div.unordered-list .list-dot::before {
 	content: attr(data-content);
 	width: 2em;
-}
-
-@media (prefers-color-scheme: dark) {
-	#tiny-notes {
-		border-color: #fff2;
-		background-color: #333;
-	}
 }

@@ -1,7 +1,7 @@
 :root {
 	font-family: "Segoe UI", Inter, Avenir, Helvetica, Arial, sans-serif;
-	color: #222;
-	background-color: #c7d2e544;
+	color: #dcd7c9;
+	background-color: #2c3639;
 	font-size: 16px;
 	line-height: 24px;
 	font-weight: 400;
@@ -13,8 +13,7 @@
 }
 
 body {
-	margin: 0 4em;
-	min-width: 320px;
+	margin: 0 1em;
 	min-height: 60vh;
 	display: flex;
 	place-content: center center;
@@ -23,7 +22,6 @@ body {
 
 #title {
 	text-align: center;
-	color: white;
 	margin-bottom: 0em;
 	line-height: 3em;
 	font-family: "Covered By Your Grace", "Segoe UI", Inter, Avenir, Helvetica, Arial, sans-serif;
@@ -40,9 +38,6 @@ body {
 	max-width: 700px;
 }
 
-@media (prefers-color-scheme: dark) {
-	:root {
-		color: white;
-		background-color: #222;
-	}
+#tiny-notes {
+	background-color: #3f4e4f;
 }

@@ -9,6 +9,7 @@ This is an editor using contenteditable
 
 ### Not done
 
+-   [ ] Prevent adding multiple modif on same line
 -   [ ] Force plain text before pasting data
 -   [ ] Left / right arrow key line movement
 -   [ ] Paste insert & delete content line transform
