@@ -1,5 +1,6 @@
 import deleteContentBackwardEvent from "./lib/deleteContentBackwardEvent"
 import jumpCaretToLine from "./lib/jumpCaretToLine"
+import lineSelection from "./lib/lineSelection"
 import removeModifier from "./lib/removeModifier"
 
 export default function tinyNotes(initWrapper: string) {
@@ -97,7 +98,9 @@ export default function tinyNotes(initWrapper: string) {
 	}
 
 	function arrowMovement(e: KeyboardEvent) {
-		const range = window.getSelection()?.getRangeAt(0)
+		if (!e.key.includes("Arrow")) return
+
+		const range = window?.getSelection()?.getRangeAt(0)
 		if (!range) return
 
 		if (e.key === "ArrowUp") jumpCaretToLine("up", range, e)
@@ -267,14 +270,12 @@ export default function tinyNotes(initWrapper: string) {
 
 	container.id = "tiny-notes"
 
-	container.addEventListener("keydown", function (e) {
-		arrowMovement(e)
-	})
+	// Add line selection feature
+	lineSelection(container)
 
-	container.addEventListener("beforeinput", function (e) {
-		deleteContentBackwardEvent(e)
-		lineKeyboardEvent(e)
-	})
+	container.addEventListener("keydown", arrowMovement)
+	container.addEventListener("beforeinput", lineKeyboardEvent)
+	container.addEventListener("beforeinput", deleteContentBackwardEvent)
 
 	container.appendChild(generateLine({ text: "" }))
 	document.getElementById(initWrapper)?.appendChild(container)
