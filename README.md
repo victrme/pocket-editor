@@ -18,6 +18,7 @@ This is an editor using contenteditable
 
 ### Done
 
+-   [x] Added mouse selection behavior (no use for now)
 -   [x] Insert Paragraph on empty transform removes it
 -   [x] Set editors content from markdown string
 -   [x] Text insert line transform
