@@ -1,5 +1,5 @@
 import deleteContentBackwardEvent from "./lib/deleteContentBackwardEvent"
-import jumpCaretToLine from "./lib/jumpCaretToLine"
+import lineMovement from "./lib/lineMovement"
 import lineSelection from "./lib/lineSelection"
 import removeModifier from "./lib/removeModifier"
 
@@ -95,16 +95,6 @@ export default function tinyNotes(initWrapper: string) {
 
 		target.innerHTML = target.innerHTML.replace("-", "")
 		target.focus()
-	}
-
-	function arrowMovement(e: KeyboardEvent) {
-		if (!e.key.includes("Arrow")) return
-
-		const range = window?.getSelection()?.getRangeAt(0)
-		if (!range) return
-
-		if (e.key === "ArrowUp") jumpCaretToLine("up", range, e)
-		if (e.key === "ArrowDown") jumpCaretToLine("down", range, e)
 	}
 
 	function classicParagraphInsert(target: HTMLElement, range: Range) {
@@ -272,8 +262,8 @@ export default function tinyNotes(initWrapper: string) {
 
 	// Add line selection feature
 	lineSelection(container)
+	lineMovement(container)
 
-	container.addEventListener("keydown", arrowMovement)
 	container.addEventListener("beforeinput", lineKeyboardEvent)
 	container.addEventListener("beforeinput", deleteContentBackwardEvent)
 
