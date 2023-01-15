@@ -41,3 +41,14 @@ body {
 #tiny-notes {
 	background-color: #3f4e4f;
 }
+
+@media only screen and (max-width: 480px) {
+	#title h1 {
+		font-size: 3.5em;
+		margin: 1em 0;
+	}
+
+	#wrapper {
+		margin-top: 0;
+	}
+}

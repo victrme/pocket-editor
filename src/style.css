@@ -8,6 +8,13 @@
 	letter-spacing: 0.2px;
 }
 
+@media only screen and (max-width: 480px) {
+	#tiny-notes {
+		min-width: auto;
+		padding: 1em;
+	}
+}
+
 #tiny-notes > * {
 	padding: 0 12px;
 }
