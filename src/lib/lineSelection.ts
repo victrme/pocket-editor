@@ -1,3 +1,5 @@
+import detectLineJump from "./detectLineJump"
+
 export default function lineSelection(container: HTMLElement) {
 	let currentLine = -1
 	let firstLine = -1
@@ -87,14 +89,16 @@ export default function lineSelection(container: HTMLElement) {
 		}
 
 		const range = window?.getSelection()?.getRangeAt(0)
-		if (!range) return
+		const notesline = editable?.parentElement
+
+		if (!range || !e.shiftKey || !notesline) return
 
 		// Start line selection
-		if (e.shiftKey && e.key === "ArrowLeft" && range.startOffset < 2 && editable?.parentElement) {
-			const index = allLines.indexOf(editable?.parentElement)
+		detectLineJump(e, (notesline) => {
+			const index = allLines.indexOf(notesline)
 			initLineSelection(index)
 			applyLineSelection(lineInterval)
-		}
+		})
 	}
 
 	function mouseMoveEvent(e: MouseEvent) {

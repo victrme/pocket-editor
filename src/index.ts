@@ -1,7 +1,7 @@
 import deleteContentBackwardEvent from "./lib/deleteContentBackwardEvent"
-import lineMovement from "./lib/lineMovement"
-import lineSelection from "./lib/lineSelection"
 import removeModifier from "./lib/removeModifier"
+import lineSelection from "./lib/lineSelection"
+import caretControl from "./lib/caretControl"
 
 export default function tinyNotes(initWrapper: string) {
 	const container = document.createElement("div")
@@ -43,12 +43,12 @@ export default function tinyNotes(initWrapper: string) {
 	}
 
 	function transformToHeading(target: HTMLElement, tag: string) {
-		const isTag = (h: number) => tag.includes(h.toString())
 		const heading = document.createElement(tag)
-		heading.innerHTML = target.innerHTML
 
 		// Remove markdown characters
-		heading.textContent = heading.textContent?.replace(isTag(1) ? "#" : isTag(2) ? "##" : "###", "") || ""
+		let toSlice = tag === "h1" ? 2 : tag === "h2" ? 3 : 4
+		heading.textContent = target.textContent?.slice(toSlice) || ""
+
 		heading.setAttribute("contenteditable", "true")
 		heading.classList.add("editable")
 
@@ -75,8 +75,7 @@ export default function tinyNotes(initWrapper: string) {
 		parent?.classList.add("todo-list")
 		parent.prepend(input)
 
-		target.innerHTML = target.innerHTML.replace("[ ]", "")
-		target.innerHTML = target.innerHTML.replace("[x]", "")
+		target.innerText = target.innerText?.slice(4) || ""
 		target.focus()
 	}
 
@@ -93,7 +92,7 @@ export default function tinyNotes(initWrapper: string) {
 		parent?.classList.add("unordered-list")
 		parent.prepend(span)
 
-		target.innerHTML = target.innerHTML.replace("-", "")
+		target.innerText = target.innerText?.slice(4) || ""
 		target.focus()
 	}
 
@@ -260,9 +259,8 @@ export default function tinyNotes(initWrapper: string) {
 
 	container.id = "tiny-notes"
 
-	// Add line selection feature
-	lineSelection(container)
-	lineMovement(container)
+	lineSelection(container) // Add line selection feature
+	caretControl(container) // Add keyboard line jump control
 
 	container.addEventListener("beforeinput", lineKeyboardEvent)
 	container.addEventListener("beforeinput", deleteContentBackwardEvent)
