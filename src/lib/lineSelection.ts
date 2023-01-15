@@ -1,4 +1,6 @@
 import detectLineJump from "./detectLineJump"
+import setCaret from "./setCaret"
+import lastSiblingNode from "./lastSiblingNode"
 
 export default function lineSelection(container: HTMLElement) {
 	let currentLine = -1
@@ -20,6 +22,12 @@ export default function lineSelection(container: HTMLElement) {
 	}
 
 	function resetLineSelection() {
+		// Focus on last highlighted line
+		const line = Object.values(document.querySelectorAll(".notes-line"))[currentLine]
+		const editable = line?.querySelector(".editable")
+		if (editable) setCaret(lastSiblingNode(line).node)
+
+		// Reset selection variables
 		currentLine = -1
 		firstLine = -1
 		lineInterval = [-1, -1]
@@ -47,7 +55,6 @@ export default function lineSelection(container: HTMLElement) {
 				line.classList.remove("select-all")
 			}
 		})
-		window.getSelection()?.removeAllRanges()
 	}
 
 	function initLineSelection(index: number) {
@@ -62,7 +69,6 @@ export default function lineSelection(container: HTMLElement) {
 	function keyboardEvent(e: KeyboardEvent) {
 		const allLines = Object.values(document.querySelectorAll(".notes-line"))
 		const selected = Object.values(document.querySelectorAll(".select-all"))
-		const editable = e.target as HTMLElement
 
 		if (selected.length > 0) {
 			// Escape deletes selection
@@ -88,16 +94,14 @@ export default function lineSelection(container: HTMLElement) {
 			return
 		}
 
-		const range = window?.getSelection()?.getRangeAt(0)
-		const notesline = editable?.parentElement
-
-		if (!range || !e.shiftKey || !notesline) return
+		if (!e.shiftKey) return
 
 		// Start line selection
 		detectLineJump(e, (notesline) => {
 			const index = allLines.indexOf(notesline)
 			initLineSelection(index)
 			applyLineSelection(lineInterval)
+			window.getSelection()?.removeAllRanges()
 		})
 	}
 
@@ -116,6 +120,7 @@ export default function lineSelection(container: HTMLElement) {
 			// Don't select when moving inside first line
 			if (currentLine === firstLine && selected.length === 0) return
 
+			window.getSelection()?.removeAllRanges()
 			addToLineSelection(currentLine)
 			applyLineSelection(lineInterval)
 		}

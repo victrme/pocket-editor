@@ -1,4 +1,4 @@
-export default function setCaret(node: Node, atStart: boolean) {
+export default function setCaret(node: Node, atStart?: boolean) {
 	let sel = window.getSelection()
 	let range = document.createRange()
 

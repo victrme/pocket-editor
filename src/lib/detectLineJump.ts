@@ -25,7 +25,8 @@ export default function detectLineJump(
 	e: KeyboardEvent,
 	callback: (notesline: Element, dir: string) => unknown
 ) {
-	if (!e.key.includes("Arrow")) return // Do nothing if not arrow
+	// Do nothing if not arrow or selection
+	if (!e.key.includes("Arrow") || !window.getSelection()?.anchorNode) return
 
 	const notesline = (e.target as HTMLElement)?.parentElement
 	const range = window?.getSelection()?.getRangeAt(0)
@@ -41,8 +42,14 @@ export default function detectLineJump(
 
 	// When user is selecting text (shiftKey might not be very compatible (we'll see))
 	if (e.shiftKey) {
-		if (nextSibling && isSelectionAtEnd && e.key === "ArrowDown") callback(notesline, "down")
-		if (prevSibling && isCaretAtZero && e.key === "ArrowUp") callback(notesline, "up")
+		if (nextSibling && isSelectionAtEnd && (e.key === "ArrowDown" || e.key === "ArrowRight")) {
+			callback(notesline, "down")
+		}
+
+		if (prevSibling && isCaretAtZero && (e.key === "ArrowUp" || e.key === "ArrowLeft")) {
+			callback(notesline, "up")
+		}
+
 		return
 	}
 
