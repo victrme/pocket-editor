@@ -1,4 +1,5 @@
 import deleteContentBackwardEvent from "./lib/deleteContentBackwardEvent"
+import clipboardControl from "./lib/clipboardControl"
 import removeModifier from "./lib/removeModifier"
 import lineSelection from "./lib/lineSelection"
 import caretControl from "./lib/caretControl"
@@ -46,7 +47,7 @@ export default function tinyNotes(initWrapper: string) {
 		const heading = document.createElement(tag)
 
 		// Remove markdown characters
-		let toSlice = tag === "h1" ? 2 : tag === "h2" ? 3 : 4
+		let toSlice = tag === "h1" ? 1 : tag === "h2" ? 2 : 3
 		heading.textContent = target.textContent?.slice(toSlice) || ""
 
 		heading.setAttribute("contenteditable", "true")
@@ -261,6 +262,7 @@ export default function tinyNotes(initWrapper: string) {
 
 	lineSelection(container) // Add line selection feature
 	caretControl(container) // Add keyboard line jump control
+	clipboardControl(container) // cpoy and paste control
 
 	container.addEventListener("beforeinput", lineKeyboardEvent)
 	container.addEventListener("beforeinput", deleteContentBackwardEvent)

@@ -70,6 +70,23 @@ export default function lineSelection(container: HTMLElement) {
 		const allLines = Object.values(document.querySelectorAll(".notes-line"))
 		const selected = Object.values(document.querySelectorAll(".select-all"))
 
+		if (e.key === "Control") return
+
+		if (e.ctrlKey && (e.key === "c" || e.key === "x" || e.key === "v") && selected.length > 0) {
+			let sel = window.getSelection()
+			let range = document.createRange()
+			const lastNodeOfLastSelect = lastSiblingNode(selected[selected.length - 1]).node
+			let textlen = lastNodeOfLastSelect.nodeValue?.length || 0
+
+			range.setStart(selected[0], 0)
+			range.setEnd(lastNodeOfLastSelect, textlen)
+
+			sel?.removeAllRanges()
+			sel?.addRange(range)
+
+			return
+		}
+
 		if (selected.length > 0) {
 			// Escape deletes selection
 			if (e.key === "Escape" || e.key === "Tab") {
@@ -132,6 +149,8 @@ export default function lineSelection(container: HTMLElement) {
 
 	function mouseDownEvent(e: MouseEvent) {
 		const target = e.target as Element
+
+		if (e.button !== 0) return
 
 		// reset first
 		resetLineSelection()
