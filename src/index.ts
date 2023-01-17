@@ -1,101 +1,14 @@
 import deleteContentBackwardEvent from "./lib/deleteContentBackwardEvent"
+import { generateLine, transformLine } from "./lib/generateLine"
 import clipboardControl from "./lib/clipboardControl"
 import removeModifier from "./lib/removeModifier"
 import lineSelection from "./lib/lineSelection"
 import caretControl from "./lib/caretControl"
+import { toHTML } from "./lib/contentConversion"
 
 export default function tinyNotes(initWrapper: string) {
 	const container = document.createElement("div")
-
-	function generateLine({ text, modif }: { target?: HTMLElement; text?: string; modif?: string }) {
-		const notesline = document.createElement("div")
-		const editable = document.createElement("div")
-
-		editable.classList.add("editable")
-		notesline.classList.add("notes-line")
-		editable.setAttribute("contenteditable", "true")
-		notesline.appendChild(editable)
-
-		// Add text if any
-		if (typeof text === "string") editable.innerText = text
-
-		// Transform line
-		switch (modif) {
-			case "todo":
-				transformToTodolist(editable)
-				break
-
-			case "todo-checked":
-				transformToTodolist(editable, true)
-				break
-
-			case "unordered":
-				transformToUnorderedList(editable)
-				break
-
-			case "h1":
-			case "h2":
-			case "h3":
-				transformToHeading(editable, modif)
-				break
-		}
-
-		return notesline
-	}
-
-	function transformToHeading(target: HTMLElement, tag: string) {
-		const heading = document.createElement(tag)
-
-		// Remove markdown characters
-		let toSlice = tag === "h1" ? 1 : tag === "h2" ? 2 : 3
-		heading.textContent = target.textContent?.slice(toSlice) || ""
-
-		heading.setAttribute("contenteditable", "true")
-		heading.classList.add("editable")
-
-		target.parentElement?.classList.add("modif-line")
-		target.replaceWith(heading)
-		heading.focus()
-	}
-
-	function transformToTodolist(target: HTMLElement, checked?: true) {
-		const input = document.createElement("input")
-		const parent = target.parentElement
-
-		if (!parent) return
-
-		input.type = "checkbox"
-		input.addEventListener("input", () => {
-			if (input.checked) input.setAttribute("checked", "")
-			else input.removeAttribute("checked")
-		})
-
-		if (checked) input.checked = true
-
-		parent?.classList.add("modif-line")
-		parent?.classList.add("todo-list")
-		parent.prepend(input)
-
-		target.innerText = target.innerText?.slice(4) || ""
-		target.focus()
-	}
-
-	function transformToUnorderedList(target: HTMLElement) {
-		const span = document.createElement("span")
-		const parent = target.parentElement
-
-		if (!parent) return
-
-		span.dataset.content = "•"
-		span.classList.add("list-dot")
-
-		parent?.classList.add("modif-line")
-		parent?.classList.add("unordered-list")
-		parent.prepend(span)
-
-		target.innerText = target.innerText?.slice(4) || ""
-		target.focus()
-	}
+	const transform = transformLine()
 
 	function classicParagraphInsert(target: HTMLElement, range: Range) {
 		const text = range.startContainer?.nodeValue || ""
@@ -117,7 +30,7 @@ export default function tinyNotes(initWrapper: string) {
 
 		// create new line if or if br (for now)
 		if (range.startContainer.nodeType !== 3) {
-			appendLine(generateLine({ target }))
+			appendLine(generateLine())
 			return
 		}
 
@@ -135,7 +48,7 @@ export default function tinyNotes(initWrapper: string) {
 		}
 
 		// append line
-		appendLine(generateLine({ target, text: nextLineText, modif }))
+		appendLine(generateLine({ text: nextLineText, modif }))
 	}
 
 	function lineKeyboardEvent(e: InputEvent) {
@@ -169,7 +82,7 @@ export default function tinyNotes(initWrapper: string) {
 		// Big Heading
 		if (targetText.startsWith("#")) {
 			if (e.inputType === "insertText" && textWithInput.startsWith("# ")) {
-				transformToHeading(target, "h1")
+				transform.toHeading(target, "h1")
 				e.preventDefault()
 			}
 		}
@@ -177,7 +90,7 @@ export default function tinyNotes(initWrapper: string) {
 		// Medium Heading
 		if (targetText.startsWith("##")) {
 			if (e.inputType === "insertText" && textWithInput.startsWith("## ")) {
-				transformToHeading(target, "h2")
+				transform.toHeading(target, "h2")
 				e.preventDefault()
 			}
 		}
@@ -185,7 +98,7 @@ export default function tinyNotes(initWrapper: string) {
 		// Small Heading
 		if (targetText.startsWith("###")) {
 			if (e.inputType === "insertText" && textWithInput.startsWith("### ")) {
-				transformToHeading(target, "h3")
+				transform.toHeading(target, "h3")
 				e.preventDefault()
 			}
 		}
@@ -193,7 +106,7 @@ export default function tinyNotes(initWrapper: string) {
 		// Unordered List
 		if (targetText.startsWith("-")) {
 			if (e.inputType === "insertText" && textWithInput.startsWith("- ")) {
-				transformToUnorderedList(target)
+				transform.toUnorderedList(target)
 				e.preventDefault()
 			}
 		}
@@ -201,61 +114,23 @@ export default function tinyNotes(initWrapper: string) {
 		// Checkbox List
 		if (targetText.startsWith("[ ]")) {
 			if (e.inputType === "insertText" && textWithInput.startsWith("[ ] ")) {
-				transformToTodolist(target)
+				transform.toTodolist(target)
 				e.preventDefault()
 			}
 		}
 
 		if (targetText.startsWith("[x]")) {
 			if (e.inputType === "insertText" && textWithInput.startsWith("[x] ")) {
-				transformToTodolist(target)
+				transform.toTodolist(target)
 				e.preventDefault()
 			}
 		}
 	}
 
-	function set(markdown: string) {
-		function checkModifs(text: string) {
-			const modList = {
-				h1: "# ",
-				h2: "## ",
-				h3: "### ",
-				todo: "[ ] ",
-				unordered: "- ",
-				"todo-checked": "[x] ",
-			}
-
-			let modif = ""
-
-			Object.entries(modList).forEach(([name, str]) => {
-				if (text.startsWith(str)) modif = name
-			})
-
-			return modif
-		}
-
-		// Delete all content before
+	function set(string: string) {
+		// Delete all content before & append generated HTML
 		Object.values(container.children).forEach((node) => node.remove())
-
-		// create fragment to append only once to real DOM
-		const fragment = document.createDocumentFragment()
-
-		markdown.split("\n\n").forEach((line) => {
-			// Finds modifs that use line breaks (list & todos)
-			// And create a line for them
-			if (line.split("\n").length > 1) {
-				line.split("\n").forEach((subline) => {
-					fragment.appendChild(generateLine({ text: subline, modif: checkModifs(subline) }))
-				})
-				return
-			}
-
-			// Normal line
-			fragment.appendChild(generateLine({ text: line, modif: checkModifs(line) }))
-		})
-
-		// append to real
-		container.appendChild(fragment)
+		container.appendChild(toHTML(string))
 	}
 
 	container.id = "tiny-notes"
