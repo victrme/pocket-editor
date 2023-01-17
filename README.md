@@ -1,8 +1,26 @@
 # Tiny notes !
 
+### Why
+
 This vanilla javascript editor focuses mainly on two things: 
 - Very fast load time
-- Reliable markdown outputs  
+- Reliable markdown outputs 
+
+### How to use
+
+```html
+<body>
+  <div id="wrapper">
+  </div>
+</body>
+```
+
+```js
+import tinyNotes from "@victr/tinynotes"
+
+const editor = tinyNotes("wrapper")
+editor.set("Hello World")
+```
 
 ###  Todo list
 
