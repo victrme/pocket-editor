@@ -1,5 +1,5 @@
-import lastNode from "./lastSiblingNode"
-import removeModifier from "./removeModifier"
+import lastNode from "../utils/lastSiblingNode"
+import removeModifier from "../utils/removeModifier"
 
 export default function deleteContentBackwardEvent(e: InputEvent) {
 	function removeLineNoText(editable: Element, prevLine: Element) {

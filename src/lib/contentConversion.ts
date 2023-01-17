@@ -23,6 +23,7 @@ export function toHTML(markdown: string) {
 	// create fragment to append only once to real DOM
 	const fragment = document.createDocumentFragment()
 
+	// remove tabs for now
 	markdown = markdown.replaceAll("\t", "")
 
 	markdown.split("\n\n").forEach((line) => {

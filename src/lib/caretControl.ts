@@ -1,6 +1,7 @@
 import detectLineJump from "./detectLineJump"
-import lastSiblingNode from "./lastSiblingNode"
-import setCaret from "./setCaret"
+
+import lastSiblingNode from "../utils/lastSiblingNode"
+import setCaret from "../utils/setCaret"
 
 export default function caretControl(container: HTMLElement) {
 	function keydownEvent(e: KeyboardEvent) {

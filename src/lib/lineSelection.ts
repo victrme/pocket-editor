@@ -1,6 +1,6 @@
 import detectLineJump from "./detectLineJump"
-import setCaret from "./setCaret"
-import lastSiblingNode from "./lastSiblingNode"
+import setCaret from "../utils/setCaret"
+import lastSiblingNode from "../utils/lastSiblingNode"
 
 export default function lineSelection(container: HTMLElement) {
 	let currentLine = -1

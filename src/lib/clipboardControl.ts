@@ -1,7 +1,7 @@
 import { toHTML, toMarkdown, checkModifs } from "./contentConversion"
 import { generateLine } from "./generateLine"
-import lastSiblingNode from "./lastSiblingNode"
-import setCaret from "./setCaret"
+import lastSiblingNode from "../utils/lastSiblingNode"
+import setCaret from "../utils/setCaret"
 
 export default function clipboardControl(container: HTMLElement) {
 	function copyEvent(e: ClipboardEvent) {

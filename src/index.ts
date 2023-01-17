@@ -1,10 +1,11 @@
 import deleteContentBackwardEvent from "./lib/deleteContentBackwardEvent"
 import { generateLine, transformLine } from "./lib/generateLine"
 import clipboardControl from "./lib/clipboardControl"
-import removeModifier from "./lib/removeModifier"
 import lineSelection from "./lib/lineSelection"
 import caretControl from "./lib/caretControl"
 import { toHTML } from "./lib/contentConversion"
+
+import removeModifier from "./utils/removeModifier"
 
 export default function tinyNotes(initWrapper: string) {
 	const container = document.createElement("div")
