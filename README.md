@@ -2,16 +2,16 @@
 
 ### Why
 
-This vanilla javascript editor focuses mainly on two things: 
-- Very fast load time
-- Reliable markdown outputs 
+This vanilla javascript editor focuses mainly on two things:
+
+-   Very fast load time
+-   Reliable markdown outputs
 
 ### How to use
 
 ```html
 <body>
-  <div id="wrapper">
-  </div>
+	<div id="wrapper"></div>
 </body>
 ```
 
@@ -22,13 +22,13 @@ const editor = tinyNotes("wrapper")
 editor.set("Hello World")
 ```
 
-###  Todo list
+### Todo list
 
--   [ ] Prevent adding multiple modif on same line
--   [ ] Force plain text before pasting data
--   [ ] Paste insert & delete content line transform
--   [ ] Get markdown string from editors content
 -   [ ] Add css style to build output
+-   [x] Get markdown string from editors content
+-   [x] Force plain text before pasting data
+-   [x] Paste insert & delete content line transform
+-   [x] Prevent adding multiple modif on same line
 -   [x] Left / right arrow key line movement
 -   [x] Added mouse selection behavior (no use for now)
 -   [x] Insert Paragraph on empty transform removes it

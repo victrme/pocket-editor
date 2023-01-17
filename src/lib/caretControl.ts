@@ -1,5 +1,4 @@
 import detectLineJump from "./detectLineJump"
-
 import lastSiblingNode from "../utils/lastSiblingNode"
 import setCaret from "../utils/setCaret"
 

@@ -88,6 +88,8 @@ export default function lineSelection(container: HTMLElement) {
 		}
 
 		if (selected.length > 0) {
+			e.preventDefault()
+
 			// Escape deletes selection
 			if (e.key === "Escape" || e.key === "Tab") {
 				resetLineSelection()
@@ -95,7 +97,14 @@ export default function lineSelection(container: HTMLElement) {
 				return
 			}
 
-			e.preventDefault()
+			// Backspace deletes lines
+			if (e.key === "Backspace") {
+				const nextline = selected[selected.length - 1]?.nextElementSibling
+				if (nextline) setCaret(lastSiblingNode(nextline).node)
+
+				selected.forEach((line) => line.remove())
+				return
+			}
 
 			// Move selected line
 			if (e.key === "ArrowDown") currentLine = Math.min(currentLine + 1, allLines.length - 1)

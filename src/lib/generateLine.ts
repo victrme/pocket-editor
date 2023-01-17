@@ -37,8 +37,8 @@ export function transformLine() {
 		const heading = document.createElement(tag)
 
 		// Remove markdown characters
-		let toSlice = tag === "h1" ? 1 : tag === "h2" ? 2 : 3
-		heading.textContent = target.textContent?.slice(toSlice) || ""
+		let mod = tag === "h1" ? "#" : tag === "h2" ? "##" : "###"
+		heading.textContent = target.textContent?.replace(mod, "").trimStart() || ""
 
 		heading.setAttribute("contenteditable", "true")
 		heading.classList.add("editable")
@@ -70,7 +70,7 @@ export function transformLine() {
 		parent?.classList.add("todo-list")
 		parent.prepend(input)
 
-		target.innerText = target.innerText?.slice(3) || ""
+		target.innerText = target.innerText?.replace("[ ]", "").replace("[x]", "").trimStart()
 		target.focus()
 	}
 
@@ -87,7 +87,7 @@ export function transformLine() {
 		parent?.classList.add("unordered-list")
 		parent.prepend(span)
 
-		target.innerText = target.innerText?.slice(2) || ""
+		target.innerText = target.innerText?.replace("-", "").trimStart()
 		target.focus()
 	}
 

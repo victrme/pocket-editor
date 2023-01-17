@@ -1,9 +1,9 @@
 import deleteContentBackwardEvent from "./lib/deleteContentBackwardEvent"
 import { generateLine, transformLine } from "./lib/generateLine"
+import { toHTML, toMarkdown } from "./lib/contentConversion"
 import clipboardControl from "./lib/clipboardControl"
 import lineSelection from "./lib/lineSelection"
 import caretControl from "./lib/caretControl"
-import { toHTML } from "./lib/contentConversion"
 
 import removeModifier from "./utils/removeModifier"
 
@@ -104,6 +104,11 @@ export default function tinyNotes(initWrapper: string) {
 			}
 		}
 
+		// Prevent modif on already modified line
+		if (target?.parentElement?.classList.contains("modif-line")) {
+			return
+		}
+
 		// Unordered List
 		if (targetText.startsWith("-")) {
 			if (e.inputType === "insertText" && textWithInput.startsWith("- ")) {
@@ -134,6 +139,14 @@ export default function tinyNotes(initWrapper: string) {
 		container.appendChild(toHTML(string))
 	}
 
+	function get() {
+		const lines = Object.values(container.querySelectorAll(".notes-line"))
+		if (lines) return toMarkdown(lines)
+
+		console.log("Failed to get lines")
+		return ""
+	}
+
 	container.id = "tiny-notes"
 
 	lineSelection(container) // Add line selection feature
@@ -146,5 +159,5 @@ export default function tinyNotes(initWrapper: string) {
 	container.appendChild(generateLine({ text: "" }))
 	document.getElementById(initWrapper)?.appendChild(container)
 
-	return { set }
+	return { set, get }
 }

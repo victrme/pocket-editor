@@ -1,7 +1,7 @@
 import { toHTML, toMarkdown, checkModifs } from "./contentConversion"
-import { generateLine } from "./generateLine"
 import lastSiblingNode from "../utils/lastSiblingNode"
 import setCaret from "../utils/setCaret"
+import removeLines from "../utils/removeLines"
 
 export default function clipboardControl(container: HTMLElement) {
 	function copyEvent(e: ClipboardEvent) {
@@ -17,28 +17,14 @@ export default function clipboardControl(container: HTMLElement) {
 
 	function cutEvent(e: ClipboardEvent) {
 		const selected = Object.values(document.querySelectorAll(".select-all"))
-		const nextLine = selected[selected.length - 1].nextElementSibling
-		const emptyLine = generateLine()
 
 		// sets data
 		const textToCopy = toMarkdown(selected)
 		e.clipboardData?.setData("text/plain", textToCopy)
 		e.preventDefault()
 
-		console.log(e.clipboardData?.getData("text/plain"))
-
-		// remove selected lines
-		selected.forEach((line, i) => {
-			if (i === selected.length - 1) line.childNodes
-			line.remove()
-		})
-
-		// focus on next generated line
-		if (nextLine) nextLine.prepend(emptyLine)
-		else container.appendChild(emptyLine)
-
-		const { node } = lastSiblingNode(emptyLine)
-		setCaret(node)
+		// remove lines
+		removeLines(selected, container)
 
 		// log
 		console.log("cut")
@@ -53,9 +39,15 @@ export default function clipboardControl(container: HTMLElement) {
 		const range = selection?.getRangeAt(0)
 		const text = e.clipboardData?.getData("text") || ""
 
+		// Text starts with a spcial char, create new lines
 		if (checkModifs(text) !== "") {
 			const notesline = (e.target as Element)?.parentElement
-			notesline?.after(toHTML(text))
+
+			if (notesline) {
+				notesline?.after(toHTML(text))
+				setCaret(lastSiblingNode(notesline).node)
+			}
+
 			return
 		}
 
