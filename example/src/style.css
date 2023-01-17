@@ -13,7 +13,7 @@
 }
 
 body {
-	margin: 0 1em;
+	margin: 0 1em 10vh 1em;
 	min-height: 60vh;
 	display: flex;
 	place-content: center center;
@@ -34,12 +34,39 @@ body {
 }
 
 #wrapper {
-	margin: 10vh auto;
+	margin: auto;
+	margin-top: 10vh;
+	margin-bottom: 2em;
 	max-width: 700px;
 }
 
 #tiny-notes {
 	background-color: #3f4e4f;
+}
+
+#b_logcontent {
+	padding: 1em 3em;
+	margin: auto;
+	border: none;
+	cursor: pointer;
+	color: #dcd7c9;
+	font-weight: bold;
+	font-family: inherit;
+	background-color: rgb(18, 87, 177);
+	transition: background-color 0.1s;
+}
+
+#b_logcontent:focus-visible,
+#b_logcontent:hover {
+	background-color: rgba(18, 87, 177, 0.8);
+}
+
+#b_logcontent:focus-visible {
+	outline: 3px solid rgb(43, 135, 255);
+}
+
+#b_logcontent:active {
+	background-color: rgba(18, 87, 177, 0.4);
 }
 
 @media only screen and (max-width: 480px) {
