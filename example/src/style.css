@@ -44,6 +44,12 @@ body {
 	background-color: #3f4e4f;
 }
 
+::selection,
+#tiny-notes .notes-line.select-all {
+	color: inherit;
+	background-color: rgb(88, 104, 104);
+}
+
 #b_logcontent {
 	padding: 1em 3em;
 	margin: auto;

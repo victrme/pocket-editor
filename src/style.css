@@ -28,12 +28,6 @@
 	transition: background-color 0.1s linear;
 }
 
-::selection,
-.notes-line.select-all {
-	color: inherit;
-	background-color: rgba(96, 112, 113, 0.77);
-}
-
 /*
 	Stylings
 */
