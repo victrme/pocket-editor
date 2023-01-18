@@ -19,15 +19,10 @@ export default function clipboardControl(container: HTMLElement) {
 		const selected = Object.values(document.querySelectorAll(".select-all"))
 
 		// sets data
-		const textToCopy = toMarkdown(selected)
-		e.clipboardData?.setData("text/plain", textToCopy)
+		e.clipboardData?.setData("text/plain", toMarkdown(selected))
 		e.preventDefault()
 
-		// remove lines
 		removeLines(selected, container)
-
-		// log
-		console.log("cut")
 	}
 
 	function pasteEvent(e: ClipboardEvent) {
@@ -41,12 +36,21 @@ export default function clipboardControl(container: HTMLElement) {
 
 		// Text starts with a spcial char, create new lines
 		if (checkModifs(text) !== "") {
-			const notesline = (e.target as Element)?.parentElement
+			let notesline = (e.target as Element)?.parentElement
+			const newHTML = toHTML(text)
 
-			if (notesline) {
-				notesline?.after(toHTML(text))
-				setCaret(lastSiblingNode(notesline).node)
+			// When pasting after selection, line is last selected block
+			const selected = Object.values(document.querySelectorAll(".select-all"))
+			if (selected.length > 0) notesline = selected.at(-1) as HTMLElement
+
+			if (!notesline?.classList.contains("notes-line")) {
+				return
 			}
+
+			container.insertBefore(newHTML, notesline.nextSibling)
+
+			// not working
+			// setCaret(lastSiblingNode(newHTML).node)
 
 			return
 		}

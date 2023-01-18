@@ -26,6 +26,11 @@ export function toHTML(markdown: string) {
 	// remove tabs for now
 	markdown = markdown.replaceAll("\t", "")
 
+	// Remove trailing line break
+	if (markdown.endsWith("\n")) {
+		markdown = markdown.slice(0, markdown.length - 1)
+	}
+
 	markdown.split("\n\n").forEach((line) => {
 		// Finds modifs that use line breaks (list & todos)
 		// And create a line for them
