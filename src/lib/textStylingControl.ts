@@ -1,107 +1,125 @@
-import getRangeOffsetFromParent from "./getRangeOffsetFromParent"
+// export default function getRangeOffsetFromParent(range: Range) {
+// 	function prevNodeLength() {
+// 		let node = range.startContainer
+// 		let res = 0
 
-export default function textStylingControl(range: Range, e: KeyboardEvent) {
-	const trueRange = getRangeOffsetFromParent(range)
-	const selectionLen = trueRange.end - trueRange.start
-	if (selectionLen === 0) return
+// 		while (node.previousSibling) {
+// 			let text = node.previousSibling.textContent || node.previousSibling.nodeValue || ""
+// 			res += text.length
+// 			node = node.previousSibling
+// 		}
 
-	function splitTextNodeAsSpan(style: string) {
-		const target = e.target as HTMLDivElement
-		const splitarr: [string, string][] = []
+// 		return res
+// 	}
 
-		console.log(style)
+// 	let start = range.startOffset + prevNodeLength()
+// 	let end = range.endOffset + prevNodeLength()
 
-		Object.values(target?.childNodes).forEach((node) => {
-			const val = node.textContent || node.nodeValue || ""
-			let mods = ""
+// 	return { start, end }
+// }
 
-			// detect and add stylings to node object
-			if (node.nodeName === "SPAN") {
-				if ((node as Element).className === "text-italics") mods += "i"
-				if ((node as Element).className === "text-bold") mods += "b"
-				if ((node as Element).className === "text-strike") mods += "s"
-				if ((node as Element).className === "text-code") mods += "c"
-			}
+// export default function textStylingControl(range: Range, e: KeyboardEvent) {
+// 	const trueRange = getRangeOffsetFromParent(range)
+// 	const selectionLen = trueRange.end - trueRange.start
+// 	if (selectionLen === 0) return
 
-			const chars = val.split("")
-			const res: [string, string][] = chars.map((char) => [char, mods])
-			splitarr.push(...res)
-		})
+// 	function splitTextNodeAsSpan(style: string) {
+// 		const target = e.target as HTMLDivElement
+// 		const splitarr: [string, string][] = []
 
-		let newsplitarr = [...splitarr]
+// 		console.log(style)
 
-		// Updates characters modifications
-		splitarr.forEach((split, i) => {
-			if (i >= trueRange.start && i < trueRange.end) {
-				if (split[1].includes("i")) return
-				newsplitarr[i][1] += "i"
-			}
-		})
+// 		Object.values(target?.childNodes).forEach((node) => {
+// 			const val = node.textContent || node.nodeValue || ""
+// 			let mods = ""
 
-		target.innerHTML = ""
+// 			// detect and add stylings to node object
+// 			if (node.nodeName === "SPAN") {
+// 				if ((node as Element).className === "text-italics") mods += "i"
+// 				if ((node as Element).className === "text-bold") mods += "b"
+// 				if ((node as Element).className === "text-strike") mods += "s"
+// 				if ((node as Element).className === "text-code") mods += "c"
+// 			}
 
-		let joinstr: string
-		let lastmod: string
+// 			const chars = val.split("")
+// 			const res: [string, string][] = chars.map((char) => [char, mods])
+// 			splitarr.push(...res)
+// 		})
 
-		function createNode(str: string) {
-			let newnode: Element | Node
+// 		let newsplitarr = [...splitarr]
 
-			if (lastmod === "i") {
-				newnode = document.createElement("span")
-				;(newnode as Element).classList.add("text-italics")
-				;(newnode as Element).textContent = str
-			} else {
-				newnode = document.createTextNode(str)
-			}
+// 		// Updates characters modifications
+// 		splitarr.forEach((split, i) => {
+// 			if (i >= trueRange.start && i < trueRange.end) {
+// 				if (split[1].includes("i")) return
+// 				newsplitarr[i][1] += "i"
+// 			}
+// 		})
 
-			return newnode
-		}
+// 		target.innerHTML = ""
 
-		newsplitarr.forEach(([char, mod], i) => {
-			// First char, init all
-			if (i === 0) {
-				lastmod = mod
-				joinstr = char
-				return
-			}
+// 		let joinstr: string
+// 		let lastmod: string
 
-			// last char, force node creation
-			if (i + 1 === newsplitarr.length) {
-				target.appendChild(createNode(joinstr + char))
-				return
-			}
+// 		function createNode(str: string) {
+// 			let newnode: Element | Node
 
-			// same modification, just add to string
-			if (mod === lastmod) {
-				joinstr += char
-				return
-			}
+// 			if (lastmod === "i") {
+// 				newnode = document.createElement("span")
+// 				;(newnode as Element).classList.add("text-italics")
+// 				;(newnode as Element).textContent = str
+// 			} else {
+// 				newnode = document.createTextNode(str)
+// 			}
 
-			// Not same, reset string and change mod
-			target.appendChild(createNode(joinstr))
-			joinstr = char
-			lastmod = mod
-		})
-	}
+// 			return newnode
+// 		}
 
-	if (e.key === "i" && e.ctrlKey) {
-		e.preventDefault()
-		console.log(range)
-		splitTextNodeAsSpan("italics")
-	}
+// 		newsplitarr.forEach(([char, mod], i) => {
+// 			// First char, init all
+// 			if (i === 0) {
+// 				lastmod = mod
+// 				joinstr = char
+// 				return
+// 			}
 
-	if (e.key === "b" && e.ctrlKey) {
-		e.preventDefault()
-		console.log("style selection to bold")
-	}
+// 			// last char, force node creation
+// 			if (i + 1 === newsplitarr.length) {
+// 				target.appendChild(createNode(joinstr + char))
+// 				return
+// 			}
 
-	if (e.key === "s" && e.ctrlKey) {
-		e.preventDefault()
-		console.log("style selection to strike")
-	}
+// 			// same modification, just add to string
+// 			if (mod === lastmod) {
+// 				joinstr += char
+// 				return
+// 			}
 
-	if (e.key === "e" && e.ctrlKey) {
-		e.preventDefault()
-		console.log("style selection to code")
-	}
-}
+// 			// Not same, reset string and change mod
+// 			target.appendChild(createNode(joinstr))
+// 			joinstr = char
+// 			lastmod = mod
+// 		})
+// 	}
+
+// 	if (e.key === "i" && e.ctrlKey) {
+// 		e.preventDefault()
+// 		console.log(range)
+// 		splitTextNodeAsSpan("italics")
+// 	}
+
+// 	if (e.key === "b" && e.ctrlKey) {
+// 		e.preventDefault()
+// 		console.log("style selection to bold")
+// 	}
+
+// 	if (e.key === "s" && e.ctrlKey) {
+// 		e.preventDefault()
+// 		console.log("style selection to strike")
+// 	}
+
+// 	if (e.key === "e" && e.ctrlKey) {
+// 		e.preventDefault()
+// 		console.log("style selection to code")
+// 	}
+// }

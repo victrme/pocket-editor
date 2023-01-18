@@ -1,8 +1,8 @@
-import deleteContentBackwardEvent from "./lib/deleteContentBackwardEvent"
 import { generateLine, transformLine } from "./lib/generateLine"
 import { toHTML, toMarkdown } from "./lib/contentConversion"
 import clipboardControl from "./lib/clipboardControl"
 import lineSelection from "./lib/lineSelection"
+import lineDeletion from "./lib/lineDeletion"
 import caretControl from "./lib/caretControl"
 
 import removeModifier from "./utils/removeModifier"
@@ -66,19 +66,6 @@ export default function tinyNotes(initWrapper: string) {
 		const { startOffset } = range
 		const targetText = target.textContent || ""
 		const textWithInput = targetText.slice(0, startOffset) + e.data + targetText.slice(startOffset)
-
-		// Plaintext pasting
-		if (e.inputType === "insertFromPaste") {
-			const plaintext = e.dataTransfer?.getData("text/plain")
-			const withPaste = targetText.slice(0, startOffset) + plaintext + targetText.slice(startOffset)
-
-			// todo:
-			// Don't use lastSiblingNode, because you could paste from anywhere !!
-			// Must implement line generation from markdown before
-			// 1) Output markdown from html line
-			// 2) Add paste content at position in markdown
-			// 3) Generate html from new markdown string
-		}
 
 		// Big Heading
 		if (targetText.startsWith("#")) {
@@ -154,7 +141,7 @@ export default function tinyNotes(initWrapper: string) {
 	clipboardControl(container) // cpoy and paste control
 
 	container.addEventListener("beforeinput", lineKeyboardEvent)
-	container.addEventListener("beforeinput", deleteContentBackwardEvent)
+	container.addEventListener("beforeinput", lineDeletion)
 
 	container.appendChild(generateLine({ text: "" }))
 	document.getElementById(initWrapper)?.appendChild(container)

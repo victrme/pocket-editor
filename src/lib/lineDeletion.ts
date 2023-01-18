@@ -1,7 +1,7 @@
 import lastNode from "../utils/lastSiblingNode"
 import removeModifier from "../utils/removeModifier"
 
-export default function deleteContentBackwardEvent(e: InputEvent) {
+export default function lineDeletion(e: InputEvent) {
 	function removeLineNoText(editable: Element, prevLine: Element) {
 		// put caret to end of previous line
 		const selection = window.getSelection()
