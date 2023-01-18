@@ -1,6 +1,4 @@
 import { toHTML, toMarkdown, checkModifs } from "./contentConversion"
-import lastSiblingNode from "../utils/lastSiblingNode"
-import setCaret from "../utils/setCaret"
 import removeLines from "../utils/removeLines"
 
 export default function clipboardControl(container: HTMLElement) {

@@ -26,11 +26,6 @@ export function toHTML(markdown: string) {
 	// remove tabs for now
 	markdown = markdown.replaceAll("\t", "")
 
-	// Remove trailing line break
-	if (markdown.endsWith("\n")) {
-		markdown = markdown.slice(0, markdown.length - 1)
-	}
-
 	markdown.split("\n\n").forEach((line) => {
 		// Finds modifs that use line breaks (list & todos)
 		// And create a line for them
@@ -63,14 +58,20 @@ export function toMarkdown(lines: Element[]) {
 
 	let plaintext = ""
 	let modif = ""
-	let linebreak = "\n\n"
 
-	lines.forEach((line) => {
+	const isList = (line?: Element) => {
+		return line?.classList.contains("unordered-list") || line?.classList.contains("todo-list")
+	}
+
+	lines.forEach((line, i) => {
+		// Add markdown
 		modif = addModif(line)
-		linebreak =
-			line.classList.contains("unordered-list") || line.classList.contains("todo-list") ? "\n" : "\n\n"
+		plaintext += modif + line.textContent
 
-		plaintext += modif + line.textContent + linebreak
+		// Add line break
+		const isWithinList = isList(lines[i + 1]) && isList(line)
+		const isLastLine = lines.length - 1 === i
+		plaintext += isLastLine ? "" : isWithinList ? "\n" : "\n\n"
 	})
 
 	return plaintext

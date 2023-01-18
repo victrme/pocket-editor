@@ -77,9 +77,8 @@ export default function lineSelection(container: HTMLElement) {
 	//
 
 	function createRange(selected?: Element[]) {
-		if (!selected) {
-			selected = Object.values(document.querySelectorAll(".select-all"))
-		}
+		if (!selected) selected = Object.values(document.querySelectorAll(".select-all"))
+		if (selected.length === 0) return
 
 		let sel = window.getSelection()
 		let range = document.createRange()

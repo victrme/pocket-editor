@@ -25,8 +25,8 @@ editor.set("Hello World")
 ### Todo list
 
 -   [ ] Add css style to build output
--   [ ] Fix last lines and todo element having only one \n on copy
 -   [ ] Fix caret position after paste
+-   [x] Fix last lines and todo element having only one \n on copy
 -   [x] Fix copy + paste from pasting outside of editor
 -   [x] Get markdown string from editors content
 -   [x] Force plain text before pasting data
