@@ -29,13 +29,33 @@ body {
 
 #title h1 {
 	font-size: 5em;
-	margin-top: 1em;
-	margin-bottom: 0;
+	margin: 1em 0 0.4em 0;
+}
+
+#links {
+	display: flex;
+	width: 100%;
+	column-gap: 1em;
+	justify-content: center;
+	align-items: center;
+}
+
+#links a {
+	display: inline-block;
+	font-family: inherit;
+	font-size: 1.2em;
+	color: #dcd7c9;
+	text-decoration: none;
+	transition: opacity 0.1s;
+}
+
+#links a:hover {
+	opacity: 0.6;
 }
 
 #wrapper {
 	margin: auto;
-	margin-top: 10vh;
+	margin-top: 5em;
 	margin-bottom: 2em;
 	max-width: 700px;
 }

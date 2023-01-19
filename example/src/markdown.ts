@@ -1,25 +1,18 @@
-export const markdown = `## Move Elements
+export const markdown = `## This is pocket editor !
 
--   Pour activer le mode Move, shift + m ou cliquer sur Open grid mover dans les paramètres
+You can transform by starting a line with these characters:
+-   "# " creates a big heading
+-   "## " medium heading
+-   "### " small heading
+-   "- " simple list
+-   "[ ] " todo list 
 
-### Layouts
+### Todays list
 
-Les layouts agissent comme des profiles, ils gardent en mémoire:
+[x] Check sitting posture
+[ ] Stay hydrated 
+[ ] Add checkbox "checked" attribute on editor set
 
--   les alignements
--   les movements sur la grille
--   les élements activé / désactivé
 
-### Fill column & fill row
-
-Elle rend Move Elements vraiment plus complexe à gérer, mais je trouve que c'est worth it.
-
-[ ] Ya pas de mémoire alors quand on désactive le fill, ça positionne l'élement a sa première position sur la grille. Comportement un peu bizarre quand on active / désactive le même élement et qu'il se déplace tout seul...
-[ ] Le fill est soit row soit col, parce que gérer des carrés dans une grille c'est dur.
-[x] Quand on active un element qui prend la place d'un autre qui est fill, ça supprime son fill.
-
-### Reset layout
-
-Reset réinitialise qu'un seul layout à la fois, pour pouvoir garder les autres. Le reset prend en compte les elements actifs et les place comme indiqué au-dessus.`
-
+Lorem ipsum dolor sit amet, consectetur adipiscing elit.`
 export default markdown
