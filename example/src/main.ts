@@ -1,6 +1,6 @@
-import pocketEditor from "../../dist/index"
+import pocketEditor from "pocket-editor"
 import markdown from "./markdown"
-import "../../src/style.css"
+import "pocket-editor/dist/style.css"
 import "./style.css"
 
 window.addEventListener("load", function () {
