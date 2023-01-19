@@ -12,6 +12,6 @@
 		"vite": "^4.0.0"
 	},
 	"dependencies": {
-		"pocket-editor": "^1.0.0"
+		"pocket-editor": "^1.0.1"
 	}
 }
