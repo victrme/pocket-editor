@@ -1,11 +1,11 @@
-# Tiny notes !
+# Pocket Editor !
 
 ### Why
 
-This vanilla javascript editor focuses mainly on two things:
+This vanilla javascript wysiwyg editor focuses mainly on two things:
 
 -   Very fast load time
--   Reliable markdown outputs
+-   Reliable markdown output
 
 ### How to use
 
@@ -16,9 +16,9 @@ This vanilla javascript editor focuses mainly on two things:
 ```
 
 ```js
-import tinyNotes from "@victr/tinynotes"
+import pocketEditor from "@victr/pocket-editor"
 
-const editor = tinyNotes("wrapper")
+const editor = pocketEditor("wrapper")
 editor.set("Hello World")
 ```
 

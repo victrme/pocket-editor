@@ -1,4 +1,4 @@
-#tiny-notes {
+#pocket-editor {
 	display: flex;
 	flex-direction: column;
 	row-gap: 4px;
@@ -9,61 +9,45 @@
 }
 
 @media only screen and (max-width: 480px) {
-	#tiny-notes {
+	#pocket-editor {
 		min-width: auto;
 		padding: 1em;
 	}
 }
 
-#tiny-notes > * {
+#pocket-editor > * {
 	padding: 0 12px;
 }
 
-#tiny-notes * {
+#pocket-editor * {
 	outline: none;
 }
 
-.notes-line {
+#pocket-editor .line {
 	border-radius: 4px;
 	transition: background-color 0.1s linear;
-}
-
-/*
-	Stylings
-*/
-
-.text-italics {
-	font-style: italic;
-}
-
-.text-bold {
-	font-weight: bold;
-}
-
-.text-strike {
-	text-decoration: line-through;
 }
 
 /*
 	Transforms
 */
 
-div.notes-line h1 {
+#pocket-editor div.line h1 {
 	line-height: 1.2em;
 }
 
-div.unordered-list,
-div.todo-list {
+#pocket-editor div.ul-list,
+#pocket-editor div.todo {
 	display: flex;
 	align-items: flex-start;
 }
 
-div.unordered-list .editable,
-div.todo-list .editable {
+#pocket-editor div.ul-list ["contenteditable"],
+#pocket-editor div.todo ["contenteditable"] {
 	width: 100%;
 }
 
-div.todo-list input {
+#pocket-editor div.todo input {
 	margin: 0;
 	margin-right: 0.5em;
 	height: 1.3em;
@@ -72,14 +56,14 @@ div.todo-list input {
 	cursor: pointer;
 }
 
-div.unordered-list .list-dot {
+#pocket-editor div.ul-list .list-dot {
 	font-size: 1.2em;
 	margin-right: 0.5em;
 	width: 1em;
 	text-align: center;
 }
 
-div.unordered-list .list-dot::before {
+#pocket-editor div.ul-list .list-dot::before {
 	content: attr(data-content);
 	width: 2em;
 }

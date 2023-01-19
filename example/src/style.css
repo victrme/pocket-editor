@@ -40,12 +40,12 @@ body {
 	max-width: 700px;
 }
 
-#tiny-notes {
+#pocket-editor {
 	background-color: #3f4e4f;
 }
 
 ::selection,
-#tiny-notes .notes-line.select-all {
+#pocket-editor .line.sel {
 	color: inherit;
 	background-color: rgb(88, 104, 104);
 }
