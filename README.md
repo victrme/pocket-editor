@@ -1,7 +1,5 @@
 # Pocket Editor !
 
-### Why
-
 This vanilla javascript wysiwyg editor focuses mainly on two things:
 
 -   Very fast load time
@@ -9,17 +7,27 @@ This vanilla javascript wysiwyg editor focuses mainly on two things:
 
 ### How to use
 
+##### Initialize the editor 
 ```html
 <body>
-	<div id="wrapper"></div>
+    <div id="wrapper"></div>
 </body>
 ```
-
 ```js
-import pocketEditor from "@victr/pocket-editor"
+import pocketEditor from "pocket-editor"
+import "pocket-editor/dist/style.css"
 
 const editor = pocketEditor("wrapper")
-editor.set("Hello World")
+```
+
+##### Add text
+```js
+editor.set("## Hello World")
+```
+
+##### Get content as markdown
+```js
+editor.get()
 ```
 
 ### Todo list
