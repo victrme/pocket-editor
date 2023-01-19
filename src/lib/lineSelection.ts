@@ -1,6 +1,6 @@
-import detectLineJump from "./detectLineJump"
-import setCaret from "../utils/setCaret"
 import lastSiblingNode from "../utils/lastSiblingNode"
+import detectLineJump from "../utils/detectLineJump"
+import setCaret from "../utils/setCaret"
 
 export default function lineSelection(container: HTMLElement) {
 	let caretSelTimeout = setTimeout(() => {})

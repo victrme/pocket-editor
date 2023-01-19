@@ -1,4 +1,4 @@
-import { generateLine } from "./generateLine"
+import generateLine from "./lineGenerate"
 
 export function checkModifs(text: string) {
 	const modList = {

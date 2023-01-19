@@ -1,4 +1,4 @@
-import { generateLine } from "../lib/generateLine"
+import generateLine from "../lib/lineGenerate"
 import lastSiblingNode from "./lastSiblingNode"
 import setCaret from "./setCaret"
 

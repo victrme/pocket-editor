@@ -1,15 +1,14 @@
-import { generateLine, transformLine } from "./lib/generateLine"
-import { toHTML, toMarkdown } from "./lib/contentConversion"
-import clipboardControl from "./lib/clipboardControl"
+import { cutEvent, copyEvent, pasteEvent } from "./lib/clipboardControl"
+import { toHTML, toMarkdown } from "./lib/contentControl"
+import lineTransform from "./lib/lineTransform"
 import lineSelection from "./lib/lineSelection"
 import lineDeletion from "./lib/lineDeletion"
+import generateLine from "./lib/lineGenerate"
 import caretControl from "./lib/caretControl"
-
 import removeModifier from "./utils/removeModifier"
 
 export default function tinyNotes(initWrapper: string) {
 	const container = document.createElement("div")
-	const transform = transformLine()
 
 	function classicParagraphInsert(target: HTMLElement, range: Range) {
 		const text = range.startContainer?.nodeValue || ""
@@ -70,7 +69,7 @@ export default function tinyNotes(initWrapper: string) {
 		// Big Heading
 		if (targetText.startsWith("#")) {
 			if (e.inputType === "insertText" && textWithInput.startsWith("# ")) {
-				transform.toHeading(target, "h1")
+				lineTransform.toHeading(target, "h1")
 				e.preventDefault()
 			}
 		}
@@ -78,7 +77,7 @@ export default function tinyNotes(initWrapper: string) {
 		// Medium Heading
 		if (targetText.startsWith("##")) {
 			if (e.inputType === "insertText" && textWithInput.startsWith("## ")) {
-				transform.toHeading(target, "h2")
+				lineTransform.toHeading(target, "h2")
 				e.preventDefault()
 			}
 		}
@@ -86,7 +85,7 @@ export default function tinyNotes(initWrapper: string) {
 		// Small Heading
 		if (targetText.startsWith("###")) {
 			if (e.inputType === "insertText" && textWithInput.startsWith("### ")) {
-				transform.toHeading(target, "h3")
+				lineTransform.toHeading(target, "h3")
 				e.preventDefault()
 			}
 		}
@@ -99,7 +98,7 @@ export default function tinyNotes(initWrapper: string) {
 		// Unordered List
 		if (targetText.startsWith("-")) {
 			if (e.inputType === "insertText" && textWithInput.startsWith("- ")) {
-				transform.toUnorderedList(target)
+				lineTransform.toUnorderedList(target)
 				e.preventDefault()
 			}
 		}
@@ -107,14 +106,14 @@ export default function tinyNotes(initWrapper: string) {
 		// Checkbox List
 		if (targetText.startsWith("[ ]")) {
 			if (e.inputType === "insertText" && textWithInput.startsWith("[ ] ")) {
-				transform.toTodolist(target)
+				lineTransform.toTodolist(target)
 				e.preventDefault()
 			}
 		}
 
 		if (targetText.startsWith("[x]")) {
 			if (e.inputType === "insertText" && textWithInput.startsWith("[x] ")) {
-				transform.toTodolist(target)
+				lineTransform.toTodolist(target)
 				e.preventDefault()
 			}
 		}
@@ -137,11 +136,14 @@ export default function tinyNotes(initWrapper: string) {
 	container.id = "tiny-notes"
 
 	lineSelection(container) // Add line selection feature
-	caretControl(container) // Add keyboard line jump control
-	clipboardControl(container) // cpoy and paste control
+
+	container.addEventListener("paste", (e) => pasteEvent(e, container))
+	container.addEventListener("cut", (e) => cutEvent(e, container))
+	container.addEventListener("copy", copyEvent)
 
 	container.addEventListener("beforeinput", lineKeyboardEvent)
 	container.addEventListener("beforeinput", lineDeletion)
+	container.addEventListener("keydown", caretControl)
 
 	container.appendChild(generateLine({ text: "" }))
 	document.getElementById(initWrapper)?.appendChild(container)
