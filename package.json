@@ -1,12 +1,12 @@
 {
-	"name": "@victr/tiny-notes",
-	"description": "Tiny text editor to save tiny notes",
+	"name": "pocket-editor",
+	"description": "Blazingly fast block style wysiwyg editor that returns markdown",
 	"version": "1.0.0",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"author": "Victor Azevedo",
-	"type": "module",
 	"license": "MIT",
+	"type": "module",
 	"scripts": {
 		"build": "tsc"
 	},

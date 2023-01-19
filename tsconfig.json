@@ -1,13 +1,14 @@
 {
 	"compilerOptions": {
-		"useDefineForClassFields": true,
-		"target": "ESNext",
+		"target": "es2018",
 		"module": "ESNext",
 		"lib": ["ESNext", "DOM"],
 		"outDir": "dist",
 		"strict": true,
 		"declaration": true,
-		"esModuleInterop": true
+		"removeComments": true,
+		"esModuleInterop": true,
+		"useDefineForClassFields": true
 	},
 	"include": ["src"],
 	"exclude": ["node_modules", "dist", "example"]
