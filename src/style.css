@@ -6,6 +6,7 @@
 	padding: 2em;
 	line-height: 1.7em;
 	letter-spacing: 0.2px;
+	word-break: break-word;
 }
 
 @media only screen and (max-width: 480px) {
@@ -28,6 +29,10 @@
 	transition: background-color 0.1s linear;
 }
 
+#pocket-editor *[contenteditable] {
+	width: 100%;
+}
+
 /*
 	Transforms
 */
@@ -40,11 +45,6 @@
 #pocket-editor div.todo {
 	display: flex;
 	align-items: flex-start;
-}
-
-#pocket-editor div.ul-list ["contenteditable"],
-#pocket-editor div.todo ["contenteditable"] {
-	width: 100%;
 }
 
 #pocket-editor div.todo input {
