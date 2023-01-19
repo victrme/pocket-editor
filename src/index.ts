@@ -7,7 +7,7 @@ import generateLine from "./lib/lineGenerate"
 import caretControl from "./lib/caretControl"
 import removeModifier from "./utils/removeModifier"
 
-export default function tinyNotes(initWrapper: string) {
+export default function pocketEditor(initWrapper: string) {
 	const container = document.createElement("div")
 
 	function classicParagraphInsert(target: HTMLElement, range: Range) {
@@ -19,11 +19,11 @@ export default function tinyNotes(initWrapper: string) {
 
 			// append line where it is supposed to be, then focus
 			nextLine ? container.insertBefore(line, nextLine) : container?.appendChild(line)
-			line.querySelector<HTMLElement>(".editable")?.focus()
+			line.querySelector<HTMLElement>("[contenteditable]")?.focus()
 		}
 
 		// Remove mod if line is empty with modif
-		if (range.startOffset === 0 && lineClasses?.contains("modif-line")) {
+		if (range.startOffset === 0 && lineClasses?.contains("mod")) {
 			removeModifier(target)
 			return
 		}
@@ -36,8 +36,8 @@ export default function tinyNotes(initWrapper: string) {
 
 		// Does it need transformation ?
 		let modif
-		if (lineClasses?.contains("todo-list")) modif = "todo"
-		if (lineClasses?.contains("unordered-list")) modif = "unordered"
+		if (lineClasses?.contains("todo")) modif = "todo"
+		if (lineClasses?.contains("ul-list")) modif = "unordered"
 
 		// put text between caret and EOL on new line
 		const nextLineText = text.slice(range?.startOffset) || ""
@@ -91,7 +91,7 @@ export default function tinyNotes(initWrapper: string) {
 		}
 
 		// Prevent modif on already modified line
-		if (target?.parentElement?.classList.contains("modif-line")) {
+		if (target?.parentElement?.classList.contains("mod")) {
 			return
 		}
 
@@ -126,14 +126,14 @@ export default function tinyNotes(initWrapper: string) {
 	}
 
 	function get() {
-		const lines = Object.values(container.querySelectorAll(".notes-line"))
+		const lines = Object.values(container.querySelectorAll(".line"))
 		if (lines) return toMarkdown(lines)
 
 		console.log("Failed to get lines")
 		return ""
 	}
 
-	container.id = "tiny-notes"
+	container.id = "pocket-editor"
 
 	lineSelection(container) // Add line selection feature
 

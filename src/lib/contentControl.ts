@@ -45,12 +45,12 @@ export function toHTML(markdown: string) {
 
 export function toMarkdown(lines: Element[]) {
 	function addModif(line: Element) {
-		if (line.classList.contains("modif-line")) {
-			if (line.classList.contains("unordered-list")) return "- "
-			if (line.classList.contains("todo-list")) return "[ ] "
-			if (line.classList.contains("heading-big")) return "# "
-			if (line.classList.contains("heading-medium")) return "## "
-			if (line.classList.contains("heading-small")) return "### "
+		if (line.classList.contains("mod")) {
+			if (line.classList.contains("ul-list")) return "- "
+			if (line.classList.contains("todo")) return "[ ] "
+			if (line.classList.contains("h1")) return "# "
+			if (line.classList.contains("h2")) return "## "
+			if (line.classList.contains("h3")) return "### "
 		}
 
 		return ""
@@ -60,7 +60,7 @@ export function toMarkdown(lines: Element[]) {
 	let modif = ""
 
 	const isList = (line?: Element) => {
-		return line?.classList.contains("unordered-list") || line?.classList.contains("todo-list")
+		return line?.classList.contains("ul-list") || line?.classList.contains("todo")
 	}
 
 	lines.forEach((line, i) => {

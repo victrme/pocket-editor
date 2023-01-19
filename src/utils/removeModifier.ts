@@ -3,10 +3,8 @@ export default function removeModifier(editable: Element) {
 	const parent = editable.parentElement as HTMLElement
 	if (!parent) return
 
-	parent.className = "notes-line"
+	parent.className = "line"
 	content.textContent = parent.textContent
-
-	content.classList.add("editable")
 	content.setAttribute("contenteditable", "true")
 
 	Object.values(parent.childNodes).forEach((node) => node.remove())

@@ -6,15 +6,15 @@ export default function lineDeletion(e: InputEvent) {
 		// put caret to end of previous line
 		const selection = window.getSelection()
 		const range = document.createRange()
-		range.selectNodeContents(prevLine?.querySelector(".editable") as HTMLElement)
+		const prevEditable = prevLine?.querySelector("[contenteditable]") as HTMLElement
+
+		range.selectNodeContents(prevEditable)
 		range.collapse(false)
 		selection?.removeAllRanges()
 		selection?.addRange(range)
 
 		// Remove target line
 		;(editable.parentElement as HTMLDivElement).remove()
-
-		console.log("No modifier + no text, remove line")
 	}
 
 	function removeLineWithText(editable: Element, prevLine: Element) {
@@ -36,8 +36,6 @@ export default function lineDeletion(e: InputEvent) {
 
 		// Remove target line
 		;(editable.parentElement as HTMLDivElement).remove()
-
-		console.log("No modifier + text, append text to previous line")
 	}
 
 	const range = window.getSelection()?.getRangeAt(0)
@@ -46,7 +44,7 @@ export default function lineDeletion(e: InputEvent) {
 
 	// Must be Backspace + caret at first pos, editable must be target
 	if (
-		editable.classList.contains("editable") === false ||
+		!!editable.getAttribute("contenteditable") === false ||
 		e.inputType !== "deleteContentBackward" ||
 		range?.endOffset !== 0
 	) {
@@ -56,9 +54,9 @@ export default function lineDeletion(e: InputEvent) {
 	e.preventDefault()
 
 	// It is a modified line
-	if (editable.parentElement?.classList.contains("modif-line")) {
+	if (editable.parentElement?.classList.contains("mod")) {
 		removeModifier(editable)
-		return console.log("Has modifier, remove modifier")
+		return
 	}
 
 	// Quit if it is last line

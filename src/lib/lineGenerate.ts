@@ -4,9 +4,8 @@ export default function generateLine(props?: { text?: string; modif?: string }) 
 	const notesline = document.createElement("div")
 	const editable = document.createElement("div")
 
-	editable.classList.add("editable")
-	notesline.classList.add("notes-line")
 	editable.setAttribute("contenteditable", "true")
+	notesline.classList.add("line")
 	notesline.appendChild(editable)
 
 	// Add text if any

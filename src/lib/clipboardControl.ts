@@ -2,7 +2,7 @@ import { toHTML, toMarkdown, checkModifs } from "./contentControl"
 import removeLines from "../utils/removeLines"
 
 export function copyEvent(e: ClipboardEvent) {
-	const selected = Object.values(document.querySelectorAll(".select-all"))
+	const selected = Object.values(document.querySelectorAll("#pocket-editor .sel"))
 	const textToCopy = toMarkdown(selected)
 
 	if (selected.length > 0) {
@@ -13,7 +13,7 @@ export function copyEvent(e: ClipboardEvent) {
 }
 
 export function cutEvent(e: ClipboardEvent, container: Element) {
-	const selected = Object.values(document.querySelectorAll(".select-all"))
+	const selected = Object.values(document.querySelectorAll("#pocket-editor .sel"))
 
 	// sets data
 	e.clipboardData?.setData("text/plain", toMarkdown(selected))
@@ -37,10 +37,10 @@ export function pasteEvent(e: ClipboardEvent, container: Element) {
 		const newHTML = toHTML(text)
 
 		// When pasting after selection, line is last selected block
-		const selected = Object.values(document.querySelectorAll(".select-all"))
+		const selected = Object.values(document.querySelectorAll("#pocket-editor  .sel"))
 		if (selected.length > 0) notesline = selected.at(-1) as HTMLElement
 
-		if (!notesline?.classList.contains("notes-line")) {
+		if (!notesline?.classList.contains("line")) {
 			return
 		}
 

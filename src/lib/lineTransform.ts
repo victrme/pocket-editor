@@ -6,13 +6,9 @@ function toHeading(target: HTMLElement, tag: string) {
 	heading.textContent = target.textContent?.replace(mod, "").trimStart() || ""
 
 	heading.setAttribute("contenteditable", "true")
-	heading.classList.add("editable")
 
-	target.parentElement?.classList.add("modif-line")
-	target.parentElement?.classList.add(
-		tag === "h1" ? "heading-big" : tag === "h2" ? "heading-medium" : "heading-small"
-	)
-
+	target.parentElement?.classList.add("mod")
+	target.parentElement?.classList.add(tag)
 	target.replaceWith(heading)
 	heading.focus()
 }
@@ -31,8 +27,8 @@ function toTodolist(target: HTMLElement, checked?: boolean) {
 
 	if (checked) input.checked = true
 
-	parent?.classList.add("modif-line")
-	parent?.classList.add("todo-list")
+	parent?.classList.add("mod")
+	parent?.classList.add("todo")
 	parent.prepend(input)
 
 	target.innerText = target.innerText?.replace("[ ]", "").replace("[x]", "").trimStart()
@@ -48,8 +44,8 @@ function toUnorderedList(target: HTMLElement) {
 	span.dataset.content = "•"
 	span.classList.add("list-dot")
 
-	parent?.classList.add("modif-line")
-	parent?.classList.add("unordered-list")
+	parent?.classList.add("mod")
+	parent?.classList.add("ul-list")
 	parent.prepend(span)
 
 	target.innerText = target.innerText?.replace("-", "").trimStart()

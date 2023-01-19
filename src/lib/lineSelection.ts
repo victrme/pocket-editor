@@ -21,7 +21,7 @@ export default function lineSelection(container: HTMLElement) {
 
 	function getLineIndex(editable: Element) {
 		if (editable?.parentElement) {
-			const notesLines = Object.values(document.querySelectorAll(".notes-line"))
+			const notesLines = Object.values(container.querySelectorAll(".line"))
 			const selected = notesLines.indexOf(editable.parentElement)
 			return selected
 		}
@@ -31,8 +31,8 @@ export default function lineSelection(container: HTMLElement) {
 
 	function resetLineSelection() {
 		// Focus on last highlighted line
-		const line = Object.values(document.querySelectorAll(".notes-line"))[currentLine]
-		const editable = line?.querySelector(".editable")
+		const line = Object.values(container.querySelectorAll(".line"))[currentLine]
+		const editable = line?.querySelector("[contenteditable]")
 		if (editable) setCaret(lastSiblingNode(line).node)
 
 		// Reset selection variables
@@ -54,13 +54,13 @@ export default function lineSelection(container: HTMLElement) {
 	}
 
 	function applyLineSelection(interval: [number, number]) {
-		const notesLines = Object.values(document.querySelectorAll(".notes-line"))
+		const notesLines = Object.values(container.querySelectorAll(".line"))
 		notesLines.forEach((line, i) => {
 			// Index is between interval
 			if (i >= interval[0] && i <= interval[1]) {
-				line.classList.add("select-all")
+				line.classList.add("sel")
 			} else {
-				line.classList.remove("select-all")
+				line.classList.remove("sel")
 			}
 		})
 
@@ -77,7 +77,7 @@ export default function lineSelection(container: HTMLElement) {
 	//
 
 	function createRange(selected?: Element[]) {
-		if (!selected) selected = Object.values(document.querySelectorAll(".select-all"))
+		if (!selected) selected = Object.values(container.querySelectorAll(".sel"))
 		if (selected.length === 0) return
 
 		let sel = window.getSelection()
@@ -93,8 +93,8 @@ export default function lineSelection(container: HTMLElement) {
 	}
 
 	function keyboardEvent(e: KeyboardEvent) {
-		const allLines = Object.values(document.querySelectorAll(".notes-line"))
-		const selected = Object.values(document.querySelectorAll(".select-all"))
+		const allLines = Object.values(document.querySelectorAll(".line"))
+		const selected = Object.values(document.querySelectorAll(".sel"))
 
 		if (e.key === "Control") return
 
@@ -149,12 +149,12 @@ export default function lineSelection(container: HTMLElement) {
 	}
 
 	function mouseMoveEvent(e: MouseEvent) {
-		if (e.y % 3 === 0) return // Safe some computing every by leaving 1 out of 3 events
+		if (e.y % 3 === 0) return
 
 		const target = e.target as Element
 
-		if (target.className === "editable") {
-			const selected = Object.values(document.querySelectorAll(".select-all"))
+		if (!!target.getAttribute("contenteditable")) {
+			const selected = Object.values(container.querySelectorAll(".sel"))
 
 			currentLine = getLineIndex(target)
 
@@ -176,7 +176,7 @@ export default function lineSelection(container: HTMLElement) {
 		resetLineSelection()
 		applyLineSelection(lineInterval)
 
-		if (target.classList.contains("editable")) {
+		if (!!target.getAttribute("contenteditable")) {
 			initLineSelection(getLineIndex(target))
 			container.addEventListener("mousemove", mouseMoveEvent)
 		}
