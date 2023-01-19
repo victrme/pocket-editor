@@ -1,39 +1,48 @@
 # Pocket Editor !
 
-This vanilla javascript wysiwyg editor focuses mainly on two things:
+This is yet another wysiwyg editor, it focuses mainly on two things:
 
 -   Very fast load time
 -   Reliable markdown output
 
+### Install
+
+```bash
+$ npm install pocket-editor
+```
+
 ### How to use
 
-##### Initialize the editor 
 ```html
 <body>
     <div id="wrapper"></div>
 </body>
 ```
+
 ```js
 import pocketEditor from "pocket-editor"
 import "pocket-editor/dist/style.css"
 
 const editor = pocketEditor("wrapper")
-```
 
-##### Add text
-```js
+// Add text
 editor.set("## Hello World")
-```
 
-##### Get content as markdown
-```js
-editor.get()
+// Get content as markdown
+console.log(editor.get())
 ```
 
 ### Todo list
 
+#### Not done
+
 -   [ ] Add css style to build output
 -   [ ] Fix caret position after paste
+-   [ ] Add checkbox "checked" attribute on editor set
+-   [ ] Fix list not autocompleting when removing+adding next line
+
+#### Done
+
 -   [x] Fix last lines and todo element having only one \n on copy
 -   [x] Fix copy + paste from pasting outside of editor
 -   [x] Get markdown string from editors content
