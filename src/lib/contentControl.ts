@@ -45,12 +45,12 @@ export function toHTML(markdown: string) {
 
 export function toMarkdown(lines: Element[]) {
 	function addModif(line: Element) {
-		if (line.classList.contains("mod")) {
-			if (line.classList.contains("ul-list")) return "- "
-			if (line.classList.contains("todo")) return "[ ] "
-			if (line.classList.contains("h1")) return "# "
-			if (line.classList.contains("h2")) return "## "
-			if (line.classList.contains("h3")) return "### "
+		if (line.classList.contains("ul-list")) return "- "
+		if (line.classList.contains("h1")) return "# "
+		if (line.classList.contains("h2")) return "## "
+		if (line.classList.contains("h3")) return "### "
+		if (line.classList.contains("todo")) {
+			return line.querySelector<HTMLInputElement>("input")?.checked ? "[x] " : "[ ] "
 		}
 
 		return ""

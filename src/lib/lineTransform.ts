@@ -25,7 +25,7 @@ function toTodolist(target: HTMLElement, checked?: boolean) {
 		else input.removeAttribute("checked")
 	})
 
-	if (checked) input.checked = true
+	if (checked) input.setAttribute("checked", "")
 
 	parent?.classList.add("mod")
 	parent?.classList.add("todo")

@@ -25,7 +25,7 @@ npm install pocket-editor
 
 ```html
 <body>
-    <div id="wrapper"></div>
+	<div id="wrapper"></div>
 </body>
 ```
 
@@ -47,11 +47,12 @@ console.log(editor.get())
 #### Not done
 
 -   [ ] Fix caret position after paste
--   [ ] Add checkbox "checked" attribute on editor set
+-   [ ] Add ctrl + a multi-line selection
 -   [ ] Fix list not autocompleting when removing+adding next line
 
 #### Done
 
+-   [x] Add checkbox "checked" attribute on editor set
 -   [x] Add css style to build output
 -   [x] Fix last lines and todo element having only one \n on copy
 -   [x] Fix copy + paste from pasting outside of editor
