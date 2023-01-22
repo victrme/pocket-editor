@@ -10,8 +10,5 @@
 	"devDependencies": {
 		"typescript": "^4.9.3",
 		"vite": "^4.0.0"
-	},
-	"dependencies": {
-		"pocket-editor": "^1.0.1"
 	}
 }

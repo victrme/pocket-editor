@@ -67,7 +67,7 @@ body {
 ::selection,
 #pocket-editor .line.sel {
 	color: inherit;
-	background-color: rgb(88, 104, 104);
+	background-color: #fff2;
 }
 
 #b_logcontent {
