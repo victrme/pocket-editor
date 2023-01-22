@@ -1,4 +1,14 @@
-# Pocket Editor !
+<h3 align="center">
+  <img src="https://raw.githubusercontent.com/victrme/pocket-editor/main/example/public/banner.png" width="50%" align="center" />
+</h3>
+
+<p align="center">
+    <a href="https://github.com/victrme/pocket-editor">Github</a> - 
+    <a href="https://www.npmjs.com/package/pocket-editor">Npm</a> - 
+    <a href="https://pocketeditor.netlify.app/">Example</a>
+</p>
+
+<br />
 
 This is yet another wysiwyg editor, it focuses mainly on two things:
 
@@ -7,8 +17,8 @@ This is yet another wysiwyg editor, it focuses mainly on two things:
 
 ### Install
 
-```bash
-$ npm install pocket-editor
+```
+npm install pocket-editor
 ```
 
 ### How to use
@@ -25,7 +35,7 @@ import "pocket-editor/dist/style.css"
 
 const editor = pocketEditor("wrapper")
 
-// Add text
+// Replaces editor content
 editor.set("## Hello World")
 
 // Get content as markdown
@@ -36,13 +46,13 @@ console.log(editor.get())
 
 #### Not done
 
--   [ ] Add css style to build output
 -   [ ] Fix caret position after paste
 -   [ ] Add checkbox "checked" attribute on editor set
 -   [ ] Fix list not autocompleting when removing+adding next line
 
 #### Done
 
+-   [x] Add css style to build output
 -   [x] Fix last lines and todo element having only one \n on copy
 -   [x] Fix copy + paste from pasting outside of editor
 -   [x] Get markdown string from editors content
