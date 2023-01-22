@@ -24,6 +24,16 @@
 	outline: none;
 }
 
+#pocket-editor-mock-sel {
+	position: absolute;
+	margin: 0;
+	height: 0;
+	width: 0;
+	z-index: -1;
+	visibility: hidden;
+	pointer-events: none;
+}
+
 #pocket-editor .line {
 	border-radius: 4px;
 	transition: background-color 0.1s linear;

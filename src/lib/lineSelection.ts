@@ -19,6 +19,28 @@ export default function lineSelection(container: HTMLElement) {
 		}, 200)
 	}
 
+	function createRange(selected?: Element[]) {
+		if (!selected) selected = Object.values(container.querySelectorAll(".sel"))
+		if (selected.length === 0) return
+
+		// create paragraph
+		document.querySelector("#pocket-editor-mock-sel")?.remove()
+		const mockSelection = document.createElement("pre")
+		mockSelection.id = "pocket-editor-mock-sel"
+		mockSelection.textContent = "mock-selection"
+		container.appendChild(mockSelection)
+
+		let sel = window.getSelection()
+		let range = document.createRange()
+		let textlen = mockSelection.childNodes[0].nodeValue?.length || 0
+
+		range.setStart(mockSelection.childNodes[0], 0)
+		range.setEnd(mockSelection.childNodes[0], textlen)
+
+		sel?.removeAllRanges()
+		sel?.addRange(range)
+	}
+
 	function getLineIndex(editable: Element) {
 		if (editable?.parentElement) {
 			const notesLines = Object.values(container.querySelectorAll(".line"))
@@ -39,6 +61,10 @@ export default function lineSelection(container: HTMLElement) {
 		currentLine = -1
 		firstLine = -1
 		lineInterval = [-1, -1]
+
+		// remove mock-sel & move event
+		document.querySelector("#pocket-editor-mock-sel")?.remove()
+		container.removeEventListener("mousemove", mouseMoveEvent)
 	}
 
 	function addToLineSelection(index: number) {
@@ -75,22 +101,6 @@ export default function lineSelection(container: HTMLElement) {
 	//
 	// Events
 	//
-
-	function createRange(selected?: Element[]) {
-		if (!selected) selected = Object.values(container.querySelectorAll(".sel"))
-		if (selected.length === 0) return
-
-		let sel = window.getSelection()
-		let range = document.createRange()
-		const lastNodeOfLastSelect = lastSiblingNode(selected[selected.length - 1]).node
-		let textlen = lastNodeOfLastSelect.nodeValue?.length || 0
-
-		range.setStart(selected[0], 0)
-		range.setEnd(lastNodeOfLastSelect, textlen)
-
-		sel?.removeAllRanges()
-		sel?.addRange(range)
-	}
 
 	function keyboardEvent(e: KeyboardEvent) {
 		const allLines = Object.values(document.querySelectorAll(".line"))
@@ -149,13 +159,14 @@ export default function lineSelection(container: HTMLElement) {
 	}
 
 	function mouseMoveEvent(e: MouseEvent) {
-		if (e.y % 3 === 0) return
-
 		const target = e.target as Element
+		const selected = Object.values(container.querySelectorAll(".sel"))
+
+		if (selected.length > 0) {
+			window.getSelection()?.removeAllRanges()
+		}
 
 		if (!!target.getAttribute("contenteditable")) {
-			const selected = Object.values(container.querySelectorAll(".sel"))
-
 			currentLine = getLineIndex(target)
 
 			// Don't select when moving inside first line
