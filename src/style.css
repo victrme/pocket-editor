@@ -1,9 +1,6 @@
 #pocket-editor {
-	display: flex;
-	flex-direction: column;
-	row-gap: 4px;
-	min-width: 300px;
 	padding: 2em;
+	min-width: 300px;
 	line-height: 1.7em;
 	letter-spacing: 0.2px;
 	word-break: break-word;
@@ -16,12 +13,41 @@
 	}
 }
 
-#pocket-editor > * {
-	padding: 0 12px;
+#pocket-editor .line {
+	padding: 0 0.8em;
+	margin: 0.25em 0;
+	border-radius: 4px;
+	transition: background-color 0.1s linear;
 }
 
-#pocket-editor * {
+#pocket-editor [contenteditable] {
 	outline: none;
+	width: 100%;
+}
+
+#pocket-editor div.line h1,
+#pocket-editor div.line h2,
+#pocket-editor div.line h3 {
+	margin: 0;
+	padding: 1em 0;
+}
+
+#pocket-editor div.ul-list,
+#pocket-editor div.todo {
+	display: flex;
+	align-items: center;
+	column-gap: 0.5em;
+}
+
+#pocket-editor div.ul-list .list-dot {
+	text-align: center;
+	font-size: 1.2em;
+	width: 1em;
+}
+
+#pocket-editor div.ul-list .list-dot::before {
+	content: attr(data-content);
+	width: 2em;
 }
 
 #pocket-editor-mock-sel {
@@ -32,48 +58,4 @@
 	z-index: -1;
 	visibility: hidden;
 	pointer-events: none;
-}
-
-#pocket-editor .line {
-	border-radius: 4px;
-	transition: background-color 0.1s linear;
-}
-
-#pocket-editor *[contenteditable] {
-	width: 100%;
-}
-
-/*
-	Transforms
-*/
-
-#pocket-editor div.line h1 {
-	line-height: 1.2em;
-}
-
-#pocket-editor div.ul-list,
-#pocket-editor div.todo {
-	display: flex;
-	align-items: flex-start;
-}
-
-#pocket-editor div.todo input {
-	margin: 0;
-	margin-right: 0.5em;
-	height: 1.3em;
-	width: 0.9em;
-	font-size: 1.2em;
-	cursor: pointer;
-}
-
-#pocket-editor div.ul-list .list-dot {
-	font-size: 1.2em;
-	margin-right: 0.5em;
-	width: 1em;
-	text-align: center;
-}
-
-#pocket-editor div.ul-list .list-dot::before {
-	content: attr(data-content);
-	width: 2em;
 }
