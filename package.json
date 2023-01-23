@@ -7,9 +7,6 @@
 	"author": "Victor Azevedo",
 	"license": "MIT",
 	"type": "module",
-	"publishConfig": {
-		"registry": "https://npm.pkg.github.com/"
-	},
 	"repository": {
 		"url": "git@github.com:victrme/pocket-editor.git"
 	},
