@@ -109,7 +109,15 @@ export default function lineSelection(container: HTMLElement) {
 		if (e.key === "Control") return
 
 		if ((e.ctrlKey || e.metaKey) && e.key.matchAll(/([x|c|v])/g) && selected.length > 0) {
-			createRange(selected)
+			return
+		}
+
+		if ((e.ctrlKey || e.metaKey) && e.key === "a") {
+			window.getSelection()?.removeAllRanges()
+			currentLine = firstLine = 0
+			lineInterval = [0, allLines.length - 1]
+			applyLineSelection(lineInterval)
+			e.preventDefault()
 			return
 		}
 
