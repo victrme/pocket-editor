@@ -40,18 +40,25 @@ editor.set("## Hello World")
 
 // Get content as markdown
 console.log(editor.get())
+
+// Event for all editor changes
+editor.oninput(function () {
+	// ...
+})
 ```
 
 ### Todo list
 
 #### Not done
 
+-   [ ] Mobile touch event
+-   [ ] Add line mod removal to oninput
 -   [ ] Fix caret position after paste
--   [ ] Add ctrl + a multi-line selection
 -   [ ] Fix list not autocompleting when removing+adding next line
 
 #### Done
 
+-   [x] Add ctrl + a multi-line selection
 -   [x] Add checkbox "checked" attribute on editor set
 -   [x] Add css style to build output
 -   [x] Fix last lines and todo element having only one \n on copy
