@@ -1,15 +1,18 @@
 :root {
 	font-family: "Segoe UI", Inter, Avenir, Helvetica, Arial, sans-serif;
-	color: #dcd7c9;
 	background-color: #2c3639;
+	color: #dcd7c9;
 	font-size: 16px;
 	line-height: 24px;
-	font-weight: 400;
-	font-synthesis: none;
-	text-rendering: optimizeLegibility;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	-webkit-text-size-adjust: 100%;
+	--pe-color-text-selection: inherit;
+	--pe-color-line-selection: #fff2;
+	--pe-color-background: #3f4e4f;
+	--pe-color-text: #dcd7c9;
+}
+
+::selection {
+	color: inherit;
+	background-color: var(--pe-color-line-selection);
 }
 
 body {
@@ -60,48 +63,18 @@ body {
 	max-width: 700px;
 }
 
-#pocket-editor {
-	background-color: #3f4e4f;
-}
-
-::selection,
-#pocket-editor .line.sel {
-	color: inherit;
-	background-color: #fff2;
-}
-
-#b_logcontent {
-	padding: 1em 3em;
-	margin: auto;
-	border: none;
-	cursor: pointer;
-	color: #dcd7c9;
-	font-weight: bold;
-	font-family: inherit;
-	background-color: rgb(18, 87, 177);
-	transition: background-color 0.1s;
-}
-
-#b_logcontent:focus-visible,
-#b_logcontent:hover {
-	background-color: rgba(18, 87, 177, 0.8);
-}
-
-#b_logcontent:focus-visible {
-	outline: 3px solid rgb(43, 135, 255);
-}
-
-#b_logcontent:active {
-	background-color: rgba(18, 87, 177, 0.4);
-}
-
 @media only screen and (max-width: 480px) {
+	#pocket-editor {
+		min-width: auto;
+		padding: 1em;
+	}
+
 	#title h1 {
 		font-size: 3.5em;
-		margin: 1em 0;
+		margin: 1em 0 0.5em 0;
 	}
 
 	#wrapper {
-		margin-top: 0;
+		margin-top: 2.5em;
 	}
 }

@@ -10,9 +10,9 @@ You can transform by starting a line with these characters:
 ### Todays list
 
 [x] Check sitting posture
-[ ] Stay hydrated 
-[ ] Add checkbox "checked" attribute on editor set
+[ ] Stay hydrated
 
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit.`
+
 export default markdown
