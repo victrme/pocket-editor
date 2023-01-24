@@ -22,15 +22,26 @@ export default function pocketEditor(wrapper: string) {
 	}
 
 	function oninput(callback: Function) {
-		const cb = () => callback()
+		const cb = (e: Event) => {
+			if (e.type === "beforeinput") {
+				if (!(e as InputEvent).inputType.match(/(deleteContentBackward|insertParagraph)/g)) {
+					return
+				}
+			}
+
+			callback()
+		}
+
 		container.addEventListener("cut", cb)
 		container.addEventListener("paste", cb)
 		container.addEventListener("input", cb)
+		container.addEventListener("beforeinput", cb)
 
 		return () => {
 			container.removeEventListener("cut", cb)
 			container.removeEventListener("paste", cb)
 			container.removeEventListener("input", cb)
+			container.removeEventListener("beforeinput", cb)
 		}
 	}
 

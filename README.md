@@ -49,28 +49,7 @@ editor.oninput(function () {
 
 ### Todo list
 
-#### Not done
-
 -   [ ] Mobile touch event
--   [ ] Add line mod removal to oninput
 -   [ ] Fix caret position after paste
 -   [ ] Fix list not autocompleting when removing+adding next line
-
-#### Done
-
--   [x] Add ctrl + a multi-line selection
--   [x] Add checkbox "checked" attribute on editor set
--   [x] Add css style to build output
--   [x] Fix last lines and todo element having only one \n on copy
--   [x] Fix copy + paste from pasting outside of editor
--   [x] Get markdown string from editors content
--   [x] Force plain text before pasting data
--   [x] Paste insert & delete content line transform
--   [x] Prevent adding multiple modif on same line
--   [x] Left / right arrow key line movement
--   [x] Added mouse selection behavior (no use for now)
--   [x] Insert Paragraph on empty transform removes it
--   [x] Set editors content from markdown string
--   [x] Text insert line transform
--   [x] Insert paragraph between text
--   [x] Up / down arrow key line movement
+-   [x] Add line mod removal to oninput
