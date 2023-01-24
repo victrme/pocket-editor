@@ -3,11 +3,9 @@ import removeLines from "../utils/removeLines"
 
 export function copyEvent(e: ClipboardEvent) {
 	const selected = Object.values(document.querySelectorAll("#pocket-editor .sel"))
-	const textToCopy = toMarkdown(selected)
 
 	if (selected.length > 0) {
-		// sets data
-		e.clipboardData?.setData("text/plain", textToCopy)
+		e.clipboardData?.setData("text/plain", toMarkdown(selected))
 		e.preventDefault()
 	}
 }
@@ -15,11 +13,11 @@ export function copyEvent(e: ClipboardEvent) {
 export function cutEvent(e: ClipboardEvent, container: Element) {
 	const selected = Object.values(document.querySelectorAll("#pocket-editor .sel"))
 
-	// sets data
-	e.clipboardData?.setData("text/plain", toMarkdown(selected))
-	e.preventDefault()
-
-	removeLines(selected, container)
+	if (selected.length > 0) {
+		e.clipboardData?.setData("text/plain", toMarkdown(selected))
+		e.preventDefault()
+		removeLines(selected, container)
+	}
 }
 
 export function pasteEvent(e: ClipboardEvent, container: Element) {

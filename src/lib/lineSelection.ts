@@ -1,6 +1,7 @@
 import lastSiblingNode from "../utils/lastSiblingNode"
 import detectLineJump from "../utils/detectLineJump"
 import setCaret from "../utils/setCaret"
+import removeLines from "../utils/removeLines"
 
 export default function lineSelection(container: HTMLElement) {
 	let caretSelTimeout = setTimeout(() => {})
@@ -108,7 +109,7 @@ export default function lineSelection(container: HTMLElement) {
 
 		if (e.key === "Control") return
 
-		if ((e.ctrlKey || e.metaKey) && e.key.matchAll(/([x|c|v])/g) && selected.length > 0) {
+		if ((e.ctrlKey || e.metaKey) && e.key.match(/([x|c|v])/g) && selected.length > 0) {
 			return
 		}
 
@@ -134,10 +135,10 @@ export default function lineSelection(container: HTMLElement) {
 
 			// Backspace deletes lines
 			if (e.key === "Backspace") {
-				const nextline = selected[0]?.previousElementSibling
-				if (nextline) setCaret(lastSiblingNode(nextline).node)
-
-				selected.forEach((line) => line.remove())
+				const container = allLines[0]?.parentElement
+				if (container && container.id === "pocket-editor") {
+					removeLines(selected, container)
+				}
 				return
 			}
 

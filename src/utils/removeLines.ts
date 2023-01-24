@@ -1,18 +1,28 @@
 import generateLine from "../lib/lineGenerate"
-import lastSiblingNode from "./lastSiblingNode"
-import setCaret from "./setCaret"
+
+function insertAfter(newNode: Node, existingNode: Node) {
+	existingNode?.parentNode?.insertBefore(newNode, existingNode.nextSibling)
+}
+
+function focusOnEditable(line: Element | undefined) {
+	line?.querySelector<HTMLElement>("[contenteditable]")?.focus()
+}
 
 export default function removeLines(lines: Element[], container: Element) {
-	const nextLine = lines[lines.length - 1].nextElementSibling
+	const prevLine = lines[0].previousElementSibling
 	const emptyLine = generateLine()
-
-	// focus on next generated line
-	if (nextLine) nextLine.prepend(emptyLine)
-	else container.appendChild(emptyLine)
 
 	// remove selected lines
 	lines.forEach((line) => line.remove())
 
-	// move caret to empty line
-	setCaret(lastSiblingNode(emptyLine).node)
+	// focus on last line
+	if (prevLine) {
+		insertAfter(emptyLine, prevLine)
+		focusOnEditable(emptyLine)
+		return
+	}
+
+	// no prev line, create one
+	container.appendChild(emptyLine)
+	focusOnEditable(emptyLine)
 }
