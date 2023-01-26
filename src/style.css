@@ -16,6 +16,7 @@
 }
 
 #pocket-editor .line {
+	display: flex;
 	padding: 0 0.8em;
 	margin: 0.25em 0;
 	border-radius: 4px;
@@ -35,8 +36,7 @@
 #pocket-editor div.line h1,
 #pocket-editor div.line h2,
 #pocket-editor div.line h3 {
-	margin: 0;
-	padding: 1em 0;
+	margin: 0.5em 0;
 }
 
 #pocket-editor div.ul-list,
@@ -58,10 +58,5 @@
 }
 
 #pocket-editor-mock-sel {
-	position: absolute;
-	margin: 0;
-	height: 0;
-	width: 0;
-	z-index: -1;
-	visibility: hidden;
+	display: none;
 }
