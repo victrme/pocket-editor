@@ -107,7 +107,7 @@ export default function lineSelection(container: HTMLElement) {
 		const allLines = Object.values(document.querySelectorAll(".line"))
 		const selected = Object.values(document.querySelectorAll(".sel"))
 
-		if (e.key === "Control") return
+		if (e.key === "Control" || e.key === "Meta") return
 
 		if ((e.ctrlKey || e.metaKey) && e.key.match(/([x|c|v])/g) && selected.length > 0) {
 			return
