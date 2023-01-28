@@ -53,8 +53,15 @@ export default function pocketEditor(wrapper: string) {
 	container.addEventListener("cut", (e) => cutEvent(e, container))
 	container.addEventListener("copy", copyEvent)
 
-	container.addEventListener("beforeinput", paragraphControl)
-	container.addEventListener("beforeinput", lineDeletion)
+	// No beforeinput on mobile (at least on the android i have)
+	if ("ontouchstart" in window || navigator.maxTouchPoints > 0) {
+		container.addEventListener("input", (e) => paragraphControl(e as InputEvent))
+		container.addEventListener("input", (e) => lineDeletion(e as InputEvent))
+	} else {
+		container.addEventListener("beforeinput", paragraphControl)
+		container.addEventListener("beforeinput", lineDeletion)
+	}
+
 	container.addEventListener("keydown", caretControl)
 
 	container.appendChild(generateLine({ text: "" }))

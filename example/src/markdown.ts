@@ -12,7 +12,6 @@ You can transform by starting a line with these characters:
 [x] Check sitting posture
 [ ] Stay hydrated
 
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit.`
+This is a input test for mobile.`
 
 export default markdown
