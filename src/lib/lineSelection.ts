@@ -202,11 +202,19 @@ export default function lineSelection(container: HTMLElement) {
 		}
 	}
 
-	function mouseClickEvent() {
+	function mouseClickEvent(e: Event) {
+		const path = e.composedPath()
+
+		if (path.filter((el) => (el as HTMLElement).id === "pocket-editor").length === 0) {
+			resetLineSelection()
+			applyLineSelection(lineInterval)
+		}
+
 		container.removeEventListener("mousemove", mouseMoveEvent)
 	}
 
+	window.addEventListener("touchend", mouseClickEvent)
+	window.addEventListener("click", mouseClickEvent)
 	container.addEventListener("keydown", keyboardEvent)
-	container.addEventListener("click", mouseClickEvent)
 	container.addEventListener("mousedown", mouseDownEvent)
 }
