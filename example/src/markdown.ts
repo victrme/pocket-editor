@@ -10,8 +10,6 @@ You can transform by starting a line with these characters:
 ### Todays list
 
 [x] Check sitting posture
-[ ] Stay hydrated
-
-This is a input test for mobile.`
+[ ] Stay hydrated`
 
 export default markdown

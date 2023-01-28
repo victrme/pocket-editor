@@ -49,7 +49,7 @@ editor.oninput(function () {
 
 ### Todo list
 
--   [ ] Mobile touch event
 -   [ ] Fix caret position after paste
 -   [ ] Fix list not autocompleting when removing+adding next line
+-   [x] Mobile touch event
 -   [x] Add line mod removal to oninput

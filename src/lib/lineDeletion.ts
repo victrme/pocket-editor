@@ -1,7 +1,7 @@
 import lastNode from "../utils/lastSiblingNode"
 import removeModifier from "../utils/removeModifier"
 
-export default function lineDeletion(e: InputEvent) {
+export default function lineDeletion(e: Event) {
 	function removeLineNoText(editable: Element, prevLine: Element) {
 		// put caret to end of previous line
 		const selection = window.getSelection()
@@ -41,13 +41,12 @@ export default function lineDeletion(e: InputEvent) {
 	const range = window.getSelection()?.getRangeAt(0)
 	const editable = e.target as Element
 	const prevLine = editable.parentElement?.previousElementSibling
+	const keyboardButNoDel = e.type === "beforeinput" && (e as InputEvent).inputType !== "deleteContentBackward"
 
-	// Must be Backspace + caret at first pos, editable must be target
-	if (
-		!!editable.getAttribute("contenteditable") === false ||
-		e.inputType !== "deleteContentBackward" ||
-		range?.endOffset !== 0
-	) {
+	// User input comes from keyboard and is not deleteContentBackwards +
+	// Caret must be at first pos +
+	// Editable must be target
+	if (keyboardButNoDel || range?.endOffset !== 0 || !editable.getAttribute("contenteditable")) {
 		return
 	}
 
