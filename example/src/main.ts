@@ -1,15 +1,31 @@
 import pocketEditor from "../../src/index"
-import markdown from "./markdown"
-
 import "../../src/style.css"
 import "./style.css"
+
+const content = `## This is pocket editor !
+
+You can transform by starting a line with these characters:
+-   "# " creates a big heading
+-   "## " medium heading
+-   "### " small heading
+-   "- " simple list
+-   "[ ] " todo list 
+
+### Todays list
+
+[x] Check sitting posture
+[ ] Stay hydrated`
+
+if (!sessionStorage.pcktdtr) {
+	sessionStorage.pcktdtr = content
+}
 
 window.addEventListener("load", function () {
 	const editor = pocketEditor("wrapper")
 
-	editor.set(markdown)
+	editor.set(sessionStorage.pcktdtr)
 
 	editor.oninput(function () {
-		localStorage.pocketEditor = editor.get()
+		sessionStorage.pcktdtr = editor.get()
 	})
 })
