@@ -47,16 +47,14 @@ export default function pocketEditor(wrapper: string) {
 
 	container.id = "pocket-editor"
 
-	lineSelection(container) // Add line selection feature
+	lineSelection(container)
+	lineDeletion(container)
 
 	container.addEventListener("paste", (e) => pasteEvent(e, container))
 	container.addEventListener("cut", (e) => cutEvent(e, container))
 	container.addEventListener("copy", copyEvent)
-
-	container.addEventListener("keydown", lineDeletion)
-	container.addEventListener("beforeinput", lineDeletion)
+	
 	container.addEventListener("beforeinput", paragraphControl)
-
 	container.addEventListener("keydown", caretControl)
 
 	container.appendChild(generateLine({ text: "" }))
