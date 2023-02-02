@@ -46,7 +46,7 @@ export default function lineDeletion(container: Element) {
 
 		const isEditable = !!editable.getAttribute("contenteditable")
 		const isAtStart = sel?.getRangeAt(0)?.endOffset === 0
-		const isDelEvent = (e as InputEvent).inputType !== "deleteContentBackward"
+		const isDelEvent = (e as InputEvent).inputType === "deleteContentBackward"
 		const isBeforeinput = e.type === "beforeinput"
 
 		if ((isBeforeinput && !isDelEvent) || !isAtStart || !isEditable) {
