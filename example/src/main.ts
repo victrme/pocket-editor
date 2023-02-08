@@ -20,12 +20,15 @@ if (!sessionStorage.pcktdtr) {
 	sessionStorage.pcktdtr = content
 }
 
-window.addEventListener("load", function () {
-	const editor = pocketEditor("wrapper")
+const editor = pocketEditor("wrapper")
 
-	editor.set(sessionStorage.pcktdtr)
+editor.set(sessionStorage.pcktdtr)
 
-	editor.oninput(function () {
-		sessionStorage.pcktdtr = editor.get()
-	})
+editor.oninput(function () {
+	sessionStorage.pcktdtr = editor.get()
+})
+
+document.getElementById("b_reset")?.addEventListener("click", () => {
+	sessionStorage.pcktdtr = content
+	editor.set(content)
 })
