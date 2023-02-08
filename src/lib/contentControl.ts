@@ -1,15 +1,7 @@
 import generateLine from "./lineGenerate"
+import modList from "../utils/modList"
 
 export function checkModifs(text: string) {
-	const modList = {
-		h1: "# ",
-		h2: "## ",
-		h3: "### ",
-		todo: "[ ] ",
-		unordered: "- ",
-		"todo-checked": "[x] ",
-	}
-
 	let modif = ""
 
 	Object.entries(modList).forEach(([name, str]) => {

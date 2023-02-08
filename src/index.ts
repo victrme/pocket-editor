@@ -24,11 +24,13 @@ export default function pocketEditor(wrapper: string) {
 	function oninput(callback: Function) {
 		const cb = (e: Event) => {
 			if (e.type === "beforeinput") {
+				// Apply beforeinput only on deleteContentB & insertP
 				if (!(e as InputEvent).inputType.match(/(deleteContentBackward|insertParagraph)/g)) {
 					return
 				}
 			}
 
+			console.log(e)
 			callback()
 		}
 
@@ -53,7 +55,8 @@ export default function pocketEditor(wrapper: string) {
 	container.addEventListener("paste", (e) => pasteEvent(e, container))
 	container.addEventListener("cut", (e) => cutEvent(e, container))
 	container.addEventListener("copy", copyEvent)
-	
+
+	container.addEventListener("input", paragraphControl)
 	container.addEventListener("beforeinput", paragraphControl)
 	container.addEventListener("keydown", caretControl)
 

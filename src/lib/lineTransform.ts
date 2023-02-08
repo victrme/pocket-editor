@@ -2,12 +2,15 @@ function toHeading(target: HTMLElement, tag: string) {
 	const heading = document.createElement(tag)
 
 	// Remove markdown characters
-	let mod = tag === "h1" ? "#" : tag === "h2" ? "##" : "###"
+	let mod = tag === "h1" ? "# " : tag === "h2" ? "## " : "### "
 	heading.textContent = target.textContent?.replace(mod, "").trimStart() || ""
 
 	heading.setAttribute("contenteditable", "true")
 
 	target.parentElement?.classList.add("mod")
+	target.parentElement?.classList.remove("h3")
+	target.parentElement?.classList.remove("h2")
+	target.parentElement?.classList.remove("h1")
 	target.parentElement?.classList.add(tag)
 	target.replaceWith(heading)
 	heading.focus()

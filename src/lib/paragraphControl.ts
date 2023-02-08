@@ -1,6 +1,7 @@
 import lineTransform from "./lineTransform"
 import removeModifier from "../utils/removeModifier"
 import generateLine from "./lineGenerate"
+import modList from "../utils/modList"
 
 function paragraphInsert(container: Element, target: HTMLElement, range: Range) {
 	const text = range.startContainer?.nodeValue || ""
@@ -43,72 +44,42 @@ function paragraphInsert(container: Element, target: HTMLElement, range: Range) 
 	appendLine(generateLine({ text: nextLineText, modif }))
 }
 
-export default function paragraphControl(e: InputEvent) {
+export default function paragraphControl(e: Event) {
 	const range = window.getSelection()?.getRangeAt(0)
 	const target = e.target as HTMLElement
+	const { inputType } = e as InputEvent
 	const container = document.querySelector("#pocket-editor")
 
-	if (!range || !target || !container) return
+	if (!range || !target || !container || !inputType) {
+		throw new Error("Line is not defined")
+	}
 
-	if (e.inputType === "insertParagraph") {
+	if (e.type === "beforeinput" && inputType === "insertParagraph") {
 		e.preventDefault()
 		paragraphInsert(container, target, range)
-	}
-
-	const { startOffset } = range
-	const targetText = target.textContent || ""
-	const textWithInput = targetText.slice(0, startOffset) + e.data + targetText.slice(startOffset)
-
-	// Big Heading
-	if (targetText.startsWith("#")) {
-		if (e.inputType === "insertText" && textWithInput.startsWith("# ")) {
-			lineTransform.toHeading(target, "h1")
-			e.preventDefault()
-		}
-	}
-
-	// Medium Heading
-	if (targetText.startsWith("##")) {
-		if (e.inputType === "insertText" && textWithInput.startsWith("## ")) {
-			lineTransform.toHeading(target, "h2")
-			e.preventDefault()
-		}
-	}
-
-	// Small Heading
-	if (targetText.startsWith("###")) {
-		if (e.inputType === "insertText" && textWithInput.startsWith("### ")) {
-			lineTransform.toHeading(target, "h3")
-			e.preventDefault()
-		}
-	}
-
-	// Prevent modif on already modified line
-	if (target?.parentElement?.classList.contains("mod")) {
 		return
 	}
 
-	// Unordered List
-	if (targetText.startsWith("-")) {
-		if (e.inputType === "insertText" && textWithInput.startsWith("- ")) {
-			lineTransform.toUnorderedList(target)
-			e.preventDefault()
-		}
+	if (
+		inputType !== "insertText" ||
+		(target?.parentElement?.classList?.contains("mod") &&
+			(target?.parentElement?.classList?.contains("ul-list") ||
+				target?.parentElement?.classList?.contains("todo")))
+	) {
+		return // not insert or modif on already list line
 	}
 
-	// Checkbox List
-	if (targetText.startsWith("[ ]")) {
-		if (e.inputType === "insertText" && textWithInput.startsWith("[ ] ")) {
-			lineTransform.toTodolist(target)
-			e.preventDefault()
-		}
-	}
+	const targetText = target.textContent || ""
+	let whichMod = ""
 
-	// Checked checkbox List
-	if (targetText.startsWith("[x]")) {
-		if (e.inputType === "insertText" && textWithInput.startsWith("[x] ")) {
-			lineTransform.toTodolist(target)
-			e.preventDefault()
-		}
-	}
+	Object.entries(modList).forEach(([key, val]) => {
+		if (targetText.startsWith(val)) whichMod = key
+	})
+
+	if (whichMod === "h1") lineTransform.toHeading(target, "h1")
+	if (whichMod === "h2") lineTransform.toHeading(target, "h2")
+	if (whichMod === "h3") lineTransform.toHeading(target, "h3")
+	if (whichMod === "todo") lineTransform.toTodolist(target)
+	if (whichMod === "todo-checked") lineTransform.toTodolist(target)
+	if (whichMod === "unordered") lineTransform.toUnorderedList(target)
 }
