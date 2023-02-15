@@ -40,6 +40,12 @@
 	margin: 0.5em 0;
 }
 
+#pocket-editor input[type="checkbox"] {
+	font-size: inherit;
+	width: 1em;
+	height: 1em;
+}
+
 #pocket-editor div.ul-list,
 #pocket-editor div.todo {
 	display: flex;
