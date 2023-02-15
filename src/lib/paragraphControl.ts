@@ -51,7 +51,7 @@ export default function paragraphControl(e: Event) {
 	const container = document.querySelector("#pocket-editor")
 
 	if (!range || !target || !container || !inputType) {
-		throw new Error("Line is not defined")
+		return
 	}
 
 	if (e.type === "beforeinput" && inputType === "insertParagraph") {

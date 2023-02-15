@@ -24,13 +24,11 @@ export default function pocketEditor(wrapper: string) {
 	function oninput(callback: Function) {
 		const cb = (e: Event) => {
 			if (e.type === "beforeinput") {
-				// Apply beforeinput only on deleteContentB & insertP
+				// Apply beforeinput only on deleteContentBackward & insertParagraph
 				if (!(e as InputEvent).inputType.match(/(deleteContentBackward|insertParagraph)/g)) {
 					return
 				}
 			}
-
-			console.log(e)
 			callback()
 		}
 
