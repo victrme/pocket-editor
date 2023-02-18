@@ -49,7 +49,8 @@ editor.oninput(function () {
 
 ### Todo list
 
--   [ ] Fix caret position after paste
+-   [ ] Sketchy caret movement on multiline paragraphs
 -   [ ] Fix list not autocompleting when removing+adding next line
+-   [x] Fix caret position after paste
 -   [x] Mobile touch event
 -   [x] Add line mod removal to oninput
