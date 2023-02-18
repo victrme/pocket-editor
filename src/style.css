@@ -44,18 +44,19 @@
 	font-size: inherit;
 	width: 1em;
 	height: 1em;
+	margin: 0.5em 0.1em;
 }
 
 #pocket-editor div.ul-list,
 #pocket-editor div.todo {
 	display: flex;
-	align-items: center;
 	column-gap: 0.5em;
 }
 
 #pocket-editor div.ul-list .list-dot {
 	text-align: center;
 	font-size: 1.2em;
+	line-height: 1.5em;
 	width: 1em;
 }
 
