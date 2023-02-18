@@ -1,7 +1,7 @@
 {
 	"name": "pocket-editor",
 	"description": "Blazingly fast block style wysiwyg editor that returns markdown",
-	"version": "1.5.0",
+	"version": "1.5.1",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"author": "Victor Azevedo",
@@ -10,6 +10,12 @@
 	"repository": {
 		"url": "git@github.com:victrme/pocket-editor.git"
 	},
+	"keywords": [
+		"wysiwyg",
+		"contenteditable",
+		"text editor",
+		"rich text"
+	],
 	"scripts": {
 		"build": "tsc",
 		"test": "jest"
