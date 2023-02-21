@@ -66,5 +66,8 @@
 }
 
 #pocket-editor-mock-sel {
-	display: none;
+	position: absolute;
+	overflow: hidden;
+	height: 0;
+	margin: 0;
 }

@@ -29,6 +29,7 @@ export default function lineSelection(container: HTMLElement) {
 		const mockSelection = document.createElement("pre")
 		mockSelection.id = "pocket-editor-mock-sel"
 		mockSelection.textContent = "mock-selection"
+		mockSelection.setAttribute("contenteditable", "true")
 		container.appendChild(mockSelection)
 
 		let sel = window.getSelection()
