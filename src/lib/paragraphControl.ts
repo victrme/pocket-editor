@@ -45,6 +45,9 @@ function paragraphInsert(container: Element, target: HTMLElement, range: Range) 
 }
 
 export default function paragraphControl(e: Event) {
+	// Don't need control when clicking on checkbox
+	if ((e.target as HTMLElement)?.tagName === "INPUT") return
+
 	const range = window.getSelection()?.getRangeAt(0)
 	const target = e.target as HTMLElement
 	const { inputType } = e as InputEvent
