@@ -34,7 +34,11 @@ function toTodolist(target: HTMLElement, checked?: boolean) {
 	parent?.classList.add("todo")
 	parent.prepend(input)
 
-	target.innerText = target.innerText?.replace("[ ]", "").replace("[x]", "").trimStart()
+	const str = target.innerText
+	if (str.indexOf("[ ]") === 0 || str.indexOf("[x]") === 0) {
+		target.innerText = str.slice(4, str.length)
+	}
+
 	target.focus()
 }
 
@@ -51,7 +55,10 @@ function toUnorderedList(target: HTMLElement) {
 	parent?.classList.add("ul-list")
 	parent.prepend(span)
 
-	target.innerText = target.innerText?.replace("-", "").trimStart()
+	if (target.innerText.indexOf("-") === 0) {
+		target.innerText = target.innerText?.replace("-", "").trimStart()
+	}
+
 	target.focus()
 }
 
