@@ -5,7 +5,7 @@ export function checkModifs(text: string) {
 	let modif = ""
 
 	Object.entries(modList).forEach(([name, str]) => {
-		if (text.startsWith(str)) modif = name
+		if (text.startsWith(str + " ")) modif = name
 	})
 
 	return modif

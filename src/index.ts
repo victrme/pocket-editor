@@ -54,8 +54,8 @@ export default function pocketEditor(wrapper: string) {
 	container.addEventListener("cut", (e) => cutEvent(e, container))
 	container.addEventListener("copy", copyEvent)
 
-	container.addEventListener("input", paragraphControl)
-	container.addEventListener("beforeinput", paragraphControl)
+	container.addEventListener("input", (e) => paragraphControl(e, container, "transform"))
+	container.addEventListener("beforeinput", (e) => paragraphControl(e, container, "insert"))
 	container.addEventListener("keydown", caretControl)
 
 	container.appendChild(generateLine({ text: "" }))
