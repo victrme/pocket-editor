@@ -69,7 +69,33 @@ export default function lineDeletion(container: Element) {
 		if (editable.textContent !== "") removeLineWithText(editable, prevLine)
 	}
 
+	//
+	// Default Chromium / Firefox
+	//
+
 	container.addEventListener("beforeinput", applyLineRemove)
+
+	//
+	// Safari macOS:
+	// Special remove event because "input" event doesn't work on empty contenteditables
+	//
+
+	if (navigator.userAgent.includes("Safari")) {
+		container.addEventListener("keydown", (e) => {
+			try {
+				const range = sel?.getRangeAt(0)
+				const isBackspacing = (e as KeyboardEvent).key === "Backspace"
+				const isAtContainerStart = range?.startOffset === 0
+
+				if (isBackspacing && isAtContainerStart) {
+					applyLineRemove(e)
+				}
+			} catch (e) {
+				// IndexSizeError: The index is not in the allowed range.
+				// No idea how to handle getRangeAt() error properly
+			}
+		})
+	}
 
 	/*
 	 *	Ok...
