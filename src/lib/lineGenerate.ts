@@ -9,7 +9,9 @@ export default function generateLine(props?: { text?: string; modif?: string }) 
 	notesline.appendChild(editable)
 
 	// Add text if any
-	if (typeof props?.text === "string") editable.innerText = props?.text
+	if (typeof props?.text === "string") {
+		editable.textContent = props.text
+	}
 
 	// Transform line
 	switch (props?.modif) {

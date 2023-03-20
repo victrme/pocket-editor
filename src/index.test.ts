@@ -1,9 +1,11 @@
-import { describe, expect, test, beforeAll } from "@jest/globals"
+import { describe, expect, test, beforeEach } from "@jest/globals"
 import pocketEditor from "./index"
 
 let editor = pocketEditor("")
 
-beforeAll(() => {
+beforeEach(() => {
+	Object.values(document.body.childNodes).forEach((node) => node.remove())
+
 	const wrapper = document.createElement("div")
 	wrapper.id = "wrapper"
 	document.body.appendChild(wrapper)
@@ -15,56 +17,46 @@ describe("Is working", () => {
 		expect(document.getElementById("pocket-editor")?.id).toEqual("pocket-editor")
 	})
 
-	test("Sets text", () => {
+	test("Sets text", async () => {
 		const text = "Hello world"
 		editor.set(text)
-		setTimeout(() => {
-			expect(document.getElementById("pocket-editor")?.textContent).toEqual(text)
-		}, 1)
+		expect(document.getElementById("pocket-editor")?.textContent).toEqual(text)
 	})
 
 	test("Sets multiple lines", () => {
 		const text = `Hello\nworld`
 		editor.set(text)
-		setTimeout(() => {
-			expect(document.querySelectorAll("#pocket-editor .line")?.length).toEqual(2)
-		}, 1)
+		expect(document.querySelectorAll("#pocket-editor .line")?.length).toEqual(2)
 	})
 
 	test("Gets text", () => {
 		const text = "Hello world"
 		editor.set(text)
-		setTimeout(() => {
-			expect(editor.get()).toEqual(text)
-		}, 1)
+		expect(editor.get()).toEqual(text)
 	})
 })
 
 describe("Line transform", () => {
 	const text = `Hello world\n\n# h1\n\n## h2\n\n### h3\n\n- ul\n\n- ul\n\n[ ] c\n\n[x] cc`
+
 	editor.set(text)
 
 	test("Has big heading", () => {
-		setTimeout(() => expect(!!document.querySelector("h1")).toBe(true), 1)
+		expect(!!document.querySelector("h1")).toBe(true)
 	})
-
 	test("Has medium heading", () => {
-		setTimeout(() => expect(!!document.querySelector("h2")).toBe(true), 1)
+		expect(!!document.querySelector("h2")).toBe(true)
 	})
-
 	test("Has small heading", () => {
-		setTimeout(() => expect(!!document.querySelector("h3")).toBe(true), 1)
+		expect(!!document.querySelector("h3")).toBe(true)
 	})
-
 	test("Has unordered list", () => {
-		setTimeout(() => expect(!!document.querySelector("span.list-dot")).toBe(true), 1)
+		expect(!!document.querySelector("span.list-dot")).toBe(true)
 	})
-
 	test("Has checkbox", () => {
-		setTimeout(() => expect(!!document.querySelector("input[type='checkbox']")).toBe(true), 1)
+		expect(!!document.querySelector("input[type='checkbox']")).toBe(true)
 	})
-
 	test("Has checked checkbox", () => {
-		setTimeout(() => expect(!!document.querySelector("input[type='checkbox']:checked")).toBe(true), 1)
+		expect(!!document.querySelector("input[type='checkbox']:checked")).toBe(true)
 	})
 })
