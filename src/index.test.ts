@@ -1,4 +1,4 @@
-import { describe, expect, test, beforeEach, beforeAll } from "@jest/globals"
+import { describe, expect, jest, test, beforeEach, beforeAll } from "@jest/globals"
 import pocketEditor from "./index"
 
 let editor = pocketEditor("")
@@ -48,6 +48,29 @@ describe("Get", () => {
 		const text = "Hello world"
 		editor.set(text)
 		expect(editor.get()).toEqual(text)
+	})
+})
+
+describe("On input", () => {
+	test("Is called", () => {
+		const mockCallback = jest.fn(() => console.log("hello"))
+
+		editor.oninput(mockCallback)
+
+		const editable = document.querySelector("[contenteditable]")
+		let range = new Range()
+		let sel = window.getSelection()
+
+		if (editable) {
+			range.setStart(editable, 0)
+			range.setEnd(editable, 0)
+			sel?.addRange(range)
+		}
+
+		const event = new InputEvent("input", { data: "e", bubbles: true })
+		editable?.dispatchEvent(event)
+
+		expect(mockCallback).toHaveBeenCalled()
 	})
 })
 
