@@ -18,7 +18,8 @@
 	],
 	"scripts": {
 		"build": "tsc",
-		"test": "cls && jest"
+		"test": "cls && jest",
+		"coverage": "cls && jest --coverage=true"
 	},
 	"devDependencies": {
 		"@types/jest": "^29.4.0",
