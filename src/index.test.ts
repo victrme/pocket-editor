@@ -1,15 +1,17 @@
-import { describe, expect, jest, test, beforeEach, beforeAll } from "@jest/globals"
+import { describe, expect, jest, test, beforeEach, afterEach } from "@jest/globals"
 import pocketEditor from "./index"
 
 let editor = pocketEditor("")
 
 beforeEach(() => {
-	Object.values(document.body.childNodes).forEach((node) => node.remove())
-
 	const wrapper = document.createElement("div")
 	wrapper.id = "wrapper"
 	document.body.appendChild(wrapper)
 	editor = pocketEditor("wrapper")
+})
+
+afterEach(() => {
+	document.getElementById("wrapper")?.remove()
 })
 
 describe("Is working", () => {
@@ -51,26 +53,81 @@ describe("Get", () => {
 	})
 })
 
-describe("On input", () => {
+function setCaret(node: Node | null, pos = 0) {
+	let range = new Range()
+	let sel = window.getSelection()
+
+	if (node) {
+		range.setStart(node, pos)
+		range.setEnd(node, pos)
+		sel?.addRange(range)
+	}
+}
+
+function dispatchInput(elem: Element | null, e: Pick<InputEvent, "data" | "inputType">) {
+	if (!elem) throw "Element is null"
+
+	elem.dispatchEvent(
+		new InputEvent("beforeinput", {
+			inputType: e.inputType,
+			data: e.data,
+			bubbles: true,
+		})
+	)
+}
+
+describe("Oninput", () => {
 	test("Is called", () => {
-		const mockCallback = jest.fn(() => console.log("hello"))
-
-		editor.oninput(mockCallback)
-
 		const editable = document.querySelector("[contenteditable]")
-		let range = new Range()
-		let sel = window.getSelection()
 
-		if (editable) {
-			range.setStart(editable, 0)
-			range.setEnd(editable, 0)
-			sel?.addRange(range)
-		}
+		editor.set("##hello")
 
-		const event = new InputEvent("input", { data: "e", bubbles: true })
-		editable?.dispatchEvent(event)
+		editor.oninput(() => {
+			expect(editor.get()).toBe("e")
+		})
 
-		expect(mockCallback).toHaveBeenCalled()
+		setCaret(editable)
+		dispatchInput(editable, { data: "e", inputType: "insertText" })
+	})
+})
+
+describe("Line addition", () => {
+	test("", () => {})
+})
+
+describe("Line deletion", () => {
+	beforeEach(() => {
+		editor.set(`# Titre 1\n\n- liste\n- liste\n\nLigne normale\n\n`)
+	})
+
+	describe("Removes transform", () => {
+		test("Title", () => {
+			const editable = document.querySelectorAll("[contenteditable]")[0]
+
+			setCaret(editable.childNodes[0])
+			dispatchInput(editable, { inputType: "deleteContentBackward", data: "" })
+
+			expect(document.querySelector("h1")).toBeNull()
+		})
+	})
+
+	test("Removes empty line", () => {
+		const lineslength = document.querySelectorAll(".line").length
+		const editable = document.querySelectorAll("[contenteditable]")[lineslength - 1]
+
+		setCaret(editable)
+		dispatchInput(editable, { inputType: "deleteContentBackward", data: "" })
+
+		expect(document.querySelectorAll(".line").length).toEqual(lineslength - 1)
+	})
+
+	test("Removes text line", () => {
+		const editable = document.querySelectorAll("[contenteditable]")[3]
+
+		setCaret(editable.childNodes[0])
+		dispatchInput(editable, { inputType: "deleteContentBackward", data: "" })
+
+		expect(document.querySelectorAll("[contenteditable]")[2]?.textContent).toEqual("listeLigne normale")
 	})
 })
 
