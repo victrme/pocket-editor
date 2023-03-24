@@ -19,10 +19,18 @@ export default function removeLines(lines: Element[], container: Element) {
 	if (prevLine) {
 		insertAfter(emptyLine, prevLine)
 		focusOnEditable(emptyLine)
-		return
+	} else {
+		// no prev line, create one
+		container.appendChild(emptyLine)
+		focusOnEditable(emptyLine)
 	}
 
-	// no prev line, create one
-	container.appendChild(emptyLine)
-	focusOnEditable(emptyLine)
+	// Create a mock event to trigger oninput
+	container.dispatchEvent(
+		new InputEvent("input", {
+			inputType: "deleteContent",
+			bubbles: true,
+			data: "",
+		})
+	)
 }
