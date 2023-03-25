@@ -21,7 +21,7 @@ export default function removeLines(lines: Element[], container: Element) {
 		focusOnEditable(emptyLine)
 	} else {
 		// no prev line, create one
-		container.appendChild(emptyLine)
+		container.prepend(emptyLine)
 		focusOnEditable(emptyLine)
 	}
 
