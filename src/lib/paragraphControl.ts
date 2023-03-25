@@ -5,6 +5,7 @@ import lineTransform from "./lineTransform"
 
 export default function paragraphControl(e: Event, container: HTMLElement, is: "insert" | "transform") {
 	const target = e.target as HTMLElement
+	const lineClasses = target?.parentElement?.classList
 
 	if (target?.tagName === "INPUT") return // Don't need control when clicking on checkbox
 
@@ -21,7 +22,6 @@ export default function paragraphControl(e: Event, container: HTMLElement, is: "
 		e.preventDefault()
 
 		const text = range.startContainer?.nodeValue || ""
-		const lineClasses = target.parentElement?.classList
 
 		function appendLine(line: HTMLElement) {
 			const nextLine = target.parentElement?.nextElementSibling
@@ -66,31 +66,31 @@ export default function paragraphControl(e: Event, container: HTMLElement, is: "
 	// lineTransform is a input event
 	//
 
-	if (
-		is !== "transform" ||
-		inputType !== "insertText" ||
-		(target?.parentElement?.classList?.contains("mod") &&
-			(target?.parentElement?.classList?.contains("ul-list") ||
-				target?.parentElement?.classList?.contains("todo")))
-	) {
-		return // no modif on already list line
-	}
-
+	const isLineList = lineClasses?.contains("todo") || lineClasses?.contains("ul-list")
+	const isTargetTitle = target.tagName.includes("H")
 	const targetText = target.textContent || ""
 	let whichMod = ""
 
+	if (is !== "transform" || inputType !== "insertText" || isLineList) {
+		return
+	}
+
 	Object.entries(modList).forEach(([key, val]) => {
-		if (
-			targetText.startsWith(val + String.fromCharCode(32)) ||
-			targetText.startsWith(val + String.fromCharCode(160))
-		)
+		const softspace = String.fromCharCode(160)
+		const hardspace = String.fromCharCode(32)
+
+		if (targetText.startsWith(val + hardspace) || targetText.startsWith(val + softspace)) {
 			whichMod = key
+		}
 	})
 
 	if (whichMod === "h1") lineTransform.toHeading(target, "h1")
 	if (whichMod === "h2") lineTransform.toHeading(target, "h2")
 	if (whichMod === "h3") lineTransform.toHeading(target, "h3")
-	if (whichMod === "todo") lineTransform.toTodolist(target)
-	if (whichMod === "todo-checked") lineTransform.toTodolist(target)
-	if (whichMod === "unordered") lineTransform.toUnorderedList(target)
+
+	if (isTargetTitle === false) {
+		if (whichMod === "todo") lineTransform.toTodolist(target)
+		if (whichMod === "todo-checked") lineTransform.toTodolist(target)
+		if (whichMod === "unordered") lineTransform.toUnorderedList(target)
+	}
 }
