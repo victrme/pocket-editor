@@ -71,3 +71,8 @@
 	height: 0;
 	margin: 0;
 }
+
+#pocket-editor-mock-p {
+	position: absolute;
+	visibility: hidden;
+}
