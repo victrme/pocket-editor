@@ -47,8 +47,10 @@ export default function pocketEditor(wrapper: string) {
 
 	container.id = "pocket-editor"
 
-	lineSelection(container)
-	lineDeletion(container)
+	setTimeout(() => {
+		lineSelection(container)
+		lineDeletion(container)
+	}, 0)
 
 	container.addEventListener("paste", (e) => pasteEvent(e, container))
 	container.addEventListener("cut", (e) => cutEvent(e, container))
