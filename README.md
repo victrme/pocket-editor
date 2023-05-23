@@ -25,7 +25,7 @@ npm install pocket-editor
 
 ```html
 <body>
-	<div id="wrapper"></div>
+    <div id="wrapper"></div>
 </body>
 ```
 
@@ -43,7 +43,7 @@ console.log(editor.get())
 
 // Event for all editor changes
 editor.oninput(function () {
-	// ...
+    // ...
 })
 ```
 
