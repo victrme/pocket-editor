@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"target": "es2018",
 		"module": "ESNext",
-		"types": ["node", "jsdom"],
+		"types": [],
 		"lib": ["ESNext", "DOM"],
 		"outDir": "dist",
 		"strict": true,
