@@ -89,54 +89,53 @@ function getParagraphAsArray(line: Element | null): string[] {
 }
 
 export default function caretControl(e: KeyboardEvent) {
-	function jumpCallback(notesline: Element, dir: string) {
-		const goesRight = e.key === "ArrowRight"
-		const goesLeft = e.key === "ArrowLeft"
-		let sel = window.getSelection()
-		let range = document.createRange()
-		let offset = 0
-		let node
+	const { line, dir } = detectLineJump(e) ?? {}
+	if (!line) return
 
-		if (dir === "down") {
-			const targetline = notesline?.nextElementSibling
-			node = lastSiblingNode(targetline as Node).node
-			const textlen = node.nodeValue?.length || 0
+	const goesRight = e.key === "ArrowRight"
+	const goesLeft = e.key === "ArrowLeft"
+	let sel = window.getSelection()
+	let range = document.createRange()
+	let offset = 0
+	let node
 
-			if (!goesRight) {
-				const rows = getParagraphAsArray(targetline)
-				offset = rangePosInCharLen(targetline, rows[0]) ?? -1
+	if (dir === "down") {
+		const targetline = line?.nextElementSibling
+		node = lastSiblingNode(targetline as Node).node
+		const textlen = node.nodeValue?.length || 0
 
-				if (offset < 0) offset = textlen
-			}
+		if (!goesRight) {
+			const rows = getParagraphAsArray(targetline)
+			offset = rangePosInCharLen(targetline, rows[0]) ?? -1
+
+			if (offset < 0) offset = textlen
 		}
-
-		if (dir === "up") {
-			const targetline = notesline?.previousElementSibling
-			node = lastSiblingNode(targetline as Node).node
-			const textlen = node.nodeValue?.length || 0
-
-			offset = textlen
-
-			if (!goesLeft) {
-				const rows = getParagraphAsArray(targetline)
-				const lastrow = rows[rows.length - 1].trimEnd()
-				let lastrowOffset = rangePosInCharLen(targetline, lastrow) ?? 0
-
-				offset = textlen - (lastrow.length - lastrowOffset)
-
-				if (offset < 0) offset = textlen
-			}
-		}
-
-		range.setStart(node as Node, offset)
-		range.setEnd(node as Node, offset)
-
-		sel?.removeAllRanges()
-		sel?.addRange(range)
-		sel?.collapseToEnd()
-
-		e.preventDefault()
 	}
 
-	detectLineJump(e, jumpCallback)
+	if (dir === "up") {
+		const targetline = line?.previousElementSibling
+		node = lastSiblingNode(targetline as Node).node
+		const textlen = node.nodeValue?.length || 0
+
+		offset = textlen
+
+		if (!goesLeft) {
+			const rows = getParagraphAsArray(targetline)
+			const lastrow = rows[rows.length - 1].trimEnd()
+			let lastrowOffset = rangePosInCharLen(targetline, lastrow) ?? 0
+
+			offset = textlen - (lastrow.length - lastrowOffset)
+
+			if (offset < 0) offset = textlen
+		}
+	}
+
+	range.setStart(node as Node, offset)
+	range.setEnd(node as Node, offset)
+
+	sel?.removeAllRanges()
+	sel?.addRange(range)
+	sel?.collapseToEnd()
+
+	e.preventDefault()
 }

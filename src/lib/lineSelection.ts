@@ -160,12 +160,14 @@ export default function lineSelection(container: HTMLElement) {
 		if (!e.shiftKey) return
 
 		// Start line selection
-		detectLineJump(e, (notesline) => {
-			const index = allLines.indexOf(notesline)
+		const { line } = detectLineJump(e) ?? {}
+
+		if (line) {
+			const index = allLines.indexOf(line)
 			initLineSelection(index)
 			applyLineSelection(lineInterval)
 			window.getSelection()?.removeAllRanges()
-		})
+		}
 	}
 
 	function mouseMoveEvent(e: MouseEvent) {

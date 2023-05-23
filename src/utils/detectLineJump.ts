@@ -1,4 +1,7 @@
-//
+type DetectLineJumpReturn = {
+	line: HTMLElement
+	dir: "down" | "up"
+}
 
 // Very heavy way to detect first/last line of paragraph
 // But average char width cannot work with custom fonts
@@ -21,49 +24,47 @@ function isOnVerticalLineEdge(range?: Range, notesline?: Element) {
 	return { top: topEdge, bottom: bottomEdge }
 }
 
-export default function detectLineJump(e: KeyboardEvent, callback: (notesline: Element, dir: string) => void) {
+export default function detectLineJump(e: KeyboardEvent): DetectLineJumpReturn | undefined {
 	// Do nothing if not arrow or selection
-	if (!e.key.includes("Arrow") || !window.getSelection()?.anchorNode) return
+	if (!e.key.includes("Arrow") || !window.getSelection()?.anchorNode) {
+		return
+	}
 
-	const notesline = (e.target as HTMLElement)?.parentElement
+	const line = (e.target as HTMLElement)?.parentElement
 	const range = window?.getSelection()?.getRangeAt(0)
 	const txtLen = range?.startContainer?.nodeValue?.length
 
-	if (!range || !notesline) return // range must exists
+	if (!range || !line) return // range must exists
 
-	const prevSibling = notesline?.previousElementSibling
-	const nextSibling = notesline?.nextElementSibling
+	const prevSibling = line?.previousElementSibling
+	const nextSibling = line?.nextElementSibling
 	const isCaretAtZero = range?.startOffset === 0
 	const isCaretAtEnd = range?.startOffset === txtLen
 	const isSelectionAtEnd = range?.endOffset === txtLen
 
 	// When user is selecting text (shiftKey might not be very compatible (we'll see))
 	if (e.shiftKey) {
-		if (nextSibling && isSelectionAtEnd && (e.key === "ArrowDown" || e.key === "ArrowRight")) {
-			callback(notesline, "down")
+		if (!!nextSibling && isSelectionAtEnd && e.key.match(/^Arrow(Down|Right)$/)) {
+			return { line, dir: "down" }
 		}
 
-		if (prevSibling && isCaretAtZero && (e.key === "ArrowUp" || e.key === "ArrowLeft")) {
-			callback(notesline, "up")
+		if (!!prevSibling && isCaretAtZero && e.key.match(/^Arrow(Up|Left)$/)) {
+			return { line, dir: "up" }
 		}
-
-		return
 	}
 
 	// Going up from Left Arrow
-	if (e.key === "ArrowLeft") {
-		if (isCaretAtZero && prevSibling) callback(notesline, "up")
-		return
+	if (e.key === "ArrowLeft" && isCaretAtZero && prevSibling) {
+		return { line, dir: "up" }
 	}
 
 	// Going down from Right Arrow
-	if (e.key === "ArrowRight") {
-		if ((isCaretAtEnd || !txtLen) && nextSibling) callback(notesline, "down")
-		return
+	if (e.key === "ArrowRight" && (isCaretAtEnd || !txtLen) && nextSibling) {
+		return { line, dir: "down" }
 	}
 
 	// Going up/down on simple arrow press
-	const { bottom, top } = isOnVerticalLineEdge(range, notesline)
-	if (nextSibling && e.key === "ArrowDown" && bottom) callback(notesline, "down")
-	if (prevSibling && e.key === "ArrowUp" && top) callback(notesline, "up")
+	const { bottom, top } = isOnVerticalLineEdge(range, line)
+	if (nextSibling && e.key === "ArrowDown" && bottom) return { line, dir: "down" }
+	if (prevSibling && e.key === "ArrowUp" && top) return { line, dir: "up" }
 }
