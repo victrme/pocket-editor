@@ -21,10 +21,7 @@ function isOnVerticalLineEdge(range?: Range, notesline?: Element) {
 	return { top: topEdge, bottom: bottomEdge }
 }
 
-export default function detectLineJump(
-	e: KeyboardEvent,
-	callback: (notesline: Element, dir: string) => unknown
-) {
+export default function detectLineJump(e: KeyboardEvent, callback: (notesline: Element, dir: string) => void) {
 	// Do nothing if not arrow or selection
 	if (!e.key.includes("Arrow") || !window.getSelection()?.anchorNode) return
 

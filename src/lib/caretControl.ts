@@ -6,32 +6,35 @@ function rangePosInCharLen(line: Element | null, str: string): number | null {
 	const range = sel?.getRangeAt(0)?.cloneRange()
 	const rx = range?.getBoundingClientRect().x ?? 0
 	const cx = line?.querySelector("[contenteditable]")?.getBoundingClientRect().x ?? 0
-	const offset = rx - cx
+	const ox = rx - cx
 
-	const p = document.createElement("p")
+	const lineMod = line?.className.replace("line mod ", "").toLocaleUpperCase() // headings have diff character sizes
+	const tagName = lineMod?.includes("H") ? lineMod : "p"
+	const elem = document.createElement(tagName)
 
-	p.style.position = "absolute"
-	p.style.whiteSpace = "pre"
-	p.style.width = offset + "px"
-	p.style.overflow = "hidden"
-	p.style.opacity = "0"
+	elem.style.position = "absolute"
+	elem.style.whiteSpace = "pre"
+	elem.style.width = ox + "px"
+	elem.style.overflow = "hidden"
+	elem.style.opacity = "0"
 
-	line?.appendChild(p)
+	line?.appendChild(elem)
+
+	let charCount: ReturnType<typeof rangePosInCharLen> = null
 
 	for (const char of str.split("")) {
 		const span = document.createElement("span")
 		span.textContent = char
-		p.appendChild(span)
+		elem.appendChild(span)
 
-		if (span.offsetLeft > offset) {
-			const elemCount = p.childElementCount - 2
-			p.remove()
-			return elemCount
+		if (span.offsetLeft >= ox) {
+			charCount = Math.max(0, elem.childElementCount - 1)
+			break
 		}
 	}
 
-	p.remove()
-	return null
+	elem.remove()
+	return charCount
 }
 
 function getParagraphAsArray(line: Element | null): string[] {
@@ -52,83 +55,87 @@ function getParagraphAsArray(line: Element | null): string[] {
 	wrapper?.appendChild(clone)
 	document.getElementById("pocket-editor")?.appendChild(wrapper)
 
+	const editable = wrapper.querySelector("[contenteditable]")
+
+	if (!editable) {
+		console.warn("Couldn't get string[], no contenteditable found")
+		return []
+	}
+
 	let lastHeight = 0
 	let lines: string[] = []
-	let words = (clone.textContent ?? "").split(" ")
+	let words = (editable.textContent ?? "").split(" ")
 
-	clone.textContent = ""
+	editable.textContent = ""
 
 	for (let i = 0; i < words.length; i++) {
 		// Add word to mock
 		const word = words[i] + " "
-		clone.textContent += word
+		editable.textContent += word
 
 		// Create new line if height changed
-		const cloneHeight = (clone as Element).getBoundingClientRect().height ?? 0
-		if (cloneHeight !== lastHeight) {
+		const editableHeight = editable.getBoundingClientRect().height ?? 0
+		if (editableHeight !== lastHeight) {
 			lines.push("")
 		}
 
 		// Add word to the last line
 		lines[lines.length - 1] += word
-		lastHeight = cloneHeight
+		lastHeight = editableHeight
 	}
 
 	wrapper.remove()
-
 	return lines
 }
 
 export default function caretControl(e: KeyboardEvent) {
 	function jumpCallback(notesline: Element, dir: string) {
-		if (dir === "down") {
-			let sel = window.getSelection()
-			let range = document.createRange()
+		const goesRight = e.key === "ArrowRight"
+		const goesLeft = e.key === "ArrowLeft"
+		let sel = window.getSelection()
+		let range = document.createRange()
+		let offset = 0
+		let node
 
-			const nextline = notesline?.nextElementSibling
-			const node = lastSiblingNode(nextline as Node).node
+		if (dir === "down") {
+			const targetline = notesline?.nextElementSibling
+			node = lastSiblingNode(targetline as Node).node
 			const textlen = node.nodeValue?.length || 0
 
-			const paragraphlines = getParagraphAsArray(nextline)
-			const offset = rangePosInCharLen(nextline, paragraphlines[0]) ?? 0
+			if (!goesRight) {
+				const rows = getParagraphAsArray(targetline)
+				offset = rangePosInCharLen(targetline, rows[0]) ?? -1
 
-			range.setStart(node, e.key === "ArrowRight" ? textlen : offset)
-			range.setEnd(node, e.key === "ArrowRight" ? textlen : offset)
-
-			sel?.removeAllRanges()
-			sel?.addRange(range)
-			sel?.collapseToEnd()
-
-			e.preventDefault()
+				if (offset < 0) offset = textlen
+			}
 		}
 
 		if (dir === "up") {
-			let sel = window.getSelection()
-			let range = document.createRange()
-
-			const prevline = notesline?.previousElementSibling
-			const node = lastSiblingNode(prevline as Node).node
+			const targetline = notesline?.previousElementSibling
+			node = lastSiblingNode(targetline as Node).node
 			const textlen = node.nodeValue?.length || 0
 
-			const pRows = getParagraphAsArray(prevline)
-			const lastpRow = pRows[pRows.length - 1]
-			const lastpRowOffset = rangePosInCharLen(prevline, lastpRow) ?? 0
+			offset = textlen
 
-			let offset = textlen - (lastpRow.length - lastpRowOffset)
+			if (!goesLeft) {
+				const rows = getParagraphAsArray(targetline)
+				const lastrow = rows[rows.length - 1].trimEnd()
+				let lastrowOffset = rangePosInCharLen(targetline, lastrow) ?? 0
 
-			if (offset < 0) {
-				offset = textlen
+				offset = textlen - (lastrow.length - lastrowOffset)
+
+				if (offset < 0) offset = textlen
 			}
-
-			range.setStart(node, offset)
-			range.setEnd(node, offset)
-
-			sel?.removeAllRanges()
-			sel?.addRange(range)
-			sel?.collapseToEnd()
-
-			e.preventDefault()
 		}
+
+		range.setStart(node as Node, offset)
+		range.setEnd(node as Node, offset)
+
+		sel?.removeAllRanges()
+		sel?.addRange(range)
+		sel?.collapseToEnd()
+
+		e.preventDefault()
 	}
 
 	detectLineJump(e, jumpCallback)
