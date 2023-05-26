@@ -40,7 +40,7 @@ export default function initUndo(container: HTMLElement) {
 	})
 
 	container.addEventListener("keydown", (e) => {
-		if (e.ctrlKey && e.key === "z") {
+		if ((e.ctrlKey || e.metaKey) && e.key === "z") {
 			timeout = setTimeout(() => {
 				applyUndo(container)
 			}, 1)
