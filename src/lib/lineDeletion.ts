@@ -1,8 +1,8 @@
 import lastNode from "../utils/lastSiblingNode"
 import removeModifier from "../utils/removeModifier"
+import { addUndoHistory } from "./undo"
 
 function removeLineNoText(editable: Element, prevLine: Element) {
-	// put caret to end of previous line
 	const selection = window.getSelection()
 	const range = document.createRange()
 	const prevEditable = prevLine?.querySelector("[contenteditable]") as HTMLElement
@@ -12,20 +12,17 @@ function removeLineNoText(editable: Element, prevLine: Element) {
 	selection?.removeAllRanges()
 	selection?.addRange(range)
 
-	// Remove target line
-	;(editable.parentElement as HTMLDivElement).remove()
+	const parent = editable.parentElement as HTMLDivElement
+	parent.remove()
 }
 
 function removeLineWithText(editable: Element, prevLine: Element) {
-	// get char amount to place caret
 	const { node, isTextNode } = lastNode(prevLine as Node)
 	const charAmount = node.nodeValue?.length || 0
 
-	// Add text to previous line
 	const targetText = editable?.textContent || ""
 	node[isTextNode ? "nodeValue" : "textContent"] += targetText
 
-	// Place caret before append text
 	const selection = window.getSelection()
 	const range = document.createRange()
 	range.setStart(node, isTextNode ? charAmount : 0)
@@ -33,8 +30,8 @@ function removeLineWithText(editable: Element, prevLine: Element) {
 	selection?.removeAllRanges()
 	selection?.addRange(range)
 
-	// Remove target line
-	;(editable.parentElement as HTMLDivElement).remove()
+	const parent = editable.parentElement as HTMLDivElement
+	parent.remove()
 }
 
 export default function lineDeletion(container: Element) {
@@ -55,16 +52,19 @@ export default function lineDeletion(container: Element) {
 
 		e.preventDefault()
 
-		// It is a modified line
+		// Add this condition because of a conflit
+		// with "backspace in lineSelection.ts" creating a double history
+		if (editable?.parentElement) {
+			addUndoHistory(container, editable?.parentElement)
+		}
+
 		if (editable.parentElement?.classList.contains("mod")) {
 			removeModifier(editable)
 			return
 		}
 
-		// Quit if it is last line
 		if (!prevLine) return
 
-		// Remove line
 		if (editable.textContent === "") removeLineNoText(editable, prevLine)
 		if (editable.textContent !== "") removeLineWithText(editable, prevLine)
 	}

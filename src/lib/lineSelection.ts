@@ -2,6 +2,7 @@ import lastSiblingNode from "../utils/lastSiblingNode"
 import detectLineJump from "../utils/detectLineJump"
 import setCaret from "../utils/setCaret"
 import removeLines from "../utils/removeLines"
+import { addUndoHistory } from "./undo"
 
 export default function lineSelection(container: HTMLElement) {
 	let caretSelTimeout = setTimeout(() => {})
@@ -137,9 +138,14 @@ export default function lineSelection(container: HTMLElement) {
 			// Backspace deletes lines
 			if (e.key === "Backspace") {
 				const container = allLines[0]?.parentElement
-				if (container && container.id === "pocket-editor") {
+				const validContainer = container && container.id === "pocket-editor"
+
+				if (validContainer) {
+					resetLineSelection()
+					addUndoHistory(container, selected.at(-1))
 					removeLines(selected, container)
 				}
+
 				return
 			}
 
@@ -147,10 +153,12 @@ export default function lineSelection(container: HTMLElement) {
 			if (e.key === "ArrowDown") currentLine = Math.min(currentLine + 1, allLines.length - 1)
 			if (e.key === "ArrowUp") currentLine = Math.max(0, currentLine - 1)
 
-			// Add lines to selection on shift
 			// Not using shift only selects one line
-			if (e.shiftKey) addToLineSelection(currentLine)
-			else changeLineSelection(currentLine)
+			if (e.shiftKey) {
+				addToLineSelection(currentLine)
+			} else {
+				changeLineSelection(currentLine)
+			}
 
 			// Apply changes
 			applyLineSelection(lineInterval)

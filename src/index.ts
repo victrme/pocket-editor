@@ -5,6 +5,7 @@ import lineSelection from "./lib/lineSelection"
 import lineDeletion from "./lib/lineDeletion"
 import generateLine from "./lib/lineGenerate"
 import caretControl from "./lib/caretControl"
+import initUndo from "./lib/undo"
 
 export default function pocketEditor(wrapper: string) {
 	const container = document.createElement("div")
@@ -50,6 +51,7 @@ export default function pocketEditor(wrapper: string) {
 	setTimeout(() => {
 		lineSelection(container)
 		lineDeletion(container)
+		initUndo(container)
 	}, 0)
 
 	container.addEventListener("paste", (e) => pasteEvent(e, container))
@@ -58,6 +60,7 @@ export default function pocketEditor(wrapper: string) {
 
 	container.addEventListener("input", (e) => paragraphControl(e, container, "transform"))
 	container.addEventListener("beforeinput", (e) => paragraphControl(e, container, "insert"))
+	container.addEventListener("keydown", caretControl)
 	container.addEventListener("keydown", caretControl)
 
 	container.appendChild(generateLine({ text: "" }))

@@ -2,6 +2,7 @@ import removeModifier from "../utils/removeModifier"
 import modList from "../utils/modList"
 import generateLine from "./lineGenerate"
 import lineTransform from "./lineTransform"
+import { addUndoHistory } from "./undo"
 
 export default function paragraphControl(e: Event, container: HTMLElement, is: "insert" | "transform") {
 	const target = e.target as HTMLElement
@@ -20,6 +21,8 @@ export default function paragraphControl(e: Event, container: HTMLElement, is: "
 
 	if (is === "insert" && inputType === "insertParagraph") {
 		e.preventDefault()
+
+		addUndoHistory(container, target?.parentElement)
 
 		const text = range.startContainer?.nodeValue || ""
 
