@@ -1,6 +1,6 @@
 import lastNode from "../utils/lastSiblingNode"
 import removeModifier from "../utils/removeModifier"
-import { addUndoHistory } from "./actionHistory"
+import { addUndoHistory } from "./undo"
 
 function removeLineNoText(editable: Element, prevLine: Element) {
 	const selection = window.getSelection()

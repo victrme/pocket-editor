@@ -2,7 +2,7 @@ import removeModifier from "../utils/removeModifier"
 import modList from "../utils/modList"
 import generateLine from "./lineGenerate"
 import lineTransform from "./lineTransform"
-import { addUndoHistory } from "./actionHistory"
+import { addUndoHistory } from "./undo"
 
 export default function paragraphControl(e: Event, container: HTMLElement, is: "insert" | "transform") {
 	const target = e.target as HTMLElement

@@ -2,7 +2,7 @@ import lastSiblingNode from "../utils/lastSiblingNode"
 import detectLineJump from "../utils/detectLineJump"
 import setCaret from "../utils/setCaret"
 import removeLines from "../utils/removeLines"
-import { addUndoHistory } from "./actionHistory"
+import { addUndoHistory } from "./undo"
 
 export default function lineSelection(container: HTMLElement) {
 	let caretSelTimeout = setTimeout(() => {})
