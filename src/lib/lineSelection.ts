@@ -2,6 +2,7 @@ import lastSiblingNode from "../utils/lastSiblingNode"
 import detectLineJump from "../utils/detectLineJump"
 import setCaret from "../utils/setCaret"
 import removeLines from "../utils/removeLines"
+import { addUndoHistory } from "./actionHistory"
 
 export default function lineSelection(container: HTMLElement) {
 	let caretSelTimeout = setTimeout(() => {})
@@ -141,6 +142,7 @@ export default function lineSelection(container: HTMLElement) {
 
 				if (validContainer) {
 					resetLineSelection()
+					addUndoHistory(container, selected.at(-1))
 					removeLines(selected, container)
 				}
 

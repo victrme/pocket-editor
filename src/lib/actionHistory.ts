@@ -1,61 +1,79 @@
+import { toHTML, toMarkdown } from "./contentControl"
 import lastSiblingNode from "../utils/lastSiblingNode"
 import setCaret from "../utils/setCaret"
 
 type History = {
-	action: string
-	text: string
-	snapshot: Element
-	targetline: number
+	index: number
+	markdown: string
 }
 
 let history: History[] = []
 
-export function addHistory(action: History) {
-	history.push(action)
-	console.log(history)
+export function addUndoHistory(container: Element, lastline?: Element | null): void {
+	const markdown = toMarkdown(Object.values(container.children))
+	const index = Array.from(container.children).indexOf(lastline ?? container.children[0])
+
+	if (markdown === history[0]?.markdown ?? "") {
+		return
+	}
+
+	history.unshift({ markdown, index })
+
+	if (history.length > 50) {
+		history.pop()
+	}
 }
 
-export function initHistory(container: HTMLElement) {
+export default function initUndo(container: HTMLElement) {
+	// This observer stops ctrl + z from applying "pocket-editor undo" if the native undo did change something.
+	// Has to do this bc can't preventDefault, and there's no undo API
+
+	let timeout: number
+
+	const observer = new MutationObserver(() => {
+		if (timeout) clearTimeout(timeout)
+	})
+
+	observer.observe(container, {
+		characterData: true,
+		subtree: true,
+	})
+
 	container.addEventListener("keydown", (e) => {
 		if (e.ctrlKey && e.key === "z") {
-			applyHistory(container)
+			timeout = setTimeout(() => {
+				applyUndo(container)
+			}, 1)
 		}
 	})
 }
 
-function applyHistory(container: HTMLElement) {
-	const last = history.at(-1)
+function applyUndo(container: HTMLElement) {
+	const { markdown, index } = history[0] ?? {}
 
-	if (!last) return
-
-	const current = encodeURIComponent(container.textContent ?? "")
-	const lasttext = encodeURIComponent(last.text)
-	const isTextSimilar = current === lasttext
-
-	if (isTextSimilar) {
-		container.innerHTML = last.snapshot?.innerHTML ?? ""
-
-		console.log(last.targetline)
-
-		history.pop()
-
-		container.dispatchEvent(
-			new InputEvent("input", {
-				inputType: "insertText",
-				bubbles: true,
-				data: "",
-			})
-		)
-
-		setTimeout(() => {
-			const editable = document.querySelectorAll<HTMLElement>("#pocket-editor [contenteditable]")[
-				last.targetline
-			]
-
-			if (editable) {
-				editable.focus()
-				setCaret(lastSiblingNode(editable).node, false)
-			}
-		}, 0)
+	if (!markdown) {
+		return
 	}
+
+	Object.values(container.children).forEach((node) => node.remove())
+	container.appendChild(toHTML(markdown))
+
+	setTimeout(() => {
+		const editable = container.querySelectorAll<HTMLElement>("[contenteditable]")[index]
+
+		if (editable) {
+			editable.focus()
+			setCaret(lastSiblingNode(editable).node, false)
+		}
+	}, 0)
+
+	history.shift()
+
+	container.dispatchEvent(
+		new InputEvent("input", {
+			inputType: "insertText",
+			bubbles: true,
+			data: "",
+		})
+	)
 }

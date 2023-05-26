@@ -5,7 +5,7 @@ import lineSelection from "./lib/lineSelection"
 import lineDeletion from "./lib/lineDeletion"
 import generateLine from "./lib/lineGenerate"
 import caretControl from "./lib/caretControl"
-import { initHistory } from "./lib/actionHistory"
+import initUndo from "./lib/actionHistory"
 
 export default function pocketEditor(wrapper: string) {
 	const container = document.createElement("div")
@@ -51,7 +51,7 @@ export default function pocketEditor(wrapper: string) {
 	setTimeout(() => {
 		lineSelection(container)
 		lineDeletion(container)
-		initHistory(container)
+		initUndo(container)
 	}, 0)
 
 	container.addEventListener("paste", (e) => pasteEvent(e, container))
