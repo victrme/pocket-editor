@@ -122,7 +122,7 @@ export default function caretControl(e: KeyboardEvent) {
 		if (!goesLeft) {
 			const rows = getParagraphAsArray(targetline)
 			const lastrow = rows[rows.length - 1].trimEnd()
-			let lastrowOffset = rangePosInCharLen(targetline, lastrow) ?? 0
+			let lastrowOffset = rangePosInCharLen(targetline, lastrow) ?? textlen
 
 			offset = textlen - (lastrow.length - lastrowOffset)
 
