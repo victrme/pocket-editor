@@ -25,7 +25,7 @@ npm install pocket-editor
 
 ```html
 <body>
-    <div id="wrapper"></div>
+  <div id="wrapper"></div>
 </body>
 ```
 
@@ -43,14 +43,10 @@ console.log(editor.get())
 
 // Event for all editor changes
 editor.oninput(function () {
-    // ...
+  // ...
 })
 ```
 
 ### Todo list
 
--   [ ] Sketchy caret movement on multiline paragraphs
--   [ ] Fix list not autocompleting when removing+adding next line
--   [x] Fix caret position after paste
--   [x] Mobile touch event
--   [x] Add line mod removal to oninput
+-   [ ] Improve caret precision when jumping paragraphs
