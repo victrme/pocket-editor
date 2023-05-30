@@ -1,23 +1,15 @@
-import lastNode from "../utils/lastSiblingNode"
 import removeModifier from "../utils/removeModifier"
+import lastSiblingNode from "../utils/lastSiblingNode"
+import setCaret from "../utils/setCaret"
 import { addUndoHistory } from "./undo"
 
-function removeLineNoText(editable: Element, prevLine: Element) {
-	const selection = window.getSelection()
-	const range = document.createRange()
-	const prevEditable = prevLine?.querySelector("[contenteditable]") as HTMLElement
-
-	range.selectNodeContents(prevEditable)
-	range.collapse(false)
-	selection?.removeAllRanges()
-	selection?.addRange(range)
-
-	const parent = editable.parentElement as HTMLDivElement
-	parent.remove()
+function removeLineNoText(editable: Element, prevline: Element) {
+	setCaret(lastSiblingNode(prevline).node)
+	editable.parentElement?.remove()
 }
 
 function removeLineWithText(editable: Element, prevLine: Element) {
-	const { node, isTextNode } = lastNode(prevLine as Node)
+	const { node, isTextNode } = lastSiblingNode(prevLine as Node)
 	const charAmount = node.nodeValue?.length || 0
 
 	const targetText = editable?.textContent || ""

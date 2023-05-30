@@ -9,7 +9,7 @@ You can transform by starting a line with these characters:
 -   "## " medium heading
 -   "### " small heading
 -   "- " simple list
--   "[ ] " todo list 
+-   "[ ] " todo list
 
 ### Todays list
 

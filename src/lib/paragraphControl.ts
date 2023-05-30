@@ -4,96 +4,71 @@ import generateLine from "./lineGenerate"
 import lineTransform from "./lineTransform"
 import { addUndoHistory } from "./undo"
 
-export default function paragraphControl(e: Event, container: HTMLElement, is: "insert" | "transform") {
-	const target = e.target as HTMLElement
-	const lineClasses = target?.parentElement?.classList
-
-	if (target?.tagName === "INPUT") return // Don't need control when clicking on checkbox
-
+export default function paragraphControl(e: Event, container: HTMLElement) {
 	const range = window.getSelection()?.getRangeAt(0)
-	const { inputType } = e as InputEvent
+	const editable = e.target as HTMLElement | null
 
-	if (!range || !target || !inputType) return
+	if (!range || !(editable && "textContent" in editable) || editable?.tagName === "INPUT") {
+		return
+	}
 
-	//
-	// ParagraphInsert is a beforeinput event
-	//
+	const line = (e.target as Element)?.parentElement
+	const insertParagraph = (e as InputEvent)?.inputType === "insertParagraph"
+	const insertText = (e as InputEvent)?.inputType === "insertText"
+	let modif
 
-	if (is === "insert" && inputType === "insertParagraph") {
+	if (e.type === "beforeinput" && insertParagraph) {
 		e.preventDefault()
+		addUndoHistory(container, line)
 
-		addUndoHistory(container, target?.parentElement)
+		const cuttext = (editable.textContent ?? "").slice(0, range.startOffset)
+		const nexttext = (editable.textContent ?? "").slice(range.startOffset)
 
-		const text = range.startContainer?.nodeValue || ""
-
-		function appendLine(line: HTMLElement) {
-			const nextLine = target.parentElement?.nextElementSibling
-
-			// append line where it is supposed to be, then focus
-			nextLine ? container.insertBefore(line, nextLine) : container?.appendChild(line)
-			line.querySelector<HTMLElement>("[contenteditable]")?.focus()
-		}
-
-		// Remove mod if line is empty with modif
-		if (range.startOffset === 0 && lineClasses?.contains("mod")) {
-			removeModifier(target)
+		if (range.startOffset === 0 && line?.classList?.contains("mod")) {
+			removeModifier(editable)
 			return
 		}
 
-		// create new line if or if br (for now)
-		if (range.startContainer.nodeType !== 3) {
-			appendLine(generateLine())
-			return
-		}
+		if (line?.classList.contains("todo")) modif = "todo"
+		if (line?.classList.contains("ul-list")) modif = "unordered"
 
-		// Does it need transformation ?
-		let modif
-		if (lineClasses?.contains("todo")) modif = "todo"
-		if (lineClasses?.contains("ul-list")) modif = "unordered"
+		const newline = generateLine({
+			text: nexttext,
+			modif: modif,
+		})
 
-		// put text between caret and EOL on new line
-		const nextLineText = text.slice(range?.startOffset) || ""
+		line?.nextElementSibling
+			? container.insertBefore(newline, line.nextElementSibling)
+			: container?.appendChild(newline)
 
-		// Remove newlined text to previous line
-		if (range.startContainer.textContent) {
-			range.startContainer.textContent = text.slice(0, range.startOffset)
-		}
+		newline.querySelector<HTMLElement>("[contenteditable]")?.focus()
 
-		// append line
-		appendLine(generateLine({ text: nextLineText, modif }))
+		editable.textContent = cuttext
 
 		return
 	}
 
-	//
-	// lineTransform is a input event
-	//
+	if (e.type === "input" && insertText) {
+		const isTargetTitle = editable?.tagName.includes("H")
+		const content = editable?.textContent ?? ""
 
-	const isLineList = lineClasses?.contains("todo") || lineClasses?.contains("ul-list")
-	const isTargetTitle = target.tagName.includes("H")
-	const targetText = target.textContent || ""
-	let whichMod = ""
+		Object.entries(modList).forEach(([key, val]) => {
+			const softspace = String.fromCharCode(160)
+			const hardspace = String.fromCharCode(32)
 
-	if (is !== "transform" || inputType !== "insertText" || isLineList) {
-		return
-	}
+			if (content.startsWith(val + hardspace) || content.startsWith(val + softspace)) {
+				modif = key
+			}
+		})
 
-	Object.entries(modList).forEach(([key, val]) => {
-		const softspace = String.fromCharCode(160)
-		const hardspace = String.fromCharCode(32)
+		if (modif === "h1") lineTransform.toHeading(editable, "h1")
+		if (modif === "h2") lineTransform.toHeading(editable, "h2")
+		if (modif === "h3") lineTransform.toHeading(editable, "h3")
 
-		if (targetText.startsWith(val + hardspace) || targetText.startsWith(val + softspace)) {
-			whichMod = key
+		if (isTargetTitle === false) {
+			if (modif === "todo") lineTransform.toTodolist(editable)
+			if (modif === "todo-checked") lineTransform.toTodolist(editable)
+			if (modif === "unordered") lineTransform.toUnorderedList(editable)
 		}
-	})
-
-	if (whichMod === "h1") lineTransform.toHeading(target, "h1")
-	if (whichMod === "h2") lineTransform.toHeading(target, "h2")
-	if (whichMod === "h3") lineTransform.toHeading(target, "h3")
-
-	if (isTargetTitle === false) {
-		if (whichMod === "todo") lineTransform.toTodolist(target)
-		if (whichMod === "todo-checked") lineTransform.toTodolist(target)
-		if (whichMod === "unordered") lineTransform.toUnorderedList(target)
 	}
 }
