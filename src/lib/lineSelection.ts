@@ -1,3 +1,4 @@
+import getSelectedLines from "../utils/getSelectedLines"
 import lastSiblingNode from "../utils/lastSiblingNode"
 import detectLineJump from "../utils/detectLineJump"
 import setCaret from "../utils/setCaret"
@@ -22,7 +23,7 @@ export default function lineSelection(container: HTMLElement) {
 	}
 
 	function createRange(selected?: Element[]) {
-		if (!selected) selected = Object.values(container.querySelectorAll(".sel"))
+		if (!selected) selected = getSelectedLines(container)
 		if (selected.length === 0) return
 
 		// create paragraph
@@ -46,7 +47,7 @@ export default function lineSelection(container: HTMLElement) {
 
 	function getLineIndex(editable: Element) {
 		if (editable?.parentElement) {
-			const notesLines = Object.values(container.querySelectorAll(".line"))
+			const notesLines = Object.values(container.getElementsByClassName("line"))
 			const selected = notesLines.indexOf(editable.parentElement)
 			return selected
 		}
@@ -56,7 +57,7 @@ export default function lineSelection(container: HTMLElement) {
 
 	function resetLineSelection() {
 		// Focus on last highlighted line
-		const line = Object.values(container.querySelectorAll(".line"))[currentLine]
+		const line = Object.values(container.getElementsByClassName("line"))[currentLine]
 		const editable = line?.querySelector("[contenteditable]")
 		if (editable) setCaret(lastSiblingNode(line).node)
 

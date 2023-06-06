@@ -1,10 +1,11 @@
-import { toHTML, toMarkdown, checkModifs } from "./contentControl"
-import removeLines from "../utils/removeLines"
+import getSelectedLines from "../utils/getSelectedLines"
 import lastSiblingNode from "../utils/lastSiblingNode"
+import removeLines from "../utils/removeLines"
 import setCaret from "../utils/setCaret"
+import { toHTML, toMarkdown, checkModifs } from "./contentControl"
 
 export function copyEvent(e: ClipboardEvent) {
-	const selected = Object.values(document.querySelectorAll("#pocket-editor .sel"))
+	const selected = getSelectedLines()
 
 	if (selected.length > 0) {
 		e.clipboardData?.setData("text/plain", toMarkdown(selected))
@@ -13,7 +14,7 @@ export function copyEvent(e: ClipboardEvent) {
 }
 
 export function cutEvent(e: ClipboardEvent, container: Element) {
-	const selected = Object.values(document.querySelectorAll("#pocket-editor .sel"))
+	const selected = getSelectedLines()
 
 	if (selected.length > 0) {
 		e.clipboardData?.setData("text/plain", toMarkdown(selected))
@@ -37,7 +38,7 @@ export function pasteEvent(e: ClipboardEvent, container: HTMLElement) {
 		const linesInNew = newHTML.childElementCount - 1 // before document fragment gets consumed
 
 		// When pasting after selection, line is last selected block
-		const selected = Object.values(document.querySelectorAll("#pocket-editor  .sel"))
+		const selected = getSelectedLines(container)
 		if (selected.length > 0) {
 			notesline = selected[selected.length - 1] as HTMLElement
 		}
