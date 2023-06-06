@@ -52,23 +52,23 @@ export default function paragraphControl(e: Event, container: HTMLElement) {
 		const isTargetTitle = editable?.tagName.includes("H")
 		const content = editable?.textContent ?? ""
 
-		Object.entries(modList).forEach(([key, val]) => {
+		for (const [mod, val] of modList) {
 			const softspace = String.fromCharCode(160)
 			const hardspace = String.fromCharCode(32)
 
 			if (content.startsWith(val + hardspace) || content.startsWith(val + softspace)) {
-				modif = key
+				modif = mod
 			}
-		})
+		}
 
-		if (modif === "h1") lineTransform.toHeading(editable, "h1")
-		if (modif === "h2") lineTransform.toHeading(editable, "h2")
-		if (modif === "h3") lineTransform.toHeading(editable, "h3")
+		if (modif?.includes("h")) {
+			lineTransform.toHeading(editable, modif, true)
+		}
 
 		if (isTargetTitle === false) {
-			if (modif === "todo") lineTransform.toTodolist(editable)
-			if (modif === "todo-checked") lineTransform.toTodolist(editable)
-			if (modif === "unordered") lineTransform.toUnorderedList(editable)
+			if (modif === "todo") lineTransform.toTodolist(editable, false, true)
+			if (modif === "todo-checked") lineTransform.toTodolist(editable, false, true)
+			if (modif === "unordered") lineTransform.toUnorderedList(editable, true)
 		}
 	}
 }

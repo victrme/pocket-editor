@@ -1,5 +1,6 @@
-function toHeading(target: HTMLElement, tag: string) {
+function toHeading(target: HTMLElement, tag: string, focus?: true) {
 	const heading = document.createElement(tag)
+	const parent = target.parentElement
 
 	// Remove markdown characters
 	let mod = tag === "h1" ? "#" : tag === "h2" ? "##" : "###"
@@ -7,16 +8,17 @@ function toHeading(target: HTMLElement, tag: string) {
 
 	heading.setAttribute("contenteditable", "true")
 
-	target.parentElement?.classList.add("mod")
-	target.parentElement?.classList.remove("h3")
-	target.parentElement?.classList.remove("h2")
-	target.parentElement?.classList.remove("h1")
-	target.parentElement?.classList.add(tag)
-	target.replaceWith(heading)
-	heading.focus()
+	if (parent) {
+		parent.className = "line mod " + tag
+		target.replaceWith(heading)
+	}
+
+	if (focus) {
+		heading.focus()
+	}
 }
 
-function toTodolist(target: HTMLElement, checked?: boolean) {
+function toTodolist(target: HTMLElement, checked: boolean, focus?: true) {
 	const input = document.createElement("input")
 	const parent = target.parentElement
 
@@ -28,10 +30,11 @@ function toTodolist(target: HTMLElement, checked?: boolean) {
 		else input.removeAttribute("checked")
 	})
 
-	if (checked) input.setAttribute("checked", "")
+	if (checked) {
+		input.setAttribute("checked", "")
+	}
 
-	parent?.classList.add("mod")
-	parent?.classList.add("todo")
+	parent.className = "line mod todo"
 	parent.prepend(input)
 
 	const str = target.textContent || ""
@@ -39,27 +42,29 @@ function toTodolist(target: HTMLElement, checked?: boolean) {
 		target.textContent = str.slice(4, str.length)
 	}
 
-	target.focus()
+	if (focus) {
+		target.focus()
+	}
 }
 
-function toUnorderedList(target: HTMLElement) {
+function toUnorderedList(target: HTMLElement, focus?: true) {
 	const span = document.createElement("span")
 	const parent = target.parentElement
 
 	if (!parent) return
 
 	span.dataset.content = "•"
-	span.classList.add("list-dot")
-
-	parent?.classList.add("mod")
-	parent?.classList.add("ul-list")
+	span.className = "list-dot"
+	parent.className = "line mod ul-list"
 	parent.prepend(span)
 
 	if (target.textContent?.indexOf("-") === 0) {
 		target.textContent = target.textContent?.replace("-", "").trimStart()
 	}
 
-	target.focus()
+	if (focus) {
+		target.focus()
+	}
 }
 
 export default { toHeading, toTodolist, toUnorderedList }

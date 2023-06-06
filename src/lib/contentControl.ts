@@ -2,13 +2,13 @@ import generateLine from "./lineGenerate"
 import modList from "../utils/modList"
 
 export function checkModifs(text: string) {
-	let modif = ""
+	for (const [name, str] of modList) {
+		if (text.startsWith(str + " ")) {
+			return name
+		}
+	}
 
-	Object.entries(modList).forEach(([name, str]) => {
-		if (text.startsWith(str + " ")) modif = name
-	})
-
-	return modif
+	return ""
 }
 
 export function toHTML(markdown: string) {
@@ -18,19 +18,17 @@ export function toHTML(markdown: string) {
 	// remove tabs for now
 	markdown = markdown.replaceAll("\t", "")
 
-	markdown.split("\n\n").forEach((line) => {
-		// Finds modifs that use line breaks (list & todos)
-		// And create a line for them
-		if (line.split("\n").length > 1) {
-			line.split("\n").forEach((subline) => {
-				fragment.appendChild(generateLine({ text: subline, modif: checkModifs(subline) }))
-			})
-			return
+	for (const line of markdown.split("\n\n")) {
+		if (line.indexOf("\n") === -1) {
+			fragment.appendChild(generateLine({ text: line, modif: checkModifs(line) }))
+			continue
 		}
 
-		// Normal line
-		fragment.appendChild(generateLine({ text: line, modif: checkModifs(line) }))
-	})
+		// Modifs that use line breaks (list & todos)
+		for (const subline of line.split("\n")) {
+			fragment.appendChild(generateLine({ text: subline, modif: checkModifs(subline) }))
+		}
+	}
 
 	return fragment
 }
