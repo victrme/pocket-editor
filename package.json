@@ -1,7 +1,7 @@
 {
 	"name": "pocket-editor",
 	"description": "Blazingly fast block style wysiwyg editor that returns markdown",
-	"version": "1.7.1",
+	"version": "1.7.2",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"author": "Victor Azevedo",
