@@ -101,7 +101,7 @@ export default function lineDeletion(container: Element) {
 
 	// Only on touch devices
 	if ("ontouchstart" in window || navigator.maxTouchPoints > 0) {
-		let touchDeleteDebounce = setTimeout(() => {})
+		let touchDeleteDebounce: number
 		let inputEventPrevents = false
 
 		container.addEventListener("input", () => (inputEventPrevents = true))
@@ -116,7 +116,7 @@ export default function lineDeletion(container: Element) {
 				return
 			}
 
-			touchDeleteDebounce = setTimeout(() => applyLineRemove(ev), 5)
+			touchDeleteDebounce = window.setTimeout(() => applyLineRemove(ev), 5)
 		})
 	}
 }

@@ -22,7 +22,7 @@ export function cutEvent(e: ClipboardEvent, container: Element) {
 	}
 }
 
-export function pasteEvent(e: ClipboardEvent, container: Element) {
+export function pasteEvent(e: ClipboardEvent, container: HTMLElement) {
 	e.preventDefault()
 
 	// transform paste content to plaintext
@@ -39,7 +39,7 @@ export function pasteEvent(e: ClipboardEvent, container: Element) {
 		// When pasting after selection, line is last selected block
 		const selected = Object.values(document.querySelectorAll("#pocket-editor  .sel"))
 		if (selected.length > 0) {
-			notesline = selected.at(-1) as HTMLElement
+			notesline = selected[selected.length - 1] as HTMLElement
 		}
 
 		if (!notesline?.classList.contains("line")) {

@@ -5,7 +5,7 @@ import removeLines from "../utils/removeLines"
 import { addUndoHistory } from "./undo"
 
 export default function lineSelection(container: HTMLElement) {
-	let caretSelTimeout = setTimeout(() => {})
+	let caretSelTimeout: number
 	let lineInterval: [number, number] = [-1, -1]
 	let currentLine = -1
 	let firstLine = -1
@@ -16,7 +16,7 @@ export default function lineSelection(container: HTMLElement) {
 
 	function caretSelectionDebounce(callback: Function) {
 		clearTimeout(caretSelTimeout)
-		caretSelTimeout = setTimeout(() => {
+		caretSelTimeout = window.setTimeout(() => {
 			callback()
 		}, 200)
 	}
@@ -106,8 +106,8 @@ export default function lineSelection(container: HTMLElement) {
 	//
 
 	function keyboardEvent(e: KeyboardEvent) {
-		const allLines = Object.values(document.querySelectorAll(".line"))
-		const selected = Object.values(document.querySelectorAll(".sel"))
+		const allLines = Object.values(document.querySelectorAll<HTMLElement>(".line"))
+		const selected = Object.values(document.querySelectorAll<HTMLElement>(".sel"))
 
 		if (e.key === "Control" || e.key === "Meta") return
 
@@ -137,15 +137,9 @@ export default function lineSelection(container: HTMLElement) {
 
 			// Backspace deletes lines
 			if (e.key === "Backspace") {
-				const container = allLines[0]?.parentElement
-				const validContainer = container && container.id === "pocket-editor"
-
-				if (validContainer) {
-					resetLineSelection()
-					addUndoHistory(container, selected.at(-1))
-					removeLines(selected, container)
-				}
-
+				resetLineSelection()
+				addUndoHistory(container, selected[selected.length - -1])
+				removeLines(selected, container)
 				return
 			}
 
@@ -180,7 +174,7 @@ export default function lineSelection(container: HTMLElement) {
 
 	function mouseMoveEvent(e: MouseEvent) {
 		const target = e.target as Element
-		const selected = Object.values(container.querySelectorAll(".sel"))
+		const selected = Object.values(container.querySelectorAll<HTMLElement>(".sel"))
 
 		if (selected.length > 0) {
 			window.getSelection()?.removeAllRanges()
