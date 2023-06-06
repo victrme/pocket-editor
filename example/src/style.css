@@ -1,27 +1,30 @@
 :root {
-	color: #dcd7c9;
-	background-color: #2c3639;
-	font-family: "Segoe UI", Inter, Avenir, Helvetica, Arial, sans-serif;
-	--pe-color-text-selection: inherit;
+	--pe-color-text-selection: #dcd7c9;
 	--pe-color-line-selection: #fff2;
 	--pe-color-background: #3f4e4f;
 	--pe-color-text: #dcd7c9;
 }
 
 ::selection {
-	color: inherit;
+	color: var(--pe-color-text-selection);
 	background-color: var(--pe-color-line-selection);
 }
 
+* {
+	box-sizing: border-box;
+}
+
 body {
-	margin: 0 auto 10vh auto;
-	padding: 2em;
-	min-height: 60vh;
-	max-width: 550px;
+	margin: auto;
+	padding: 1em;
+	max-width: 35em;
+	color: #dcd7c9;
+	background-color: #2c3639;
+	font-family: "Segoe UI", Inter, Avenir, Helvetica, Arial, sans-serif;
 }
 
 header {
-	margin: 5em 0;
+	margin: 5vh 0;
 }
 
 header h1 {
