@@ -75,6 +75,6 @@ export function pasteEvent(e: ClipboardEvent, container: HTMLElement) {
 	if (selection?.rangeCount && range) {
 		selection.deleteFromDocument()
 		range.insertNode(document.createTextNode(text))
-		range.setStart(range.endContainer, range.endOffset)
+		setCaret(lastSiblingNode(range.endContainer).node)
 	}
 }
