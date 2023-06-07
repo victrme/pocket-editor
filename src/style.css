@@ -62,5 +62,6 @@
 #pocket-editor-mock-sel,
 #pocket-editor-mock-p {
 	position: absolute;
-	visibility: hidden;
+	overflow: hidden;
+	height: 0;
 }
