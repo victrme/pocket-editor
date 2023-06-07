@@ -49,17 +49,16 @@ export default function pocketEditor(wrapper: string) {
 	container.id = "pocket-editor"
 
 	setTimeout(() => {
+		container.addEventListener("beforeinput", paragraphControl)
+		container.addEventListener("input", paragraphControl)
+		container.addEventListener("keydown", caretControl)
+		container.addEventListener("paste", pasteEvent)
+		container.addEventListener("copy", copyEvent)
+		container.addEventListener("cut", cutEvent)
 		lineSelection()
 		lineDeletion()
 		initUndo()
 	}, 0)
-
-	container.addEventListener("paste", pasteEvent)
-	container.addEventListener("copy", copyEvent)
-	container.addEventListener("cut", cutEvent)
-	container.addEventListener("beforeinput", paragraphControl)
-	container.addEventListener("input", paragraphControl)
-	container.addEventListener("keydown", caretControl)
 
 	container.appendChild(generateLine({ text: "" }))
 	document.getElementById(wrapper)?.appendChild(container)

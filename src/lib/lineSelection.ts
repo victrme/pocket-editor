@@ -8,6 +8,7 @@ import { addUndoHistory } from "./undo"
 
 export default function lineSelection() {
 	const container = getContainer()
+	let lines = getLines()
 	let caretSelTimeout: number
 	let lineInterval: [number, number] = [-1, -1]
 	let currentLine = -1
@@ -25,7 +26,7 @@ export default function lineSelection() {
 	}
 
 	function createRange(selected?: Element[]) {
-		if (!selected) selected = getSelectedLines()
+		if (!selected) selected = getSelectedLines(lines)
 		if (selected.length === 0) return
 
 		// create paragraph
@@ -49,13 +50,12 @@ export default function lineSelection() {
 
 	function getLineIndex(editable: HTMLElement) {
 		const line = getLineFromEditable(editable)
-		const lines = getLines()
 		return line ? lines.indexOf(line) : -1
 	}
 
 	function resetLineSelection() {
 		// Focus on last highlighted line
-		const line = getLines()[currentLine]
+		const line = lines[currentLine]
 		const editable = line?.querySelector("[contenteditable]")
 		if (editable) setCaret(lastSiblingNode(line).node)
 
@@ -82,7 +82,7 @@ export default function lineSelection() {
 	}
 
 	function applyLineSelection(interval: [number, number]) {
-		getLines().forEach((line, i) => {
+		lines.forEach((line, i) => {
 			// Index is between interval
 			if (i >= interval[0] && i <= interval[1]) {
 				line.classList.add("sel")
@@ -104,8 +104,9 @@ export default function lineSelection() {
 	//
 
 	function keyboardEvent(e: KeyboardEvent) {
-		const allLines = getLines()
-		const selected = getSelectedLines()
+		lines = getLines()
+
+		const selected = getSelectedLines(lines)
 
 		if (e.key === "Control" || e.key === "Meta") return
 
@@ -116,7 +117,7 @@ export default function lineSelection() {
 		if ((e.ctrlKey || e.metaKey) && e.key === "a") {
 			window.getSelection()?.removeAllRanges()
 			currentLine = firstLine = 0
-			lineInterval = [0, allLines.length - 1]
+			lineInterval = [0, lines.length - 1]
 			applyLineSelection(lineInterval)
 			e.preventDefault()
 			return
@@ -142,7 +143,7 @@ export default function lineSelection() {
 			}
 
 			// Move selected line
-			if (e.key === "ArrowDown") currentLine = Math.min(currentLine + 1, allLines.length - 1)
+			if (e.key === "ArrowDown") currentLine = Math.min(currentLine + 1, lines.length - 1)
 			if (e.key === "ArrowUp") currentLine = Math.max(0, currentLine - 1)
 
 			// Not using shift only selects one line
@@ -163,7 +164,7 @@ export default function lineSelection() {
 		const { line } = detectLineJump(e) ?? {}
 
 		if (line) {
-			const index = allLines.indexOf(line)
+			const index = lines.indexOf(line)
 			initLineSelection(index)
 			applyLineSelection(lineInterval)
 			window.getSelection()?.removeAllRanges()
@@ -172,7 +173,7 @@ export default function lineSelection() {
 
 	function mouseMoveEvent(e: MouseEvent) {
 		const target = e.target as HTMLElement
-		const selected = getSelectedLines()
+		const selected = getSelectedLines(lines)
 
 		if (selected.length > 0) {
 			window.getSelection()?.removeAllRanges()
@@ -192,6 +193,8 @@ export default function lineSelection() {
 	function mouseDownEvent(e: MouseEvent) {
 		const target = e.target as HTMLElement
 
+		lines = getLines()
+
 		if (e.button === 2) e.preventDefault() // right click doesn't trigger click
 		if (e.button !== 0) return
 
@@ -206,9 +209,11 @@ export default function lineSelection() {
 	}
 
 	function mouseClickEvent(e: Event) {
-		const path = e.composedPath()
+		const path = e.composedPath() as Element[]
+		const clicksOutsideContainer = !path.includes(container)
 
-		if (path.filter((el) => (el as HTMLElement).id === "pocket-editor").length === 0) {
+		if (clicksOutsideContainer) {
+			lines = getLines()
 			resetLineSelection()
 			applyLineSelection(lineInterval)
 		}
