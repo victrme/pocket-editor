@@ -1,5 +1,6 @@
 import removeModifier from "../utils/removeModifier"
 import lastSiblingNode from "../utils/lastSiblingNode"
+import getContainer from "../utils/getContainer"
 import setCaret from "../utils/setCaret"
 import { addUndoHistory } from "./undo"
 
@@ -26,7 +27,8 @@ function removeLineWithText(editable: Element, prevLine: Element) {
 	parent.remove()
 }
 
-export default function lineDeletion(container: Element) {
+export default function lineDeletion() {
+	const container = getContainer()
 	const sel = window.getSelection()
 
 	function applyLineRemove(e: Event) {
@@ -47,7 +49,7 @@ export default function lineDeletion(container: Element) {
 		// Add this condition because of a conflit
 		// with "backspace in lineSelection.ts" creating a double history
 		if (editable?.parentElement) {
-			addUndoHistory(container, editable?.parentElement)
+			addUndoHistory(editable?.parentElement)
 		}
 
 		if (editable.parentElement?.classList.contains("mod")) {

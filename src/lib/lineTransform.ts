@@ -20,6 +20,7 @@ function toHeading(target: HTMLElement, tag: string, focus?: true) {
 
 function toTodolist(target: HTMLElement, checked: boolean, focus?: true) {
 	const input = document.createElement("input")
+	const span = document.createElement("span")
 	const parent = target.parentElement
 
 	if (!parent) return
@@ -35,7 +36,9 @@ function toTodolist(target: HTMLElement, checked: boolean, focus?: true) {
 	}
 
 	parent.className = "line mod todo"
-	parent.prepend(input)
+	span.className = "todo-marker"
+	span.appendChild(input)
+	parent.prepend(span)
 
 	const str = target.textContent || ""
 	if (str.indexOf("[ ]") === 0 || str.indexOf("[x]") === 0) {

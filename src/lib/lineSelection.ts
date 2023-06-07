@@ -1,11 +1,13 @@
 import getSelectedLines from "../utils/getSelectedLines"
 import lastSiblingNode from "../utils/lastSiblingNode"
 import detectLineJump from "../utils/detectLineJump"
-import setCaret from "../utils/setCaret"
+import getContainer from "../utils/getContainer"
 import removeLines from "../utils/removeLines"
+import setCaret from "../utils/setCaret"
 import { addUndoHistory } from "./undo"
 
-export default function lineSelection(container: HTMLElement) {
+export default function lineSelection() {
+	const container = getContainer()
 	let caretSelTimeout: number
 	let lineInterval: [number, number] = [-1, -1]
 	let currentLine = -1
@@ -23,7 +25,7 @@ export default function lineSelection(container: HTMLElement) {
 	}
 
 	function createRange(selected?: Element[]) {
-		if (!selected) selected = getSelectedLines(container)
+		if (!selected) selected = getSelectedLines()
 		if (selected.length === 0) return
 
 		// create paragraph
@@ -139,8 +141,8 @@ export default function lineSelection(container: HTMLElement) {
 			// Backspace deletes lines
 			if (e.key === "Backspace") {
 				resetLineSelection()
-				addUndoHistory(container, selected[selected.length - -1])
-				removeLines(selected, container)
+				addUndoHistory(selected[selected.length - -1])
+				removeLines(selected)
 				return
 			}
 
@@ -175,7 +177,7 @@ export default function lineSelection(container: HTMLElement) {
 
 	function mouseMoveEvent(e: MouseEvent) {
 		const target = e.target as Element
-		const selected = Object.values(container.querySelectorAll<HTMLElement>(".sel"))
+		const selected = getSelectedLines()
 
 		if (selected.length > 0) {
 			window.getSelection()?.removeAllRanges()

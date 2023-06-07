@@ -1,6 +1,7 @@
 import { toHTML, toMarkdown } from "./contentControl"
 import lastSiblingNode from "../utils/lastSiblingNode"
 import setCaret from "../utils/setCaret"
+import getContainer from "../utils/getContainer"
 
 type History = {
 	index: number
@@ -9,7 +10,8 @@ type History = {
 
 let history: History[] = []
 
-export function addUndoHistory(container: Element, lastline?: Element | null): void {
+export function addUndoHistory(lastline?: Element | null): void {
+	const container = getContainer()
 	const markdown = toMarkdown(Object.values(container.children))
 	const index = Array.from(container.children).indexOf(lastline ?? container.children[0])
 
@@ -24,10 +26,11 @@ export function addUndoHistory(container: Element, lastline?: Element | null): v
 	}
 }
 
-export default function initUndo(container: HTMLElement) {
+export default function initUndo() {
 	// This observer stops ctrl + z from applying "pocket-editor undo" if the native undo did change something.
 	// Has to do this bc can't preventDefault, and there's no undo API
 
+	const container = getContainer()
 	let timeout: number
 
 	const observer = new MutationObserver(() => {
@@ -42,13 +45,14 @@ export default function initUndo(container: HTMLElement) {
 	container.addEventListener("keydown", (e) => {
 		if ((e.ctrlKey || e.metaKey) && e.key === "z") {
 			timeout = window.setTimeout(() => {
-				applyUndo(container)
+				applyUndo()
 			}, 1)
 		}
 	})
 }
 
-function applyUndo(container: HTMLElement) {
+function applyUndo() {
+	const container = getContainer()
 	const { markdown, index } = history[0] ?? {}
 
 	if (!markdown) {

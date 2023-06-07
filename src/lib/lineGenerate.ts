@@ -2,7 +2,7 @@ import lineTransform from "./lineTransform"
 
 export default function generateLine(props?: { text?: string; modif?: string }) {
 	const notesline = document.createElement("div")
-	const editable = document.createElement("div")
+	const editable = document.createElement("p")
 
 	editable.setAttribute("contenteditable", "true")
 	notesline.classList.add("line")

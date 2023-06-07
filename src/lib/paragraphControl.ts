@@ -1,10 +1,12 @@
 import removeModifier from "../utils/removeModifier"
+import getContainer from "../utils/getContainer"
 import modList from "../utils/modList"
-import generateLine from "./lineGenerate"
 import lineTransform from "./lineTransform"
+import generateLine from "./lineGenerate"
 import { addUndoHistory } from "./undo"
 
-export default function paragraphControl(e: Event, container: HTMLElement) {
+export default function paragraphControl(e: Event) {
+	const container = getContainer()
 	const range = window.getSelection()?.getRangeAt(0)
 	const editable = e.target as HTMLElement | null
 
@@ -19,7 +21,7 @@ export default function paragraphControl(e: Event, container: HTMLElement) {
 
 	if (e.type === "beforeinput" && insertParagraph) {
 		e.preventDefault()
-		addUndoHistory(container, line)
+		addUndoHistory(line)
 
 		const cuttext = (editable.textContent ?? "").slice(0, range.startOffset)
 		const nexttext = (editable.textContent ?? "").slice(range.startOffset)

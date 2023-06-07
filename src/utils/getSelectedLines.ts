@@ -1,4 +1,5 @@
-export default function getSelectedLines(container?: HTMLElement): HTMLElement[] {
-	container = container ?? (document.getElementById("pocket-editor") as HTMLElement)
-	return Object.values(container?.querySelectorAll<HTMLElement>(".line.sel") ?? [])
+import getContainer from "./getContainer"
+
+export default function getSelectedLines(): HTMLElement[] {
+	return Object.values(getContainer()?.querySelectorAll<HTMLElement>(".line.sel") ?? [])
 }

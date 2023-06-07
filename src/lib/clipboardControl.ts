@@ -1,5 +1,6 @@
 import getSelectedLines from "../utils/getSelectedLines"
 import lastSiblingNode from "../utils/lastSiblingNode"
+import getContainer from "../utils/getContainer"
 import removeLines from "../utils/removeLines"
 import setCaret from "../utils/setCaret"
 import { toHTML, toMarkdown, checkModifs } from "./contentControl"
@@ -13,20 +14,21 @@ export function copyEvent(e: ClipboardEvent) {
 	}
 }
 
-export function cutEvent(e: ClipboardEvent, container: Element) {
+export function cutEvent(e: ClipboardEvent) {
 	const selected = getSelectedLines()
 
 	if (selected.length > 0) {
 		e.clipboardData?.setData("text/plain", toMarkdown(selected))
 		e.preventDefault()
-		removeLines(selected, container)
+		removeLines(selected)
 	}
 }
 
-export function pasteEvent(e: ClipboardEvent, container: HTMLElement) {
+export function pasteEvent(e: ClipboardEvent) {
 	e.preventDefault()
 
 	// transform paste content to plaintext
+	const container = getContainer()
 	const selection = window.getSelection()
 	const range = selection?.getRangeAt(0)
 	const text = e.clipboardData?.getData("text") || ""
@@ -38,7 +40,7 @@ export function pasteEvent(e: ClipboardEvent, container: HTMLElement) {
 		const linesInNew = newHTML.childElementCount - 1 // before document fragment gets consumed
 
 		// When pasting after selection, line is last selected block
-		const selected = getSelectedLines(container)
+		const selected = getSelectedLines()
 		if (selected.length > 0) {
 			notesline = selected[selected.length - 1] as HTMLElement
 		}

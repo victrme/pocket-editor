@@ -1,5 +1,6 @@
 import { cutEvent, copyEvent, pasteEvent } from "./lib/clipboardControl"
 import { toHTML, toMarkdown } from "./lib/contentControl"
+import { setContainer } from "./utils/getContainer"
 import paragraphControl from "./lib/paragraphControl"
 import lineSelection from "./lib/lineSelection"
 import lineDeletion from "./lib/lineDeletion"
@@ -8,7 +9,7 @@ import caretControl from "./lib/caretControl"
 import initUndo from "./lib/undo"
 
 export default function pocketEditor(wrapper: string) {
-	const container = document.createElement("div")
+	const container = setContainer(document.createElement("div"))
 
 	// Delete all content before & append generated HTML
 	function set(string: string) {
@@ -18,12 +19,11 @@ export default function pocketEditor(wrapper: string) {
 
 	function get() {
 		const lines = Object.values(container.querySelectorAll(".line"))
-		if (lines) return toMarkdown(lines)
-		return ""
+		return toMarkdown(lines)
 	}
 
 	function oninput(callback: Function) {
-		const cb = (e: Event) => {
+		function cb(e: Event) {
 			if (e.type === "beforeinput") {
 				// Apply beforeinput only on deleteContentBackward & insertParagraph
 				if (!(e as InputEvent).inputType.match(/(deleteContentBackward|insertParagraph)/g)) {
@@ -49,18 +49,16 @@ export default function pocketEditor(wrapper: string) {
 	container.id = "pocket-editor"
 
 	setTimeout(() => {
-		lineSelection(container)
-		lineDeletion(container)
-		initUndo(container)
+		lineSelection()
+		lineDeletion()
+		initUndo()
 	}, 0)
 
-	container.addEventListener("paste", (e) => pasteEvent(e, container))
-	container.addEventListener("cut", (e) => cutEvent(e, container))
+	container.addEventListener("paste", pasteEvent)
+	container.addEventListener("cut", cutEvent)
 	container.addEventListener("copy", copyEvent)
-
-	container.addEventListener("input", (e) => paragraphControl(e, container))
-	container.addEventListener("beforeinput", (e) => paragraphControl(e, container))
-	container.addEventListener("keydown", caretControl)
+	container.addEventListener("beforeinput", paragraphControl)
+	container.addEventListener("input", paragraphControl)
 	container.addEventListener("keydown", caretControl)
 
 	container.appendChild(generateLine({ text: "" }))
