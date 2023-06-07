@@ -1,7 +1,8 @@
-import { toHTML, toMarkdown } from "./contentControl"
 import lastSiblingNode from "../utils/lastSiblingNode"
-import setCaret from "../utils/setCaret"
+import { toHTML, toMarkdown } from "./contentControl"
 import getContainer from "../utils/getContainer"
+import { getLines } from "../utils/getLines"
+import setCaret from "../utils/setCaret"
 
 type History = {
 	index: number
@@ -10,10 +11,10 @@ type History = {
 
 let history: History[] = []
 
-export function addUndoHistory(lastline?: Element | null): void {
-	const container = getContainer()
-	const markdown = toMarkdown(Object.values(container.children))
-	const index = Array.from(container.children).indexOf(lastline ?? container.children[0])
+export function addUndoHistory(lastline?: HTMLElement | null): void {
+	const lines = getLines()
+	const markdown = toMarkdown(lines)
+	const index = lastline ? lines.indexOf(lastline) : 0
 
 	if (markdown === history[0]?.markdown ?? "") {
 		return

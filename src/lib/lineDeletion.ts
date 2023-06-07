@@ -1,5 +1,6 @@
-import removeModifier from "../utils/removeModifier"
+import { getLineFromEditable, getPrevLine } from "../utils/getLines"
 import lastSiblingNode from "../utils/lastSiblingNode"
+import removeModifier from "../utils/removeModifier"
 import getContainer from "../utils/getContainer"
 import setCaret from "../utils/setCaret"
 import { addUndoHistory } from "./undo"
@@ -32,8 +33,8 @@ export default function lineDeletion() {
 	const sel = window.getSelection()
 
 	function applyLineRemove(e: Event) {
-		const editable = e.target as Element
-		const prevLine = editable.parentElement?.previousElementSibling
+		const editable = e.target as HTMLElement
+		const line = getLineFromEditable(editable) as HTMLElement
 
 		const isEditable = !!editable.getAttribute("contenteditable")
 		const isAtStart = sel?.getRangeAt(0)?.endOffset === 0
@@ -48,19 +49,21 @@ export default function lineDeletion() {
 
 		// Add this condition because of a conflit
 		// with "backspace in lineSelection.ts" creating a double history
-		if (editable?.parentElement) {
-			addUndoHistory(editable?.parentElement)
+		if (line) {
+			addUndoHistory(line)
 		}
 
-		if (editable.parentElement?.classList.contains("mod")) {
+		if (line?.classList.contains("mod")) {
 			removeModifier(editable)
 			return
 		}
 
-		if (!prevLine) return
+		const prevline = getPrevLine(line)
 
-		if (editable.textContent === "") removeLineNoText(editable, prevLine)
-		if (editable.textContent !== "") removeLineWithText(editable, prevLine)
+		if (prevline) {
+			if (editable.textContent === "") removeLineNoText(editable, prevline)
+			if (editable.textContent !== "") removeLineWithText(editable, prevline)
+		}
 	}
 
 	//

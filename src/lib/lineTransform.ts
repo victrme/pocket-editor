@@ -1,16 +1,18 @@
-function toHeading(target: HTMLElement, tag: string, focus?: true) {
+import { getLineFromEditable } from "../utils/getLines"
+
+function toHeading(editable: HTMLElement, tag: string, focus?: true) {
 	const heading = document.createElement(tag)
-	const parent = target.parentElement
+	const line = getLineFromEditable(editable)
 
 	// Remove markdown characters
 	let mod = tag === "h1" ? "#" : tag === "h2" ? "##" : "###"
-	heading.textContent = target.textContent?.replace(mod, "").trimStart() || ""
+	heading.textContent = editable.textContent?.replace(mod, "").trimStart() || ""
 
 	heading.setAttribute("contenteditable", "true")
 
-	if (parent) {
-		parent.className = "line mod " + tag
-		target.replaceWith(heading)
+	if (line) {
+		line.className = "line mod " + tag
+		editable.replaceWith(heading)
 	}
 
 	if (focus) {
@@ -18,12 +20,12 @@ function toHeading(target: HTMLElement, tag: string, focus?: true) {
 	}
 }
 
-function toTodolist(target: HTMLElement, checked: boolean, focus?: true) {
+function toTodolist(editable: HTMLElement, checked: boolean, focus?: true) {
 	const input = document.createElement("input")
 	const span = document.createElement("span")
-	const parent = target.parentElement
+	const line = getLineFromEditable(editable)
 
-	if (!parent) return
+	if (!line) return
 
 	input.type = "checkbox"
 	input.addEventListener("input", () => {
@@ -35,38 +37,38 @@ function toTodolist(target: HTMLElement, checked: boolean, focus?: true) {
 		input.setAttribute("checked", "")
 	}
 
-	parent.className = "line mod todo"
+	line.className = "line mod todo"
 	span.className = "todo-marker"
 	span.appendChild(input)
-	parent.prepend(span)
+	line.prepend(span)
 
-	const str = target.textContent || ""
+	const str = editable.textContent || ""
 	if (str.indexOf("[ ]") === 0 || str.indexOf("[x]") === 0) {
-		target.textContent = str.slice(4, str.length)
+		editable.textContent = str.slice(4, str.length)
 	}
 
 	if (focus) {
-		target.focus()
+		editable.focus()
 	}
 }
 
-function toUnorderedList(target: HTMLElement, focus?: true) {
+function toUnorderedList(editable: HTMLElement, focus?: true) {
 	const span = document.createElement("span")
-	const parent = target.parentElement
+	const line = getLineFromEditable(editable)
 
-	if (!parent) return
+	if (!line) return
 
 	span.dataset.content = "•"
 	span.className = "list-dot"
-	parent.className = "line mod ul-list"
-	parent.prepend(span)
+	line.className = "line mod ul-list"
+	line.prepend(span)
 
-	if (target.textContent?.indexOf("-") === 0) {
-		target.textContent = target.textContent?.replace("-", "").trimStart()
+	if (editable.textContent?.indexOf("-") === 0) {
+		editable.textContent = editable.textContent?.replace("-", "").trimStart()
 	}
 
 	if (focus) {
-		target.focus()
+		editable.focus()
 	}
 }
 

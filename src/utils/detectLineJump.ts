@@ -1,3 +1,5 @@
+import { getLineFromEditable, getLines, getNextLine, getPrevLine } from "./getLines"
+
 type DetectLineJumpReturn = {
 	line: HTMLElement
 	dir: "down" | "up"
@@ -5,9 +7,9 @@ type DetectLineJumpReturn = {
 
 // Very heavy way to detect first/last line of paragraph
 // But average char width cannot work with custom fonts
-function isOnVerticalLineEdge(range?: Range, notesline?: Element) {
+function isOnVerticalLineEdge(range?: Range, line?: HTMLElement) {
 	const rangeRects = range?.getClientRects()[0]
-	const lineRects = notesline?.getBoundingClientRect()
+	const lineRects = line?.getBoundingClientRect()
 	let topEdge: boolean
 	let bottomEdge: boolean
 
@@ -30,19 +32,20 @@ export default function detectLineJump(e: KeyboardEvent): DetectLineJumpReturn |
 		return
 	}
 
-	const line = (e.target as HTMLElement)?.parentElement
+	const editable = e.target as HTMLElement
+	const lines = getLines()
+	const line = getLineFromEditable(editable)
 	const range = window?.getSelection()?.getRangeAt(0)
 	const txtLen = range?.startContainer?.nodeValue?.length
 
 	if (!range || !line) return // range must exists
 
-	const prevSibling = line?.previousElementSibling
-	const nextSibling = line?.nextElementSibling
+	const prevSibling = getPrevLine(line, lines)
+	const nextSibling = getNextLine(line, lines)
 	const isCaretAtZero = range?.startOffset === 0
 	const isCaretAtEnd = range?.startOffset === txtLen
 	const isSelectionAtEnd = range?.endOffset === txtLen
 
-	// When user is selecting text (shiftKey might not be very compatible (we'll see))
 	if (e.shiftKey) {
 		if (!!nextSibling && isSelectionAtEnd && e.key.match(/^Arrow(Down|Right)$/)) {
 			return { line, dir: "down" }

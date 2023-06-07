@@ -1,4 +1,4 @@
-import getSelectedLines from "../utils/getSelectedLines"
+import { getLines, getSelectedLines, getLineFromEditable } from "../utils/getLines"
 import lastSiblingNode from "../utils/lastSiblingNode"
 import detectLineJump from "../utils/detectLineJump"
 import getContainer from "../utils/getContainer"
@@ -47,19 +47,15 @@ export default function lineSelection() {
 		sel?.addRange(range)
 	}
 
-	function getLineIndex(editable: Element) {
-		if (editable?.parentElement) {
-			const notesLines = Object.values(container.getElementsByClassName("line"))
-			const selected = notesLines.indexOf(editable.parentElement)
-			return selected
-		}
-
-		return -1
+	function getLineIndex(editable: HTMLElement) {
+		const line = getLineFromEditable(editable)
+		const lines = getLines()
+		return line ? lines.indexOf(line) : -1
 	}
 
 	function resetLineSelection() {
 		// Focus on last highlighted line
-		const line = Object.values(container.getElementsByClassName("line"))[currentLine]
+		const line = getLines()[currentLine]
 		const editable = line?.querySelector("[contenteditable]")
 		if (editable) setCaret(lastSiblingNode(line).node)
 
@@ -86,8 +82,7 @@ export default function lineSelection() {
 	}
 
 	function applyLineSelection(interval: [number, number]) {
-		const notesLines = Object.values(container.querySelectorAll(".line"))
-		notesLines.forEach((line, i) => {
+		getLines().forEach((line, i) => {
 			// Index is between interval
 			if (i >= interval[0] && i <= interval[1]) {
 				line.classList.add("sel")
@@ -109,8 +104,8 @@ export default function lineSelection() {
 	//
 
 	function keyboardEvent(e: KeyboardEvent) {
-		const allLines = Object.values(document.querySelectorAll<HTMLElement>(".line"))
-		const selected = Object.values(document.querySelectorAll<HTMLElement>(".sel"))
+		const allLines = getLines()
+		const selected = getSelectedLines()
 
 		if (e.key === "Control" || e.key === "Meta") return
 
@@ -176,7 +171,7 @@ export default function lineSelection() {
 	}
 
 	function mouseMoveEvent(e: MouseEvent) {
-		const target = e.target as Element
+		const target = e.target as HTMLElement
 		const selected = getSelectedLines()
 
 		if (selected.length > 0) {
@@ -195,7 +190,7 @@ export default function lineSelection() {
 	}
 
 	function mouseDownEvent(e: MouseEvent) {
-		const target = e.target as Element
+		const target = e.target as HTMLElement
 
 		if (e.button === 2) e.preventDefault() // right click doesn't trigger click
 		if (e.button !== 0) return

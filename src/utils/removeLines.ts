@@ -1,19 +1,20 @@
 import generateLine from "../lib/lineGenerate"
 import getContainer from "./getContainer"
+import { getPrevLine } from "./getLines"
 import setCaret from "./setCaret"
 
 function insertAfter(newNode: Node, existingNode: Node) {
 	existingNode?.parentNode?.insertBefore(newNode, existingNode.nextSibling)
 }
 
-export default function removeLines(lines: Element[]) {
-	const prevLine = lines[0].previousElementSibling
+export default function removeLines(lines: HTMLElement[]) {
 	const container = getContainer()
 	const emptyLine = generateLine()
+	const prevline = getPrevLine(lines[0])
 
 	lines.forEach((line) => line.remove())
 
-	prevLine ? insertAfter(emptyLine, prevLine) : container.prepend(emptyLine)
+	prevline ? insertAfter(emptyLine, prevline) : container.prepend(emptyLine)
 
 	setCaret(emptyLine?.childNodes[0])
 

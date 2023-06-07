@@ -1,3 +1,4 @@
+import { getLineFromEditable, getNextLine } from "../utils/getLines"
 import removeModifier from "../utils/removeModifier"
 import getContainer from "../utils/getContainer"
 import modList from "../utils/modList"
@@ -14,12 +15,12 @@ export default function paragraphControl(e: Event) {
 		return
 	}
 
-	const line = (e.target as Element)?.parentElement
+	const line = getLineFromEditable(editable)
 	const insertParagraph = (e as InputEvent)?.inputType === "insertParagraph"
 	const insertText = (e as InputEvent)?.inputType === "insertText"
 	let modif
 
-	if (e.type === "beforeinput" && insertParagraph) {
+	if (e.type === "beforeinput" && insertParagraph && line) {
 		e.preventDefault()
 		addUndoHistory(line)
 
@@ -34,17 +35,16 @@ export default function paragraphControl(e: Event) {
 		if (line?.classList.contains("todo")) modif = "todo"
 		if (line?.classList.contains("ul-list")) modif = "unordered"
 
+		const nextline = getNextLine(line)
 		const newline = generateLine({
 			text: nexttext,
 			modif: modif,
 		})
 
-		line?.nextElementSibling
-			? container.insertBefore(newline, line.nextElementSibling)
-			: container?.appendChild(newline)
+		if (nextline) container.insertBefore(newline, nextline)
+		else container?.appendChild(newline)
 
 		newline.querySelector<HTMLElement>("[contenteditable]")?.focus()
-
 		editable.textContent = cuttext
 
 		return

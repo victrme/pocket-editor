@@ -1,5 +1,7 @@
-import detectLineJump from "../utils/detectLineJump"
+import { getLines, getNextLine, getPrevLine } from "../utils/getLines"
 import lastSiblingNode from "../utils/lastSiblingNode"
+import detectLineJump from "../utils/detectLineJump"
+import getContainer from "../utils/getContainer"
 
 function rangePosInCharLen(line: Element | null, str: string): number | null {
 	const sel = window.getSelection()
@@ -37,13 +39,14 @@ function rangePosInCharLen(line: Element | null, str: string): number | null {
 	return charCount
 }
 
-function getParagraphAsArray(line: Element | null): string[] {
+function getParagraphAsArray(line: HTMLElement | null): string[] {
 	if (!line) {
 		console.warn("Couldn't get string[], line undefined")
 		return []
 	}
 
 	// Create a temporary clone of the paragraph
+	const container = getContainer()
 	const lineRect = line.getBoundingClientRect()
 	const wrapper = document.createElement("div")
 	const clone = line.cloneNode(true)
@@ -53,7 +56,7 @@ function getParagraphAsArray(line: Element | null): string[] {
 
 	// Append the clone to the document body
 	wrapper?.appendChild(clone)
-	document.getElementById("pocket-editor")?.appendChild(wrapper)
+	container?.appendChild(wrapper)
 
 	const editable = wrapper.querySelector("[contenteditable]")
 
@@ -90,6 +93,8 @@ function getParagraphAsArray(line: Element | null): string[] {
 
 export default function caretControl(e: KeyboardEvent) {
 	const { line, dir } = detectLineJump(e) ?? {}
+	const lines = getLines()
+
 	if (!line) return
 
 	const goesRight = e.key === "ArrowRight"
@@ -100,21 +105,21 @@ export default function caretControl(e: KeyboardEvent) {
 	let node
 
 	if (dir === "down") {
-		const targetline = line?.nextElementSibling
-		node = lastSiblingNode(targetline as Node).node
+		const nextline = getNextLine(line, lines) ?? line
+		node = lastSiblingNode(nextline).node
 		const textlen = node.nodeValue?.length || 0
 
 		if (!goesRight) {
-			const rows = getParagraphAsArray(targetline)
-			offset = rangePosInCharLen(targetline, rows[0]) ?? -1
+			const rows = getParagraphAsArray(nextline)
+			offset = rangePosInCharLen(nextline, rows[0]) ?? -1
 
 			if (offset < 0) offset = textlen
 		}
 	}
 
 	if (dir === "up") {
-		const targetline = line?.previousElementSibling
-		node = lastSiblingNode(targetline as Node).node
+		const targetline = getPrevLine(line, lines) ?? line
+		node = lastSiblingNode(targetline).node
 		const textlen = node.nodeValue?.length || 0
 
 		offset = textlen

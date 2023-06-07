@@ -1,11 +1,12 @@
 import { cutEvent, copyEvent, pasteEvent } from "./lib/clipboardControl"
 import { toHTML, toMarkdown } from "./lib/contentControl"
-import { setContainer } from "./utils/getContainer"
 import paragraphControl from "./lib/paragraphControl"
+import { setContainer } from "./utils/getContainer"
 import lineSelection from "./lib/lineSelection"
 import lineDeletion from "./lib/lineDeletion"
 import generateLine from "./lib/lineGenerate"
 import caretControl from "./lib/caretControl"
+import { getLines } from "./utils/getLines"
 import initUndo from "./lib/undo"
 
 export default function pocketEditor(wrapper: string) {
@@ -18,8 +19,7 @@ export default function pocketEditor(wrapper: string) {
 	}
 
 	function get() {
-		const lines = Object.values(container.querySelectorAll(".line"))
-		return toMarkdown(lines)
+		return toMarkdown(getLines(container))
 	}
 
 	function oninput(callback: Function) {
@@ -55,14 +55,18 @@ export default function pocketEditor(wrapper: string) {
 	}, 0)
 
 	container.addEventListener("paste", pasteEvent)
-	container.addEventListener("cut", cutEvent)
 	container.addEventListener("copy", copyEvent)
+	container.addEventListener("cut", cutEvent)
 	container.addEventListener("beforeinput", paragraphControl)
 	container.addEventListener("input", paragraphControl)
 	container.addEventListener("keydown", caretControl)
 
 	container.appendChild(generateLine({ text: "" }))
 	document.getElementById(wrapper)?.appendChild(container)
+
+	if (document.getElementById(wrapper) === null) {
+		throw 'Pocket editor: id "' + wrapper + '" was not found'
+	}
 
 	return { set, get, oninput }
 }

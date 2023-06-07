@@ -1,9 +1,9 @@
-import getSelectedLines from "../utils/getSelectedLines"
+import { getLines, getSelectedLines, getLineFromEditable, getNextLine } from "../utils/getLines"
+import { toHTML, toMarkdown, checkModifs } from "./contentControl"
 import lastSiblingNode from "../utils/lastSiblingNode"
 import getContainer from "../utils/getContainer"
 import removeLines from "../utils/removeLines"
 import setCaret from "../utils/setCaret"
-import { toHTML, toMarkdown, checkModifs } from "./contentControl"
 
 export function copyEvent(e: ClipboardEvent) {
 	const selected = getSelectedLines()
@@ -35,39 +35,41 @@ export function pasteEvent(e: ClipboardEvent) {
 
 	// Text starts with a spcial char, create new lines
 	if (checkModifs(text) !== "") {
-		let notesline = (e.target as Element)?.parentElement
+		const editable = e.target as HTMLElement
 		const newHTML = toHTML(text)
 		const linesInNew = newHTML.childElementCount - 1 // before document fragment gets consumed
+		const lines = getLines()
+		let line = getLineFromEditable(editable)
 
 		// When pasting after selection, line is last selected block
 		const selected = getSelectedLines()
 		if (selected.length > 0) {
-			notesline = selected[selected.length - 1] as HTMLElement
+			line = selected[selected.length - 1] as HTMLElement
 		}
 
-		if (!notesline?.classList.contains("line")) {
+		if (!line?.classList.contains("line")) {
 			return
 		}
 
 		// Adds content: after line with caret position
-		container.insertBefore(newHTML, notesline.nextSibling)
+		container.insertBefore(newHTML, getNextLine(line, lines))
 
 		// Place caret: Gets last line in paste content
-		let lastline = notesline.nextSibling
+		let lastline = line.nextSibling
 		for (let ii = 0; ii < linesInNew; ii++) lastline ? (lastline = lastline.nextSibling) : ""
 		if (lastline) setCaret(lastSiblingNode(lastline).node)
 
 		// Pasting "on same line" (it actually removes empty line)
 		// For plaintext, lists & todos
-		if (notesline.textContent === "") {
-			function areSameMods(mod: string) {
-				const curr = notesline?.classList
-				const next = notesline?.nextElementSibling?.classList
+		if (line && line.textContent === "") {
+			const areSameMods = (mod: string) => {
+				const curr = line?.classList
+				const next = getNextLine(line!, lines)?.classList
 				return curr?.contains(mod) === next?.contains(mod)
 			}
 
-			if (!notesline.classList.contains("mod") || areSameMods("ul-lists") || areSameMods("todo")) {
-				notesline.remove()
+			if (!line.classList.contains("mod") || areSameMods("ul-lists") || areSameMods("todo")) {
+				line.remove()
 			}
 		}
 
