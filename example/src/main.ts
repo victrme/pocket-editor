@@ -4,14 +4,14 @@ import "./style.css"
 
 const content = `## This is pocket editor !
 
-You can transform by starting a line with these characters:
+You can transform a line by starting with these characters:
 -   "# " creates a big heading
 -   "## " medium heading
 -   "### " small heading
 -   "- " simple list
 -   "[ ] " todo list
 
-### Todays list
+### Today's list
 
 [x] Check sitting posture
 [ ] Stay hydrated`
