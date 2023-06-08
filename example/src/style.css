@@ -1,13 +1,11 @@
-:root {
-	--pe-color-text-selection: #dcd7c9;
-	--pe-color-line-selection: #fff2;
-	--pe-color-background: #3f4e4f;
-	--pe-color-text: #dcd7c9;
-}
-
 ::selection {
 	color: var(--pe-color-text-selection);
 	background-color: var(--pe-color-line-selection);
+}
+
+:root {
+	--pe-color-text: #494949;
+	--pe-color-text-selection: #494949;
 }
 
 * {
@@ -18,56 +16,63 @@ body {
 	margin: auto;
 	padding: 1em;
 	max-width: 35em;
-	color: #dcd7c9;
-	background-color: #2c3639;
+	color: var(--pe-color-text);
+	background-color: #fafafa;
 	font-family: "Segoe UI", Inter, Avenir, Helvetica, Arial, sans-serif;
 }
 
 header {
 	margin: 5vh 0;
+	text-align: center;
 }
 
 header h1 {
-	margin: 0;
-	font-size: 5em;
-	text-align: center;
-	font-weight: normal;
-	font-family: "Covered By Your Grace";
+	display: inline-block;
+	font-size: 3.5em;
+	margin: 0 0.3em 0 1em;
+	padding: 0 1em 0 0.3em;
+	color: black;
+	background-color: yellow;
+	font-family: "Reenie Beanie";
 }
 
 #links {
-	gap: 1em;
 	display: flex;
-	justify-content: center;
+	place-content: center;
 }
 
 #links a {
-	color: #dcd7c9;
-	line-height: 1.5em;
+	display: inline-flex;
+	align-items: center;
+	margin: 1em;
+	gap: 0.5em;
+	color: inherit;
+	font-weight: bold;
 	text-decoration: none;
-	transition: opacity 0.05s;
-}
-
-#links img {
-	margin-right: 0.4em;
-	vertical-align: bottom;
 }
 
 #links a:hover {
 	text-decoration: underline;
 }
 
+#wrapper {
+	border-radius: 6px;
+	overflow: hidden;
+	box-shadow: 0 0 60px #0001;
+}
+
 #b_reset {
 	display: block;
-	margin: 1em auto;
+	margin: 2em auto;
 	padding: 0.6em 2em;
 	border: none;
+	border-radius: 4px;
 	font-weight: bold;
 	font-family: inherit;
-	color: #dcd7c9;
 	cursor: pointer;
 	outline: none;
-	background-color: #3f4e4f;
+	color: white;
+	background-color: #0060df;
 }
 
 #b_reset:focus-visible {
@@ -84,11 +89,9 @@ header h1 {
 		padding: 1em;
 	}
 
-	header {
-		margin-top: 3em;
-	}
-
 	header h1 {
-		font-size: 3.5em;
+		font-size: 3em;
+		margin: 0 0.3em;
+		padding: 0 0.3em;
 	}
 }

@@ -2,7 +2,7 @@ import pocketEditor from "../../src/index"
 import "../../src/style.css"
 import "./style.css"
 
-const content = `## This is pocket editor !
+const content = `## This is pocket editor
 
 You can transform a line by starting with these characters:
 -   "# " creates a big heading
