@@ -24,12 +24,19 @@ function rangePosInCharLen(line: Element | null, str: string): number | null {
 
 	let charCount: ReturnType<typeof rangePosInCharLen> = null
 
+	const span = document.createElement("span")
+	span.textContent = "abcdefghijklmnopqrstuvwxyz"
+	elem.appendChild(span)
+	const averageCharWidth = span.offsetWidth / 26
+
+	elem.textContent = ""
+
 	for (const char of str.split("")) {
 		const span = document.createElement("span")
 		span.textContent = char
 		elem.appendChild(span)
 
-		if (span.offsetLeft >= ox) {
+		if (span.offsetLeft + averageCharWidth / 2 >= ox) {
 			charCount = Math.max(0, elem.childElementCount - 1)
 			break
 		}
