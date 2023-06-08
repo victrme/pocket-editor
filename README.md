@@ -21,6 +21,18 @@ This is yet another wysiwyg editor, it focuses mainly on two things:
 npm install pocket-editor
 ```
 
+### What you can do
+
+```ts
+
+function pocketEditor(string): {
+  get: () => string;
+  set: (string) => void;
+  oninput: (Function) => void;
+}
+
+```
+
 ### How to use
 
 ```html
@@ -29,24 +41,16 @@ npm install pocket-editor
 </body>
 ```
 
-```js
+```ts
 import pocketEditor from "pocket-editor"
 import "pocket-editor/dist/style.css"
 
 const editor = pocketEditor("wrapper")
 
-// Replaces editor content
-editor.set("## Hello World")
+editor.set("## Hello world !!")
 
-// Get content as markdown
-console.log(editor.get())
-
-// Event for all editor changes
-editor.oninput(function () {
-  // ...
+editor.oninput(function logToConsole() {
+  const content = editor.get()
+  console.log(content)
 })
 ```
-
-### Todo list
-
--   [ ] Improve caret precision when jumping paragraphs
