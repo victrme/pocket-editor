@@ -16,7 +16,7 @@ export default function removeLines(lines: HTMLElement[]) {
 
 	prevline ? insertAfter(emptyLine, prevline) : container.prepend(emptyLine)
 
-	setCaret(emptyLine?.childNodes[0])
+	setCaret(emptyLine)
 
 	// Mock event to trigger oninput
 	container.dispatchEvent(

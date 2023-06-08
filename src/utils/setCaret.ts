@@ -1,4 +1,7 @@
-export default function setCaret(node: Node, atStart?: boolean) {
+import lastSiblingNode from "./lastSiblingNode"
+
+export default function setCaret(elem: Element | Node, atStart?: boolean) {
+	const node = lastSiblingNode(elem)
 	let sel = window.getSelection()
 	let range = document.createRange()
 

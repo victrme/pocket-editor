@@ -16,12 +16,15 @@ export default function generateLine(props?: { text?: string; modif?: string }) 
 	// Transform line
 	switch (props?.modif) {
 		case "todo":
-		case "todo-checked":
-			lineTransform.toTodolist(editable, props?.modif === "todo-checked")
+			lineTransform.toTodolist(editable, false)
 			break
 
-		case "unordered":
-			lineTransform.toUnorderedList(editable)
+		case "todo-checked":
+			lineTransform.toTodolist(editable, true)
+			break
+
+		case "list":
+			lineTransform.toList(editable)
 			break
 
 		case "h1":

@@ -2,8 +2,8 @@ const modList = [
 	["h1", "#"],
 	["h2", "##"],
 	["h3", "###"],
+	["list", "-"],
 	["todo", "[ ]"],
-	["unordered", "-"],
 	["todo-checked", "[x]"],
 ]
 

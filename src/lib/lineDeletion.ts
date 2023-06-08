@@ -6,12 +6,13 @@ import setCaret from "../utils/setCaret"
 import { addUndoHistory } from "./undo"
 
 function removeLineNoText(editable: Element, prevline: Element) {
-	setCaret(lastSiblingNode(prevline).node)
+	setCaret(prevline)
 	editable.parentElement?.remove()
 }
 
 function removeLineWithText(editable: Element, prevLine: Element) {
-	const { node, isTextNode } = lastSiblingNode(prevLine as Node)
+	const node = lastSiblingNode(prevLine as Node)
+	const isTextNode = node.nodeType === 3
 	const charAmount = node.nodeValue?.length || 0
 
 	const targetText = editable?.textContent || ""
@@ -53,7 +54,7 @@ export default function lineDeletion() {
 			addUndoHistory(line)
 		}
 
-		if (line?.classList.contains("mod")) {
+		if (line?.classList.length > 1) {
 			removeModifier(editable)
 			return
 		}

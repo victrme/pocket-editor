@@ -1,6 +1,5 @@
 import { getLines, getSelectedLines, getLineFromEditable, getNextLine } from "../utils/getLines"
 import { toHTML, toMarkdown, checkModifs } from "./contentControl"
-import lastSiblingNode from "../utils/lastSiblingNode"
 import getContainer from "../utils/getContainer"
 import removeLines from "../utils/removeLines"
 import setCaret from "../utils/setCaret"
@@ -57,7 +56,7 @@ export function pasteEvent(e: ClipboardEvent) {
 		// Place caret: Gets last line in paste content
 		let lastline = line.nextSibling
 		for (let ii = 0; ii < linesInNew; ii++) lastline ? (lastline = lastline.nextSibling) : ""
-		if (lastline) setCaret(lastSiblingNode(lastline).node)
+		if (lastline) setCaret(lastline)
 
 		// Pasting "on same line" (it actually removes empty line)
 		// For plaintext, lists & todos
@@ -68,7 +67,12 @@ export function pasteEvent(e: ClipboardEvent) {
 				return curr?.contains(mod) === next?.contains(mod)
 			}
 
-			if (!line.classList.contains("mod") || areSameMods("ul-lists") || areSameMods("todo")) {
+			if (
+				line.classList.length > 1 ||
+				areSameMods("list") ||
+				areSameMods("todo") ||
+				areSameMods("todo-checked")
+			) {
 				line.remove()
 			}
 		}
@@ -80,6 +84,6 @@ export function pasteEvent(e: ClipboardEvent) {
 	if (selection?.rangeCount && range) {
 		selection.deleteFromDocument()
 		range.insertNode(document.createTextNode(text))
-		setCaret(lastSiblingNode(range.endContainer).node)
+		setCaret(range.endContainer)
 	}
 }

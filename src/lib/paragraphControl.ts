@@ -27,13 +27,14 @@ export default function paragraphControl(e: Event) {
 		const cuttext = (editable.textContent ?? "").slice(0, range.startOffset)
 		const nexttext = (editable.textContent ?? "").slice(range.startOffset)
 
-		if (range.startOffset === 0 && line?.classList?.contains("mod")) {
+		if (range.startOffset === 0 && line?.classList?.length > 1) {
 			removeModifier(editable)
 			return
 		}
 
 		if (line?.classList.contains("todo")) modif = "todo"
-		if (line?.classList.contains("ul-list")) modif = "unordered"
+		if (line?.classList.contains("list")) modif = "list"
+		if (line?.classList.contains("todo-checked")) modif = "todo"
 
 		const nextline = getNextLine(line)
 		const newline = generateLine({
@@ -69,8 +70,7 @@ export default function paragraphControl(e: Event) {
 
 		if (isTargetTitle === false) {
 			if (modif === "todo") lineTransform.toTodolist(editable, false, true)
-			if (modif === "todo-checked") lineTransform.toTodolist(editable, false, true)
-			if (modif === "unordered") lineTransform.toUnorderedList(editable, true)
+			if (modif === "list") lineTransform.toList(editable, true)
 		}
 	}
 }

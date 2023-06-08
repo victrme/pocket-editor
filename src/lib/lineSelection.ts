@@ -1,5 +1,4 @@
 import { getLines, getSelectedLines, getLineFromEditable } from "../utils/getLines"
-import lastSiblingNode from "../utils/lastSiblingNode"
 import detectLineJump from "../utils/detectLineJump"
 import getContainer from "../utils/getContainer"
 import removeLines from "../utils/removeLines"
@@ -57,7 +56,7 @@ export default function lineSelection() {
 		// Focus on last highlighted line
 		const line = lines[currentLine]
 		const editable = line?.querySelector("[contenteditable]")
-		if (editable) setCaret(lastSiblingNode(line).node)
+		if (editable) setCaret(line)
 
 		// Reset selection variables
 		currentLine = -1

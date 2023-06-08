@@ -10,7 +10,7 @@ function rangePosInCharLen(line: Element | null, str: string): number | null {
 	const cx = line?.querySelector("[contenteditable]")?.getBoundingClientRect().x ?? 0
 	const ox = rx - cx
 
-	const lineMod = line?.className.replace("line mod ", "").toLocaleUpperCase() // headings have diff character sizes
+	const lineMod = line?.className.replace("line ", "").toLocaleUpperCase() // headings have diff character sizes
 	const tagName = lineMod?.includes("H") ? lineMod : "p"
 	const elem = document.createElement(tagName)
 
@@ -106,7 +106,7 @@ export default function caretControl(e: KeyboardEvent) {
 
 	if (dir === "down") {
 		const nextline = getNextLine(line, lines) ?? line
-		node = lastSiblingNode(nextline).node
+		node = lastSiblingNode(nextline)
 		const textlen = node.nodeValue?.length || 0
 
 		if (!goesRight) {
@@ -119,7 +119,7 @@ export default function caretControl(e: KeyboardEvent) {
 
 	if (dir === "up") {
 		const targetline = getPrevLine(line, lines) ?? line
-		node = lastSiblingNode(targetline).node
+		node = lastSiblingNode(targetline)
 		const textlen = node.nodeValue?.length || 0
 
 		offset = textlen

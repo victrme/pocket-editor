@@ -11,7 +11,7 @@ function toHeading(editable: HTMLElement, tag: string, focus?: true) {
 	heading.setAttribute("contenteditable", "true")
 
 	if (line) {
-		line.className = "line mod " + tag
+		line.className = "line " + tag
 		editable.replaceWith(heading)
 	}
 
@@ -29,6 +29,8 @@ function toTodolist(editable: HTMLElement, checked: boolean, focus?: true) {
 
 	input.type = "checkbox"
 	input.addEventListener("input", () => {
+		line.classList.toggle("todo-checked", input.checked)
+		line.classList.toggle("todo", !input.checked)
 		if (input.checked) input.setAttribute("checked", "")
 		else input.removeAttribute("checked")
 	})
@@ -37,7 +39,7 @@ function toTodolist(editable: HTMLElement, checked: boolean, focus?: true) {
 		input.setAttribute("checked", "")
 	}
 
-	line.className = "line mod todo"
+	line.className = "line todo" + (checked ? "-checked" : "")
 	span.className = "todo-marker"
 	span.appendChild(input)
 	line.prepend(span)
@@ -52,7 +54,7 @@ function toTodolist(editable: HTMLElement, checked: boolean, focus?: true) {
 	}
 }
 
-function toUnorderedList(editable: HTMLElement, focus?: true) {
+function toList(editable: HTMLElement, focus?: true) {
 	const span = document.createElement("span")
 	const line = getLineFromEditable(editable)
 
@@ -60,7 +62,7 @@ function toUnorderedList(editable: HTMLElement, focus?: true) {
 
 	span.dataset.content = "•"
 	span.className = "list-dot"
-	line.className = "line mod ul-list"
+	line.className = "line list"
 	line.prepend(span)
 
 	if (editable.textContent?.indexOf("-") === 0) {
@@ -72,4 +74,4 @@ function toUnorderedList(editable: HTMLElement, focus?: true) {
 	}
 }
 
-export default { toHeading, toTodolist, toUnorderedList }
+export default { toHeading, toTodolist, toList }

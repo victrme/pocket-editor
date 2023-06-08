@@ -15,6 +15,7 @@
 
 #pocket-editor .line {
 	display: flex;
+	column-gap: 0.5em;
 	padding: 0 0.75em;
 	margin: 0.25em 0;
 	border-radius: 0.15em;
@@ -36,8 +37,7 @@
 #pocket-editor div.line h1,
 #pocket-editor div.line h2,
 #pocket-editor div.line h3 {
-	margin-top: 0.5em;
-	margin-bottom: 0.5em;
+	margin: 0.5em 0;
 }
 
 #pocket-editor input[type="checkbox"] {
@@ -45,17 +45,17 @@
 	height: 1.3em;
 }
 
-#pocket-editor div.ul-list,
-#pocket-editor div.todo {
-	column-gap: 0.5em;
+#pocket-editor div.todo-checked p {
+	text-decoration: line-through;
+	opacity: 0.9;
 }
 
-#pocket-editor div.ul-list .list-dot {
+#pocket-editor div.list .list-dot {
 	text-align: center;
 	width: 1em;
 }
 
-#pocket-editor div.ul-list .list-dot::before {
+#pocket-editor div.list .list-dot::before {
 	content: attr(data-content);
 }
 

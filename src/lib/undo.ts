@@ -1,4 +1,3 @@
-import lastSiblingNode from "../utils/lastSiblingNode"
 import { toHTML, toMarkdown } from "./contentControl"
 import getContainer from "../utils/getContainer"
 import { getLines } from "../utils/getLines"
@@ -68,7 +67,7 @@ function applyUndo() {
 
 		if (editable) {
 			editable.focus()
-			setCaret(lastSiblingNode(editable).node, false)
+			setCaret(editable, false)
 		}
 	}, 0)
 
