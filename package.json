@@ -1,7 +1,7 @@
 {
 	"name": "pocket-editor",
 	"description": "Blazingly fast block style wysiwyg editor that returns markdown",
-	"version": "1.8.0",
+	"version": "1.8.1",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"author": "Victor Azevedo",
@@ -20,6 +20,6 @@
 		"build": "tsc"
 	},
 	"devDependencies": {
-		"typescript": "^5.0.4"
+		"typescript": "^5.1.3"
 	}
 }
