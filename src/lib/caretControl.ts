@@ -1,5 +1,5 @@
 import { getLines, getNextLine, getPrevLine } from "../utils/getLines"
-import lastSiblingNode from "../utils/lastSiblingNode"
+import lastTextNode from "../utils/lastTextNode"
 import detectLineJump from "../utils/detectLineJump"
 import getContainer from "../utils/getContainer"
 
@@ -113,7 +113,7 @@ export default function caretControl(e: KeyboardEvent) {
 
 	if (dir === "down") {
 		const nextline = getNextLine(line, lines) ?? line
-		node = lastSiblingNode(nextline)
+		node = lastTextNode(nextline)
 		const textlen = node.nodeValue?.length || 0
 
 		if (!goesRight) {
@@ -126,7 +126,7 @@ export default function caretControl(e: KeyboardEvent) {
 
 	if (dir === "up") {
 		const targetline = getPrevLine(line, lines) ?? line
-		node = lastSiblingNode(targetline)
+		node = lastTextNode(targetline)
 		const textlen = node.nodeValue?.length || 0
 
 		offset = textlen
@@ -142,12 +142,16 @@ export default function caretControl(e: KeyboardEvent) {
 		}
 	}
 
-	range.setStart(node as Node, offset)
-	range.setEnd(node as Node, offset)
+	try {
+		range.setStart(node as Node, offset)
+		range.setEnd(node as Node, offset)
+		sel?.removeAllRanges()
+		sel?.addRange(range)
+		sel?.collapseToEnd()
 
-	sel?.removeAllRanges()
-	sel?.addRange(range)
-	sel?.collapseToEnd()
-
-	e.preventDefault()
+		e.preventDefault()
+	} catch (_) {
+		console.log(node)
+		console.log("oupsie")
+	}
 }

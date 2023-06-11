@@ -1,5 +1,5 @@
 import { getLineFromEditable, getPrevLine } from "../utils/getLines"
-import lastSiblingNode from "../utils/lastSiblingNode"
+import lastTextNode from "../utils/lastTextNode"
 import removeModifier from "../utils/removeModifier"
 import getContainer from "../utils/getContainer"
 import setCaret from "../utils/setCaret"
@@ -11,7 +11,7 @@ function removeLineNoText(editable: Element, prevline: Element) {
 }
 
 function removeLineWithText(editable: Element, prevLine: Element) {
-	const node = lastSiblingNode(prevLine as Node)
+	const node = lastTextNode(prevLine as Node)
 	const isTextNode = node.nodeType === 3
 	const charAmount = node.nodeValue?.length || 0
 

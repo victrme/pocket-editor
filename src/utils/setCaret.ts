@@ -1,7 +1,7 @@
-import lastSiblingNode from "./lastSiblingNode"
+import lastTextNode from "./lastTextNode"
 
 export default function setCaret(elem: Element | Node, atStart?: boolean) {
-	const node = lastSiblingNode(elem)
+	const node = lastTextNode(elem)
 	let sel = window.getSelection()
 	let range = document.createRange()
 
