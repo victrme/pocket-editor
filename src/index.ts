@@ -51,10 +51,10 @@ export default function pocketEditor(wrapper: string) {
 	setTimeout(() => {
 		container.addEventListener("beforeinput", paragraphControl)
 		container.addEventListener("input", paragraphControl)
-		container.addEventListener("keydown", caretControl)
 		container.addEventListener("paste", pasteEvent)
 		container.addEventListener("copy", copyEvent)
 		container.addEventListener("cut", cutEvent)
+		caretControl(container)
 		lineSelection()
 		lineDeletion()
 		initUndo()
