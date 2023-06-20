@@ -48,6 +48,14 @@ export default function paragraphControl(e: Event) {
 		newline.querySelector<HTMLElement>("[contenteditable]")?.focus()
 		editable.textContent = cuttext
 
+		container.dispatchEvent(
+			new InputEvent("input", {
+				inputType: "insertText",
+				bubbles: true,
+				data: "",
+			})
+		)
+
 		return
 	}
 

@@ -77,6 +77,14 @@ export function pasteEvent(e: ClipboardEvent) {
 			}
 		}
 
+		container.dispatchEvent(
+			new InputEvent("input", {
+				inputType: "insertText",
+				bubbles: true,
+				data: "",
+			})
+		)
+
 		return
 	}
 
@@ -92,4 +100,12 @@ export function pasteEvent(e: ClipboardEvent) {
 
 		setCaret(range.endContainer)
 	}
+
+	container.dispatchEvent(
+		new InputEvent("input", {
+			inputType: "insertText",
+			bubbles: true,
+			data: "",
+		})
+	)
 }
