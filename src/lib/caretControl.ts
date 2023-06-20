@@ -5,7 +5,7 @@ import detectLineJump from "../utils/detectLineJump"
 export default function caretControl(container: HTMLElement) {
 	let averageCharWidth = 0
 
-	;(function initAverageCharWidth() {
+	function initAverageCharWidth() {
 		const p = document.createElement("p")
 		const span = document.createElement("span")
 		p.id = "pocket-editor-mock-p"
@@ -14,9 +14,8 @@ export default function caretControl(container: HTMLElement) {
 		container.querySelector(".line [contenteditable]")?.appendChild(p)
 		averageCharWidth = span.offsetWidth / 26 / 2
 
-		span.remove()
 		p.remove()
-	})()
+	}
 
 	function rangePosInCharLen(line: Element, str: string): number | null {
 		const sel = window.getSelection()
@@ -102,6 +101,10 @@ export default function caretControl(container: HTMLElement) {
 		let range = document.createRange()
 		let offset = 0
 		let node
+
+		if (averageCharWidth === 0) {
+			initAverageCharWidth()
+		}
 
 		if (dir === "down") {
 			const nextline = getNextLine(line, lines) ?? line
