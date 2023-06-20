@@ -83,7 +83,13 @@ export function pasteEvent(e: ClipboardEvent) {
 	// Text doesn't start with special modif chars
 	if (selection?.rangeCount && range) {
 		selection.deleteFromDocument()
-		range.insertNode(document.createTextNode(text))
+
+		if (range.endContainer.nodeValue) {
+			range.endContainer.nodeValue = range.endContainer.nodeValue + text
+		} else {
+			range.insertNode(document.createTextNode(text))
+		}
+
 		setCaret(range.endContainer)
 	}
 }
