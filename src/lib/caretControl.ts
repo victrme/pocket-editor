@@ -34,8 +34,12 @@ export default function caretControl(container: HTMLElement) {
 		let x = 0
 
 		for (let i = 0; i < str.length - 1; i++) {
-			range.setStart(textnode, i)
-			range.setEnd(textnode, i)
+			try {
+				range.setStart(textnode, i)
+				range.setEnd(textnode, i)
+			} catch (_) {
+				break
+			}
 
 			x = range.getBoundingClientRect().x - cx
 
