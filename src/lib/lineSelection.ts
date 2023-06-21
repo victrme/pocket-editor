@@ -123,38 +123,36 @@ export default function lineSelection() {
 		}
 
 		if (selected.length > 0) {
-			e.preventDefault()
 			window.getSelection()?.removeAllRanges()
 
-			// Escape deletes selection
 			if (e.key === "Escape" || e.key === "Tab") {
 				resetLineSelection()
 				applyLineSelection(lineInterval)
+				e.preventDefault()
 				return
 			}
 
-			// Backspace deletes lines
-			if (e.key === "Backspace") {
+			if (e.key.includes("Arrow")) {
+				if (e.key.includes("Down")) currentLine = Math.min(currentLine + 1, lines.length - 1)
+				if (e.key.includes("Up")) currentLine = Math.max(0, currentLine - 1)
+
+				if (e.shiftKey) addToLineSelection(currentLine)
+				if (!e.shiftKey) changeLineSelection(currentLine)
+
+				applyLineSelection(lineInterval)
+				e.preventDefault()
+				return
+			}
+
+			if (!e.code.match(/Shift|Alt|Control|Caps/)) {
 				resetLineSelection()
 				addUndoHistory(selected[selected.length - -1])
 				removeLines(selected)
-				return
+
+				if (e.code === "Enter") {
+					e.preventDefault()
+				}
 			}
-
-			// Move selected line
-			if (e.key === "ArrowDown") currentLine = Math.min(currentLine + 1, lines.length - 1)
-			if (e.key === "ArrowUp") currentLine = Math.max(0, currentLine - 1)
-
-			// Not using shift only selects one line
-			if (e.shiftKey) {
-				addToLineSelection(currentLine)
-			} else {
-				changeLineSelection(currentLine)
-			}
-
-			// Apply changes
-			applyLineSelection(lineInterval)
-			return
 		}
 
 		if (!e.shiftKey) return
