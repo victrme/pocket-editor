@@ -8,10 +8,18 @@ import { addUndoHistory } from "./undo"
 
 export default function paragraphControl(e: Event) {
 	const container = getContainer()
-	const range = window.getSelection()?.getRangeAt(0)
-	const editable = e.target as HTMLElement | null
+	const editable = e.target as HTMLElement
+	let range: Range | undefined
 
-	if (!range || !(editable && "textContent" in editable) || editable?.tagName === "INPUT") {
+	try {
+		const isContenteditable = editable?.hasAttribute("contenteditable")
+		const isInput = editable?.tagName === "INPUT"
+		range = window.getSelection()?.getRangeAt(0)
+
+		if (!range || !isContenteditable || isInput) {
+			throw ""
+		}
+	} catch (_) {
 		return
 	}
 
