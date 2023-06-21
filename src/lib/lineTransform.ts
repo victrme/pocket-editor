@@ -28,6 +28,8 @@ function toTodolist(editable: HTMLElement, checked: boolean, focus?: true) {
 	if (!line) return
 
 	input.type = "checkbox"
+	input.setAttribute("aria-label", "todo list checkbox")
+
 	input.addEventListener("input", () => {
 		line.classList.toggle("todo-checked", input.checked)
 		line.classList.toggle("todo", !input.checked)
