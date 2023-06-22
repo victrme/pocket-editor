@@ -71,21 +71,22 @@ export default function caretControl(container: HTMLElement) {
 		range.setStart(textnode, 0)
 		range.setEnd(textnode, 0)
 
-		for (const word of words) {
-			pos += word.length + 1
-			rangeY = range.getBoundingClientRect().y
+		for (let word of words) {
+			word = word + " "
+			pos += word.length
+
+			try {
+				range.setStart(textnode, pos)
+				range.setEnd(textnode, pos)
+				rangeY = range.getBoundingClientRect().y
+			} catch (_) {}
 
 			if (rangeY > rangeYlast) {
 				lines.unshift("")
 				rangeYlast = rangeY
 			}
 
-			try {
-				range.setStart(textnode, pos)
-				range.setEnd(textnode, pos)
-			} catch (_) {}
-
-			lines[0] += word + " "
+			lines[0] += word
 		}
 
 		lines.reverse()
