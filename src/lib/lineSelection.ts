@@ -158,10 +158,10 @@ export default function lineSelection(container: HTMLElement) {
 		if (!e.shiftKey) return
 
 		// Start line selection
-		const jump = detectLineJump(e)
+		const { line } = detectLineJump(e) ?? {}
 
-		if (jump?.line) {
-			const index = lines.indexOf(jump.line)
+		if (line) {
+			const index = lines.indexOf(line)
 			initLineSelection(index)
 			applyLineSelection(lineInterval)
 			window.getSelection()?.removeAllRanges()

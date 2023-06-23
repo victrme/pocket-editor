@@ -1,9 +1,8 @@
 import { getLineFromEditable, getLines, getNextLine, getPrevLine } from "./getLines"
 
-export default function detectLineJump(e: KeyboardEvent): {
-	line: HTMLElement
-	dir: "down" | "up"
-} | void {
+export default function detectLineJump(
+	e: KeyboardEvent
+): { line: HTMLElement; dir: "down" | "up" } | undefined {
 	// Do nothing if not arrow or selection
 	if (!e.key.includes("Arrow") || !window.getSelection()?.anchorNode) {
 		return
