@@ -1,12 +1,10 @@
 import { getLines, getSelectedLines, getLineFromEditable } from "../utils/getLines"
 import detectLineJump from "../utils/detectLineJump"
-import getContainer from "../utils/getContainer"
 import removeLines from "../utils/removeLines"
 import setCaret from "../utils/setCaret"
 import { addUndoHistory } from "./undo"
 
-export default function lineSelection() {
-	const container = getContainer()
+export default function lineSelection(container: HTMLElement) {
 	let lines = getLines()
 	let caretSelTimeout: number
 	let lineInterval: [number, number] = [-1, -1]
@@ -106,14 +104,16 @@ export default function lineSelection() {
 		lines = getLines()
 
 		const selected = getSelectedLines(lines)
+		const isClipboardKey = e.key.match(/([x|c|v])/g)
+		const isCtrlKey = e.key === "Control" || e.key === "Meta"
+		const noSelection = selected.length > 0
+		const ctrl = e.ctrlKey || e.metaKey
 
-		if (e.key === "Control" || e.key === "Meta") return
-
-		if ((e.ctrlKey || e.metaKey) && e.key.match(/([x|c|v])/g) && selected.length > 0) {
+		if (isCtrlKey || (ctrl && isClipboardKey && noSelection)) {
 			return
 		}
 
-		if ((e.ctrlKey || e.metaKey) && e.key === "a") {
+		if (ctrl && e.key === "a") {
 			window.getSelection()?.removeAllRanges()
 			currentLine = firstLine = 0
 			lineInterval = [0, lines.length - 1]
@@ -122,7 +122,7 @@ export default function lineSelection() {
 			return
 		}
 
-		if (selected.length > 0) {
+		if (noSelection) {
 			window.getSelection()?.removeAllRanges()
 
 			if (e.key === "Escape" || e.key === "Tab") {
@@ -158,10 +158,10 @@ export default function lineSelection() {
 		if (!e.shiftKey) return
 
 		// Start line selection
-		const { line } = detectLineJump(e) ?? {}
+		const jump = detectLineJump(e)
 
-		if (line) {
-			const index = lines.indexOf(line)
+		if (jump?.line) {
+			const index = lines.indexOf(jump.line)
 			initLineSelection(index)
 			applyLineSelection(lineInterval)
 			window.getSelection()?.removeAllRanges()

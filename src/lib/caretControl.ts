@@ -31,7 +31,7 @@ export default function caretControl(container: HTMLElement) {
 		range.setStart(textnode, 0)
 		range.setEnd(textnode, 0)
 
-		let x = 0
+		let rangeX = 0
 
 		for (let i = 0; i < str.length - 1; i++) {
 			try {
@@ -41,9 +41,9 @@ export default function caretControl(container: HTMLElement) {
 				break
 			}
 
-			x = range.getBoundingClientRect().x - cx
+			rangeX = range.getBoundingClientRect().x - cx
 
-			if (x + averageCharWidth >= ox) {
+			if (rangeX + averageCharWidth >= ox) {
 				charCount = i
 				break
 			}
@@ -52,7 +52,7 @@ export default function caretControl(container: HTMLElement) {
 		return charCount
 	}
 
-	function getParagraphAsArrayWithDOM(line: HTMLElement | null): string[] {
+	function getParagraphAsArray(line: HTMLElement | null): string[] {
 		const editable = line?.querySelector<HTMLElement>("[contenteditable]")
 
 		if (!editable) {
@@ -130,7 +130,7 @@ export default function caretControl(container: HTMLElement) {
 			const textlen = node.nodeValue?.length || 0
 
 			if (!goesRight) {
-				const rows = getParagraphAsArrayWithDOM(nextline)
+				const rows = getParagraphAsArray(nextline)
 				offset = rangePosInCharLen(nextline, rows[0]) ?? -1
 
 				if (offset < 0) offset = textlen
@@ -145,13 +145,13 @@ export default function caretControl(container: HTMLElement) {
 			offset = textlen
 
 			if (!goesLeft) {
-				const rows = getParagraphAsArrayWithDOM(prevline)
+				const rows = getParagraphAsArray(prevline)
 				const lastrow = rows[rows.length - 1].trimEnd()
 				let lastrowOffset = rangePosInCharLen(prevline, lastrow) ?? textlen
 
 				offset = textlen - (lastrow.length - lastrowOffset)
 
-				if (offset < 0) offset = textlen
+				if (lastrowOffset < 0) offset = textlen
 			}
 		}
 
