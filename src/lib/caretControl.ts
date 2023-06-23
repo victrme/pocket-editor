@@ -60,16 +60,19 @@ export default function caretControl(container: HTMLElement) {
 			return []
 		}
 
+		let pos = 0
 		let rangeY = 0
 		let rangeYlast = 0
-		let lines: string[] = []
+		let lines: string[] = [""]
 		let words = (editable.textContent ?? "").split(" ")
 		let textnode = lastTextNode(editable)
-		let pos = 0
 
 		const range = document.createRange()
 		range.setStart(textnode, 0)
 		range.setEnd(textnode, 0)
+
+		const isWebkit = navigator.userAgent.includes("AppleWebKit")
+		rangeYlast = rangeY = range.getBoundingClientRect().y
 
 		for (let word of words) {
 			word = word + " "
@@ -81,12 +84,22 @@ export default function caretControl(container: HTMLElement) {
 				rangeY = range.getBoundingClientRect().y
 			} catch (_) {}
 
+			// QUIRK: because webkit trims the last space on newlines,
+			// the space manually added above will send the range to line below.
+			// meaning the paragraph lines will always be one word off
+			// FIX: Add word before Y comparison on webkit
+			if (isWebkit) lines[0] += word
+
 			if (rangeY > rangeYlast) {
+				// trim space like webkit
+				if (isWebkit) lines[0] = lines[0].trimEnd()
+
 				lines.unshift("")
 				rangeYlast = rangeY
 			}
 
-			lines[0] += word
+			// Add word normally on firefox
+			if (isWebkit === false) lines[0] += word
 		}
 
 		lines.reverse()
