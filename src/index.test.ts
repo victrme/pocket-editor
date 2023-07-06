@@ -14,7 +14,7 @@ test.describe("Contenteditable Text Editor", () => {
 		expect(dom).toBeTruthy()
 	})
 
-	test("should move the cursor", async ({ page }) => {
+	test("Move the cursor", async ({ page }) => {
 		await page.click("#pocket-editor") // Replace with your editor's selector
 
 		await page.keyboard.press("ArrowRight")
@@ -28,7 +28,7 @@ test.describe("Contenteditable Text Editor", () => {
 		expect(cursorPosition).toBe(2)
 	})
 
-	test("should add a new line", async ({ page }) => {
+	test("Add a new line", async ({ page }) => {
 		await page.locator("#pocket-editor [contenteditable]").first().focus()
 
 		const oldlines = await page.$$eval(".line", (lines) => lines.length)
@@ -39,7 +39,7 @@ test.describe("Contenteditable Text Editor", () => {
 		expect(newlines).toBe(oldlines + 1)
 	})
 
-	test("should remove a line", async ({ page }) => {
+	test("Remove a line", async ({ page }) => {
 		const oldlines = await page.$$eval(".line", (lines) => lines.length)
 
 		await page.locator("#pocket-editor [contenteditable]").nth(1).focus()
@@ -50,7 +50,7 @@ test.describe("Contenteditable Text Editor", () => {
 		expect(newlines).toBe(oldlines - 1)
 	})
 
-	test("backspace removes a transform", async ({ page }) => {
+	test("Backspace removes a transform", async ({ page }) => {
 		const element = page.locator("#pocket-editor [contenteditable]").first()
 		const line = page.locator("#pocket-editor .line").first()
 
@@ -58,5 +58,43 @@ test.describe("Contenteditable Text Editor", () => {
 		await page.keyboard.press("Backspace")
 
 		await expect(line).not.toHaveClass("h2")
+	})
+
+	test("Enter adds a list item", async ({ page }) => {
+		const element = page.locator("#pocket-editor [contenteditable]").nth(7)
+		const text = (await element.textContent()) ?? ""
+
+		await element.focus()
+
+		for (let i = 0; i < text.length; i++) {
+			await page.keyboard.press("Delete")
+		}
+
+		await page.keyboard.press("KeyA")
+		await page.keyboard.press("Enter")
+
+		const line = page.locator("#pocket-editor .line").nth(8)
+		const lasttext = (await line.textContent()) ?? ""
+
+		expect(lasttext).toBe("")
+	})
+
+	test("Enter adds a checkbox", async ({ page }) => {
+		const element = page.locator("#pocket-editor [contenteditable]").last()
+		const text = (await element.textContent()) ?? ""
+
+		await element.focus()
+
+		for (let i = 0; i < text.length; i++) {
+			await page.keyboard.press("Delete")
+		}
+
+		await page.keyboard.press("KeyA")
+		await page.keyboard.press("Enter")
+
+		const line = page.locator("#pocket-editor .line").last()
+		const lasttext = (await line.textContent()) ?? ""
+
+		expect(lasttext).toBe("")
 	})
 })
