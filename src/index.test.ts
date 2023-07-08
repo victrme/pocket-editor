@@ -1,13 +1,13 @@
-import { test, expect } from "@playwright/test"
+import { test, expect, Locator } from "@playwright/test"
 
 test.describe("Contenteditable Text Editor", () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto("http://localhost:4173")
 	})
 
-	test.afterAll(async ({ page }) => {
-		await page.close()
-	})
+	// test.afterAll(async ({ page }) => {
+	// 	await page.close()
+	// })
 
 	test("Pocket editor exists", async ({ page }) => {
 		const dom = page.locator("#pocket-editor")
@@ -96,5 +96,84 @@ test.describe("Contenteditable Text Editor", () => {
 		const lasttext = (await line.textContent()) ?? ""
 
 		expect(lasttext).toBe("")
+	})
+
+	test.describe("Line Selection", () => {
+		let element: Locator
+		let text: string
+
+		test.beforeEach(async ({ page }) => {
+			element = page.locator("#pocket-editor [contenteditable]").nth(1)
+			text = (await element.textContent()) ?? ""
+			await element.focus()
+		})
+
+		test("Select all text in a line", async ({ page }) => {
+			await page.keyboard.down("Shift")
+
+			for (let i = 0; i < text.length; i++) {
+				await page.keyboard.press("ArrowRight")
+			}
+
+			await page.keyboard.up("Shift")
+			await page.keyboard.press("Backspace")
+
+			expect(await element.textContent()).toBe("")
+		})
+
+		test("Left arrow at start", async ({ page }) => {
+			await page.keyboard.down("Shift")
+			await page.keyboard.press("ArrowLeft")
+
+			const line = page.locator("#pocket-editor .line").nth(1)
+			const cl = (await line.getAttribute("class")) ?? ""
+
+			expect(cl.includes("sel")).toBe(true)
+		})
+
+		test("Right arrow at end", async ({ page }) => {
+			for (let i = 0; i < text.length; i++) {
+				await page.keyboard.press("ArrowRight")
+			}
+
+			await page.keyboard.down("Shift")
+			await page.keyboard.press("ArrowRight")
+
+			const line = page.locator("#pocket-editor .line").nth(1)
+			const cl = (await line.getAttribute("class")) ?? ""
+
+			expect(cl.includes("sel")).toBe(true)
+		})
+
+		test("Up arrow", async ({ page }) => {
+			await page.keyboard.down("Shift")
+			await page.keyboard.press("ArrowUp")
+
+			const line = page.locator("#pocket-editor .line").nth(1)
+			const cl = (await line.getAttribute("class")) ?? ""
+
+			expect(cl.includes("sel")).toBe(true)
+		})
+
+		test("Down arrow", async ({ page }) => {
+			await page.keyboard.down("Shift")
+			await page.keyboard.press("ArrowDown")
+
+			const line = page.locator("#pocket-editor .line").nth(1)
+			const cl = (await line.getAttribute("class")) ?? ""
+
+			expect(cl.includes("sel")).toBe(true)
+		})
+
+		test("Escape removes selection", async ({ page }) => {
+			const line = page.locator("#pocket-editor .line").nth(1)
+
+			await page.keyboard.down("Shift")
+			await page.keyboard.press("ArrowUp")
+
+			expect(((await line.getAttribute("class")) ?? "").includes("sel")).toBe(true)
+			await page.keyboard.press("Escape")
+			expect(((await line.getAttribute("class")) ?? "").includes("sel")).toBe(false)
+		})
 	})
 })
