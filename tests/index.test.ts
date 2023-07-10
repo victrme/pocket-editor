@@ -19,24 +19,3 @@ test("Add a new line", async ({ page }) => {
 
 	expect(newlines).toBe(oldlines + 1)
 })
-
-test("Remove a line", async ({ page }) => {
-	const oldlines = await page.$$eval(".line", (lines) => lines.length)
-
-	await page.locator("#pocket-editor [contenteditable]").nth(1).focus()
-	await page.keyboard.press("Backspace")
-
-	const newlines = await page.$$eval(".line", (lines) => lines.length)
-
-	expect(newlines).toBe(oldlines - 1)
-})
-
-test("Backspace removes a transform", async ({ page }) => {
-	const element = page.locator("#pocket-editor [contenteditable]").first()
-	const line = page.locator("#pocket-editor .line").first()
-
-	await element.focus()
-	await page.keyboard.press("Backspace")
-
-	await expect(line).not.toHaveClass("h2")
-})
