@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test"
+import { test, expect, Locator } from "@playwright/test"
 
 test.beforeEach(async ({ page }) => {
 	await page.goto("http://localhost:4173")
@@ -81,5 +81,57 @@ test.describe("Press Enter", () => {
 
 		expect(cl?.includes("todo")).toBe(true)
 		expect(line.locator("input")).toBeTruthy()
+	})
+})
+
+test.describe("Type Markdown", () => {
+	let editable: Locator
+	let line: Locator
+
+	test.beforeEach(async ({ page }) => {
+		editable = page.locator("#pocket-editor [contenteditable]").first()
+		line = page.locator("#pocket-editor .line").first()
+		await editable.clear()
+		await page.keyboard.press("Backspace")
+	})
+
+	test("Editable is empty", async ({ page }) => {
+		expect(await editable.textContent()).toBe("")
+	})
+
+	test("to add big heading", async ({ page }) => {
+		await page.keyboard.type("# hello world")
+		expect(await line.getAttribute("class")).toBe("line h1")
+		expect(await editable.textContent()).toBe("hello world")
+	})
+
+	test("to add medium heading", async ({ page }) => {
+		await page.keyboard.type("## hello world")
+		expect(await line.getAttribute("class")).toBe("line h2")
+		expect(await editable.textContent()).toBe("hello world")
+	})
+
+	test("to add small heading", async ({ page }) => {
+		await page.keyboard.type("### hello world")
+		expect(await line.getAttribute("class")).toBe("line h3")
+		expect(await editable.textContent()).toBe("hello world")
+	})
+
+	test("to add list", async ({ page }) => {
+		await page.keyboard.type("- hello world")
+		expect(await line.getAttribute("class")).toBe("line list")
+		expect(await editable.textContent()).toBe("hello world")
+	})
+
+	test("to add todo", async ({ page }) => {
+		await page.keyboard.type("[ ] hello world")
+		expect(await line.getAttribute("class")).toBe("line todo")
+		expect(await editable.textContent()).toBe("hello world")
+	})
+
+	test("to add checked todo", async ({ page }) => {
+		await page.keyboard.type("[x] hello world")
+		expect(await line.getAttribute("class")).toBe("line todo-checked")
+		expect(await editable.textContent()).toBe("hello world")
 	})
 })
