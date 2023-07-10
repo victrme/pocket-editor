@@ -80,11 +80,12 @@ export default function paragraphControl(e: Event) {
 			}
 		}
 
-		if (modif?.includes("h")) {
+		if (modif?.startsWith("h")) {
 			lineTransform.toHeading(editable, modif, true)
 		}
 
 		if (isTargetTitle === false) {
+			if (modif === "todo-checked") lineTransform.toTodolist(editable, true, true)
 			if (modif === "todo") lineTransform.toTodolist(editable, false, true)
 			if (modif === "list") lineTransform.toList(editable, true)
 		}
