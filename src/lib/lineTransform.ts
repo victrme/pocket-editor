@@ -25,7 +25,9 @@ function toTodolist(editable: HTMLElement, checked: boolean, focus?: true) {
 	const span = document.createElement("span")
 	const line = getLineFromEditable(editable)
 
-	if (!line) return
+	if (!line || line.className.includes("todo")) {
+		return
+	}
 
 	input.type = "checkbox"
 	input.setAttribute("aria-label", "todo list checkbox")
@@ -60,7 +62,9 @@ function toList(editable: HTMLElement, focus?: true) {
 	const span = document.createElement("span")
 	const line = getLineFromEditable(editable)
 
-	if (!line) return
+	if (!line || line.className.includes("list")) {
+		return
+	}
 
 	span.dataset.content = "•"
 	span.className = "list-dot"

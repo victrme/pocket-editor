@@ -8,6 +8,7 @@ import generateLine from "./lib/lineGenerate"
 import caretControl from "./lib/caretControl"
 import { getLines } from "./utils/getLines"
 import initUndo from "./lib/undo"
+import keybindings from "./lib/keybindings"
 
 export default function pocketEditor(wrapper: string) {
 	const container = setContainer(document.createElement("div"))
@@ -51,6 +52,7 @@ export default function pocketEditor(wrapper: string) {
 	setTimeout(() => {
 		container.addEventListener("beforeinput", paragraphControl)
 		container.addEventListener("input", paragraphControl)
+		container.addEventListener("keydown", keybindings)
 		container.addEventListener("paste", pasteEvent)
 		container.addEventListener("copy", copyEvent)
 		container.addEventListener("cut", cutEvent)
