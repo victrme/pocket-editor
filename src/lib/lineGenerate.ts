@@ -15,7 +15,7 @@ export default function generateLine(props?: { text?: string; modif?: string }) 
 		editable.textContent = props.text
 	}
 
-	if (mod in Object.keys(modList)) {
+	if (mod in modList) {
 		lineTransform(editable, mod as keyof typeof modList, false)
 	}
 
