@@ -68,26 +68,17 @@ export default function paragraphControl(e: Event) {
 	}
 
 	if (e.type === "input" && insertText) {
-		const isTargetTitle = editable?.tagName.includes("H")
 		const content = editable?.textContent ?? ""
 
-		for (const [mod, val] of modList) {
+		for (const [mod, val] of Object.entries(modList)) {
 			const softspace = String.fromCharCode(160)
 			const hardspace = String.fromCharCode(32)
 
 			if (content.startsWith(val + hardspace) || content.startsWith(val + softspace)) {
-				modif = mod
+				modif = mod as keyof typeof modList
 			}
 		}
 
-		if (modif?.startsWith("h")) {
-			lineTransform.toHeading(editable, modif, true)
-		}
-
-		if (isTargetTitle === false) {
-			if (modif === "todo-checked") lineTransform.toTodolist(editable, true, true)
-			if (modif === "todo") lineTransform.toTodolist(editable, false, true)
-			if (modif === "list") lineTransform.toList(editable, true)
-		}
+		lineTransform(editable, modif)
 	}
 }

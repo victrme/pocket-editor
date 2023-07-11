@@ -7,8 +7,8 @@ import lineDeletion from "./lib/lineDeletion"
 import generateLine from "./lib/lineGenerate"
 import caretControl from "./lib/caretControl"
 import { getLines } from "./utils/getLines"
-import initUndo from "./lib/undo"
 import keybindings from "./lib/keybindings"
+import initUndo from "./lib/undo"
 
 export default function pocketEditor(wrapper: string) {
 	const container = setContainer(document.createElement("div"))

@@ -8,35 +8,11 @@ export default async function keybindings(e: KeyboardEvent) {
 
 	if (isValid && editable) {
 		const index = parseInt(e.code.replace("Digit", "")) - 1
-		const targetMod = modList[index]
+		const targetMod = Object.keys(modList)[index]
 
-		if (targetMod) {
+		if (targetMod in Object.keys(modList)) {
 			e.preventDefault()
-
-			switch (targetMod[0]) {
-				case "h1":
-					lineTransform.toHeading(editable, "h1", true)
-					break
-
-				case "h2":
-					lineTransform.toHeading(editable, "h2", true)
-					break
-
-				case "h3":
-					lineTransform.toHeading(editable, "h3", true)
-					break
-
-				case "list":
-					lineTransform.toList(editable, true)
-					break
-
-				case "todo":
-					lineTransform.toTodolist(editable, false, true)
-					break
-
-				default:
-					break
-			}
+			lineTransform(editable, targetMod as keyof typeof modList)
 		}
 	}
 }

@@ -2,7 +2,7 @@ import generateLine from "./lineGenerate"
 import modList from "../utils/modList"
 
 export function checkModifs(text: string) {
-	for (const [name, str] of modList) {
+	for (const [name, str] of Object.entries(modList)) {
 		if (text.startsWith(str + " ")) {
 			return name
 		}
