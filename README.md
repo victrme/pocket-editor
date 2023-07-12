@@ -54,3 +54,15 @@ editor.oninput(function logToConsole() {
   console.log(content)
 })
 ```
+
+### Keybindings
+
+| Keybind            | Action            |
+|--------------------|-------------------|
+| `Ctrl + Shift + 1` | To big heading    |
+| `Ctrl + Shift + 2` | To medium heading |
+| `Ctrl + Shift + 3` | To small heading  |
+| `Ctrl + Shift + 4` | To bullet list    |
+| `Ctrl + Shift + 5` | To todo list      |
+
+_Ctrl is Cmd key on MacOS_
