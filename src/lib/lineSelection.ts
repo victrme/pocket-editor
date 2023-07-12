@@ -176,7 +176,11 @@ export default function lineSelection(container: HTMLElement) {
 			window.getSelection()?.removeAllRanges()
 		}
 
-		if (!!target.getAttribute("contenteditable")) {
+		const isCheckbox = target.getAttribute("aria-label") === "todo list checkbox"
+		const isListMarker = target.className.includes("list-dot")
+		const isEditable = !!target.getAttribute("contenteditable")
+
+		if (isCheckbox || isListMarker || isEditable) {
 			currentLine = getLineIndex(target)
 
 			// Don't select when moving inside first line
