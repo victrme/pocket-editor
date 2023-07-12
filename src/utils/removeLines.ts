@@ -1,6 +1,6 @@
 import generateLine from "../lib/lineGenerate"
 import getContainer from "./getContainer"
-import { getPrevLine } from "./getLines"
+import getLine from "./getLines"
 import setCaret from "./setCaret"
 
 function insertAfter(newNode: Node, existingNode: Node) {
@@ -10,7 +10,7 @@ function insertAfter(newNode: Node, existingNode: Node) {
 export default function removeLines(lines: HTMLElement[]) {
 	const container = getContainer()
 	const emptyLine = generateLine()
-	const prevline = getPrevLine(lines[0])
+	const prevline = getLine.previous(lines[0])
 
 	lines.forEach((line) => line.remove())
 

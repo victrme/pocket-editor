@@ -1,10 +1,10 @@
-import { getLineFromEditable } from "../utils/getLines"
+import getLine from "../utils/getLines"
 import modList from "../utils/modList"
 
 type Mods = keyof typeof modList
 
 export default function lineTransform(editable: HTMLElement, mod?: Mods, focus = true) {
-	const line = getLineFromEditable(editable)
+	const line = getLine.fromEditable(editable)
 
 	function toHeading(tag: "h1" | "h2" | "h3") {
 		const heading = document.createElement(tag)
@@ -28,7 +28,7 @@ export default function lineTransform(editable: HTMLElement, mod?: Mods, focus =
 	function toTodolist(checked: boolean) {
 		const input = document.createElement("input")
 		const span = document.createElement("span")
-		const line = getLineFromEditable(editable)
+		const line = getLine.fromEditable(editable)
 
 		if (!line || line.className.includes("todo")) {
 			return

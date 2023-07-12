@@ -1,4 +1,4 @@
-import { getLineFromEditable, getLines, getNextLine, getPrevLine } from "./getLines"
+import getLine from "./getLines"
 
 export default function detectLineJump(
 	e: KeyboardEvent
@@ -9,15 +9,14 @@ export default function detectLineJump(
 	}
 
 	const editable = e.target as HTMLElement
-	const lines = getLines()
-	const line = getLineFromEditable(editable)
+	const line = getLine.fromEditable(editable)
 	const range = window?.getSelection()?.getRangeAt(0)
 	const txtLen = range?.startContainer?.nodeValue?.length ?? 0
 
 	if (!range || !line) return
 
-	const prevSibling = getPrevLine(line, lines)
-	const nextSibling = getNextLine(line, lines)
+	const prevSibling = getLine.previous(line)
+	const nextSibling = getLine.next(line)
 	const isCaretAtZero = Math.min(range?.endOffset, range?.startOffset) === 0
 	const isCaretAtEnd = Math.max(range?.endOffset, range?.startOffset) === txtLen
 

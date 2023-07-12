@@ -1,7 +1,7 @@
-import { getLineFromEditable, getNextLine } from "../utils/getLines"
 import removeModifier from "../utils/removeModifier"
 import getContainer from "../utils/getContainer"
 import modList from "../utils/modList"
+import getLine from "../utils/getLines"
 import lineTransform from "./lineTransform"
 import generateLine from "./lineGenerate"
 import { addUndoHistory } from "./undo"
@@ -23,7 +23,7 @@ export default function paragraphControl(e: Event) {
 		return
 	}
 
-	const line = getLineFromEditable(editable)
+	const line = getLine.fromEditable(editable)
 	const insertParagraph = (e as InputEvent)?.inputType === "insertParagraph"
 	const insertText = (e as InputEvent)?.inputType === "insertText"
 	let modif
@@ -44,7 +44,7 @@ export default function paragraphControl(e: Event) {
 		if (line?.classList.contains("list")) modif = "list"
 		if (line?.classList.contains("todo-checked")) modif = "todo"
 
-		const nextline = getNextLine(line)
+		const nextline = getLine.next(line)
 		const newline = generateLine({
 			text: nexttext,
 			modif: modif,

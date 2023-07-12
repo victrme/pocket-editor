@@ -1,22 +1,42 @@
-import getContainer from "./getContainer"
+let lines: HTMLElement[]
 
-export function getLines(container = getContainer()): HTMLElement[] {
-	return Object.values(container.querySelectorAll<HTMLElement>(".line"))
+const getLine = {
+	all: getLines,
+	selected: getSelectedLines,
+	next: getNextLine,
+	previous: getPrevLine,
+	fromEditable: getLineFromEditable,
+	init: initLinesObserver,
 }
 
-export function getSelectedLines(lines = getLines()): HTMLElement[] {
-	return Object.values(lines).filter((line) => line.classList.contains("sel")) ?? []
+export default getLine
+
+function initLinesObserver(container: HTMLElement) {
+	const lineObserverCallback = () => {
+		lines = Object.values(container.childNodes as NodeListOf<HTMLElement>)
+	}
+
+	const observer = new MutationObserver(lineObserverCallback)
+	observer.observe(container, { childList: true })
 }
 
-export function getPrevLine(line: HTMLElement, lines = getLines()): HTMLElement | null {
+function getLines(): HTMLElement[] {
+	return lines
+}
+
+function getSelectedLines(): HTMLElement[] {
+	return lines.filter((line) => line.classList.contains("sel")) ?? []
+}
+
+function getPrevLine(line: HTMLElement): HTMLElement | null {
 	return lines[lines.indexOf(line) - 1]
 }
 
-export function getNextLine(line: HTMLElement, lines = getLines()): HTMLElement | null {
+function getNextLine(line: HTMLElement): HTMLElement | null {
 	return lines[lines.indexOf(line) + 1]
 }
 
-export function getLineFromEditable(elem: HTMLElement): HTMLElement | null {
+function getLineFromEditable(elem: HTMLElement): HTMLElement | null {
 	while (elem?.parentElement) {
 		if (elem.parentElement.classList.contains("line")) {
 			return elem.parentElement

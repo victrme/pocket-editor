@@ -1,8 +1,8 @@
-import { getLineFromEditable, getPrevLine } from "../utils/getLines"
 import lastTextNode from "../utils/lastTextNode"
 import removeModifier from "../utils/removeModifier"
 import getContainer from "../utils/getContainer"
 import setCaret from "../utils/setCaret"
+import getLine from "../utils/getLines"
 import { addUndoHistory } from "./undo"
 
 function removeLineNoText(editable: Element, prevline: Element) {
@@ -35,7 +35,7 @@ export default function lineDeletion() {
 
 	function applyLineRemove(e: Event) {
 		const editable = e.target as HTMLElement
-		const line = getLineFromEditable(editable) as HTMLElement
+		const line = getLine.fromEditable(editable) as HTMLElement
 
 		const isEditable = !!editable.getAttribute("contenteditable")
 		const isAtStart = sel?.getRangeAt(0)?.endOffset === 0
@@ -59,7 +59,7 @@ export default function lineDeletion() {
 			return
 		}
 
-		const prevline = getPrevLine(line)
+		const prevline = getLine.previous(line)
 
 		if (prevline) {
 			if (editable.textContent === "") removeLineNoText(editable, prevline)

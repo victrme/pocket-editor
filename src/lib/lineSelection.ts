@@ -1,11 +1,11 @@
-import { getLines, getSelectedLines, getLineFromEditable } from "../utils/getLines"
 import detectLineJump from "../utils/detectLineJump"
 import removeLines from "../utils/removeLines"
 import setCaret from "../utils/setCaret"
+import getLine from "../utils/getLines"
 import { addUndoHistory } from "./undo"
 
 export default function lineSelection(container: HTMLElement) {
-	let lines = getLines()
+	let lines = getLine.all()
 	let caretSelTimeout: number
 	let lineInterval: [number, number] = [-1, -1]
 	let currentLine = -1
@@ -23,7 +23,7 @@ export default function lineSelection(container: HTMLElement) {
 	}
 
 	function createRange(selected?: Element[]) {
-		if (!selected) selected = getSelectedLines(lines)
+		if (!selected) selected = getLine.selected()
 		if (selected.length === 0) return
 
 		// create paragraph
@@ -46,7 +46,7 @@ export default function lineSelection(container: HTMLElement) {
 	}
 
 	function getLineIndex(editable: HTMLElement) {
-		const line = getLineFromEditable(editable)
+		const line = getLine.fromEditable(editable)
 		return line ? lines.indexOf(line) : -1
 	}
 
@@ -101,9 +101,9 @@ export default function lineSelection(container: HTMLElement) {
 	//
 
 	function keyboardEvent(e: KeyboardEvent) {
-		lines = getLines()
+		lines = getLine.all()
 
-		const selected = getSelectedLines(lines)
+		const selected = getLine.selected()
 		const isClipboardKey = e.key.match(/([x|c|v])/g)
 		const isCtrlKey = e.key === "Control" || e.key === "Meta"
 		const noSelection = selected.length > 0
@@ -170,7 +170,7 @@ export default function lineSelection(container: HTMLElement) {
 
 	function mouseMoveEvent(e: MouseEvent) {
 		const target = e.target as HTMLElement
-		const selected = getSelectedLines(lines)
+		const selected = getLine.selected()
 
 		if (selected.length > 0) {
 			window.getSelection()?.removeAllRanges()
@@ -190,7 +190,7 @@ export default function lineSelection(container: HTMLElement) {
 	function mouseDownEvent(e: MouseEvent) {
 		const target = e.target as HTMLElement
 
-		lines = getLines()
+		lines = getLine.all()
 
 		if (e.button === 2) e.preventDefault() // right click doesn't trigger click
 		if (e.button !== 0) return
@@ -210,7 +210,7 @@ export default function lineSelection(container: HTMLElement) {
 		const clicksOutsideContainer = !path.includes(container)
 
 		if (clicksOutsideContainer) {
-			lines = getLines()
+			lines = getLine.all()
 			resetLineSelection()
 			applyLineSelection(lineInterval)
 		}
