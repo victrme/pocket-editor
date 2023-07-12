@@ -10,6 +10,10 @@ export default async function keybindings(e: KeyboardEvent) {
 		const index = parseInt(e.code.replace("Digit", "")) - 1
 		const targetMod = Object.keys(modList)[index]
 
+		if (targetMod === "todo-checked") {
+			return
+		}
+
 		if (targetMod in modList) {
 			e.preventDefault()
 			lineTransform(editable, targetMod as keyof typeof modList)
