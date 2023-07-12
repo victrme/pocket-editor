@@ -76,9 +76,8 @@ export default function paragraphControl(e: Event) {
 
 			if (content.startsWith(val + hardspace) || content.startsWith(val + softspace)) {
 				modif = mod as keyof typeof modList
+				lineTransform(editable, modif)
 			}
 		}
-
-		lineTransform(editable, modif)
 	}
 }

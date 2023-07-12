@@ -61,9 +61,9 @@ test("No list overlap", async ({ page }) => {
 test("No title in lists and todos", async ({ page }) => {
 	await page.keyboard.press("Control+Shift+Digit4")
 	await expect(line).toHaveClass("line list")
-	expect(line.locator("span")).toBeTruthy()
+	expect(await line.locator("span.list-dot").count()).toBe(1)
 
 	await page.keyboard.press("Control+Shift+Digit3")
 	await expect(line).toHaveClass("line h3")
-	expect(line.locator("span")).toBeFalsy()
+	expect(await line.locator("span.list-dot").count()).toBe(0)
 })
