@@ -1,11 +1,11 @@
-import { getLines, getSelectedLines, getLineFromEditable, getNextLine } from "../utils/getLines"
 import { toHTML, toMarkdown, checkModifs } from "./contentControl"
 import getContainer from "../utils/getContainer"
 import removeLines from "../utils/removeLines"
 import setCaret from "../utils/setCaret"
+import getLine from "../utils/getLines"
 
 export function copyEvent(e: ClipboardEvent) {
-	const selected = getSelectedLines()
+	const selected = getLine.selected()
 
 	if (selected.length > 0) {
 		e.clipboardData?.setData("text/plain", toMarkdown(selected))
@@ -14,7 +14,7 @@ export function copyEvent(e: ClipboardEvent) {
 }
 
 export function cutEvent(e: ClipboardEvent) {
-	const selected = getSelectedLines()
+	const selected = getLine.selected()
 
 	if (selected.length > 0) {
 		e.clipboardData?.setData("text/plain", toMarkdown(selected))
@@ -37,11 +37,11 @@ export function pasteEvent(e: ClipboardEvent) {
 		const editable = e.target as HTMLElement
 		const newHTML = toHTML(text)
 		const linesInNew = newHTML.childElementCount - 1 // before document fragment gets consumed
-		const lines = getLines()
-		let line = getLineFromEditable(editable)
+		const lines = getLine.all()
+		let line = getLine.fromEditable(editable)
 
 		// When pasting after selection, line is last selected block
-		const selected = getSelectedLines()
+		const selected = getLine.selected()
 		if (selected.length > 0) {
 			line = selected[selected.length - 1] as HTMLElement
 		}
@@ -51,7 +51,7 @@ export function pasteEvent(e: ClipboardEvent) {
 		}
 
 		// Adds content: after line with caret position
-		container.insertBefore(newHTML, getNextLine(line, lines))
+		container.insertBefore(newHTML, getLine.next(line))
 
 		// Place caret: Gets last line in paste content
 		let lastline = line.nextSibling
@@ -63,7 +63,7 @@ export function pasteEvent(e: ClipboardEvent) {
 		if (line && line.textContent === "") {
 			const areSameMods = (mod: string) => {
 				const curr = line?.classList
-				const next = getNextLine(line!, lines)?.classList
+				const next = getLine.next(line!)?.classList
 				return curr?.contains(mod) === next?.contains(mod)
 			}
 

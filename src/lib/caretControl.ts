@@ -1,6 +1,6 @@
-import { getLines, getNextLine, getPrevLine } from "../utils/getLines"
-import lastTextNode from "../utils/lastTextNode"
 import detectLineJump from "../utils/detectLineJump"
+import lastTextNode from "../utils/lastTextNode"
+import getLine from "../utils/getLines"
 
 export default function caretControl(container: HTMLElement) {
 	let averageCharWidth = 0
@@ -109,7 +109,6 @@ export default function caretControl(container: HTMLElement) {
 
 	container.addEventListener("keydown", function (e: KeyboardEvent) {
 		const { line, dir } = detectLineJump(e) ?? {}
-		const lines = getLines()
 
 		if (!line) return
 
@@ -125,7 +124,7 @@ export default function caretControl(container: HTMLElement) {
 		}
 
 		if (dir === "down") {
-			const nextline = getNextLine(line, lines) ?? line
+			const nextline = getLine.next(line) ?? line
 			node = lastTextNode(nextline)
 			const textlen = node.nodeValue?.length || 0
 
@@ -138,7 +137,7 @@ export default function caretControl(container: HTMLElement) {
 		}
 
 		if (dir === "up") {
-			const prevline = getPrevLine(line, lines) ?? line
+			const prevline = getLine.previous(line) ?? line
 			node = lastTextNode(prevline)
 			const textlen = node.nodeValue?.length || 0
 
@@ -164,8 +163,7 @@ export default function caretControl(container: HTMLElement) {
 
 			e.preventDefault()
 		} catch (_) {
-			console.log(node)
-			console.log("oupsie")
+			console.warn("Cannot set caret")
 		}
 	})
 }

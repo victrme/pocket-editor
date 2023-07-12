@@ -1,6 +1,6 @@
 import { toHTML, toMarkdown } from "./contentControl"
 import getContainer from "../utils/getContainer"
-import { getLines } from "../utils/getLines"
+import getLine from "../utils/getLines"
 import setCaret from "../utils/setCaret"
 
 type History = {
@@ -11,7 +11,7 @@ type History = {
 let history: History[] = []
 
 export function addUndoHistory(lastline?: HTMLElement | null): void {
-	const lines = getLines()
+	const lines = getLine.all()
 	const markdown = toMarkdown(lines)
 	const index = lastline ? lines.indexOf(lastline) : 0
 

@@ -6,7 +6,8 @@ import lineSelection from "./lib/lineSelection"
 import lineDeletion from "./lib/lineDeletion"
 import generateLine from "./lib/lineGenerate"
 import caretControl from "./lib/caretControl"
-import { getLines } from "./utils/getLines"
+import keybindings from "./lib/keybindings"
+import getLine from "./utils/getLines"
 import initUndo from "./lib/undo"
 
 export default function pocketEditor(wrapper: string) {
@@ -19,7 +20,7 @@ export default function pocketEditor(wrapper: string) {
 	}
 
 	function get() {
-		return toMarkdown(getLines(container))
+		return toMarkdown(getLine.all())
 	}
 
 	function oninput(callback: Function) {
@@ -51,6 +52,7 @@ export default function pocketEditor(wrapper: string) {
 	setTimeout(() => {
 		container.addEventListener("beforeinput", paragraphControl)
 		container.addEventListener("input", paragraphControl)
+		container.addEventListener("keydown", keybindings)
 		container.addEventListener("paste", pasteEvent)
 		container.addEventListener("copy", copyEvent)
 		container.addEventListener("cut", cutEvent)
@@ -59,6 +61,8 @@ export default function pocketEditor(wrapper: string) {
 		lineDeletion()
 		initUndo()
 	}, 0)
+
+	getLine.init(container)
 
 	container.appendChild(generateLine({ text: "" }))
 	document.getElementById(wrapper)?.appendChild(container)

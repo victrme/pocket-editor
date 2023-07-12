@@ -1,7 +1,7 @@
-import { getLineFromEditable, getNextLine } from "../utils/getLines"
 import removeModifier from "../utils/removeModifier"
 import getContainer from "../utils/getContainer"
 import modList from "../utils/modList"
+import getLine from "../utils/getLines"
 import lineTransform from "./lineTransform"
 import generateLine from "./lineGenerate"
 import { addUndoHistory } from "./undo"
@@ -23,7 +23,7 @@ export default function paragraphControl(e: Event) {
 		return
 	}
 
-	const line = getLineFromEditable(editable)
+	const line = getLine.fromEditable(editable)
 	const insertParagraph = (e as InputEvent)?.inputType === "insertParagraph"
 	const insertText = (e as InputEvent)?.inputType === "insertText"
 	let modif
@@ -44,7 +44,7 @@ export default function paragraphControl(e: Event) {
 		if (line?.classList.contains("list")) modif = "list"
 		if (line?.classList.contains("todo-checked")) modif = "todo"
 
-		const nextline = getNextLine(line)
+		const nextline = getLine.next(line)
 		const newline = generateLine({
 			text: nexttext,
 			modif: modif,
@@ -68,26 +68,16 @@ export default function paragraphControl(e: Event) {
 	}
 
 	if (e.type === "input" && insertText) {
-		const isTargetTitle = editable?.tagName.includes("H")
 		const content = editable?.textContent ?? ""
 
-		for (const [mod, val] of modList) {
+		for (const [mod, val] of Object.entries(modList)) {
 			const softspace = String.fromCharCode(160)
 			const hardspace = String.fromCharCode(32)
 
 			if (content.startsWith(val + hardspace) || content.startsWith(val + softspace)) {
-				modif = mod
+				modif = mod as keyof typeof modList
+				lineTransform(editable, modif)
 			}
-		}
-
-		if (modif?.startsWith("h")) {
-			lineTransform.toHeading(editable, modif, true)
-		}
-
-		if (isTargetTitle === false) {
-			if (modif === "todo-checked") lineTransform.toTodolist(editable, true, true)
-			if (modif === "todo") lineTransform.toTodolist(editable, false, true)
-			if (modif === "list") lineTransform.toList(editable, true)
 		}
 	}
 }
