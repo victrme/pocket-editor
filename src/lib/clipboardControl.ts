@@ -37,7 +37,6 @@ export function pasteEvent(e: ClipboardEvent) {
 		const editable = e.target as HTMLElement
 		const newHTML = toHTML(text)
 		const linesInNew = newHTML.childElementCount - 1 // before document fragment gets consumed
-		const lines = getLine.all()
 		let line = getLine.fromEditable(editable)
 
 		// When pasting after selection, line is last selected block
@@ -90,15 +89,16 @@ export function pasteEvent(e: ClipboardEvent) {
 
 	// Text doesn't start with special modif chars
 	if (selection?.rangeCount && range) {
-		selection.deleteFromDocument()
+		const offset = selection?.anchorOffset ?? 0
+		const value = selection.focusNode?.nodeValue ?? ""
 
-		if (range.endContainer.nodeValue) {
-			range.endContainer.nodeValue = range.endContainer.nodeValue + text
+		if (value && selection.focusNode) {
+			selection.focusNode.nodeValue = value.slice(0, offset) + text + value.slice(offset)
+			selection.collapse(selection.focusNode, offset + text.length)
 		} else {
 			range.insertNode(document.createTextNode(text))
+			setCaret(range.endContainer)
 		}
-
-		setCaret(range.endContainer)
 	}
 
 	container.dispatchEvent(
