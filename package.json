@@ -18,10 +18,14 @@
 	],
 	"scripts": {
 		"test": "npx playwright test",
-		"build": "tsc"
+		"build": "tsc",
+		"dev": "vite dev",
+		"deploy": "vite build",
+		"preview": "vite build && vite preview"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.35.1",
-		"typescript": "^5.1.6"
+		"typescript": "^5.1.6",
+		"vite": "^5.0.0"
 	}
 }
