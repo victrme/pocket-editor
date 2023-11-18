@@ -30,6 +30,7 @@ function removeLineWithText(editable: Element, prevLine: Element) {
 }
 
 export default function lineDeletion() {
+	const userAgent = navigator.userAgent.toLowerCase()
 	const container = getContainer()
 	const sel = window.getSelection()
 
@@ -78,7 +79,7 @@ export default function lineDeletion() {
 	// Special remove event because "input" event doesn't work on empty contenteditables
 	//
 
-	if (navigator.userAgent.includes("Safari")) {
+	if (userAgent.includes("safari") && !userAgent.match(/chrome|chromium/)) {
 		container.addEventListener("keydown", (e) => {
 			try {
 				const range = sel?.getRangeAt(0)
