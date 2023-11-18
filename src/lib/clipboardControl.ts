@@ -3,6 +3,7 @@ import getContainer from "../utils/getContainer"
 import removeLines from "../utils/removeLines"
 import setCaret from "../utils/setCaret"
 import getLine from "../utils/getLines"
+import { addUndoHistory } from "./undo"
 
 export function copyEvent(e: ClipboardEvent) {
 	const selected = getLine.selected()
@@ -20,6 +21,7 @@ export function cutEvent(e: ClipboardEvent) {
 		e.clipboardData?.setData("text/plain", toMarkdown(selected))
 		e.preventDefault()
 		removeLines(selected)
+		addUndoHistory(selected[selected.length - 1])
 	}
 }
 
