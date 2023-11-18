@@ -8,7 +8,7 @@
 	"license": "MIT",
 	"type": "module",
 	"repository": {
-		"url": "git@github.com:victrme/pocket-editor.git"
+		"url": "git+ssh://git@github.com/victrme/pocket-editor.git"
 	},
 	"keywords": [
 		"wysiwyg",
@@ -27,5 +27,16 @@
 		"@playwright/test": "^1.40.0",
 		"typescript": "^5.2.2",
 		"vite": "^5.0.0"
+	},
+	"files": [
+		"/dist"
+	],
+	"exports": {
+		".": {
+			"import": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			}
+		}
 	}
 }
