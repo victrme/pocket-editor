@@ -13,7 +13,7 @@ export default getLine
 
 function initLinesObserver(container: HTMLElement) {
 	const lineObserverCallback = () => {
-		lines = Object.values(container.childNodes as NodeListOf<HTMLElement>)
+		lines = Object.values(container.querySelectorAll<HTMLElement>(".line"))
 	}
 
 	const observer = new MutationObserver(lineObserverCallback)
