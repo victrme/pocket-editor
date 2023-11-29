@@ -8,5 +8,9 @@
 	},
 	"dependencies": {
 		"@fontsource/reenie-beanie": "^5.0.17"
+	},
+	"devDependencies": {
+		"typescript": "^5.2.2",
+		"vite": "^5.0.3"
 	}
 }
