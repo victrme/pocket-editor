@@ -1,3 +1,5 @@
+import "@fontsource/reenie-beanie"
+
 import pocketEditor from "../../src/index"
 import "../../src/style.css"
 import "./style.css"
