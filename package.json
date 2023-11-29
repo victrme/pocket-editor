@@ -1,14 +1,14 @@
 {
 	"name": "pocket-editor",
 	"description": "Blazingly fast block style wysiwyg editor that returns markdown",
-	"version": "1.9.2",
+	"version": "1.10.0",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"author": "Victor Azevedo",
 	"license": "MIT",
 	"type": "module",
 	"repository": {
-		"url": "git@github.com:victrme/pocket-editor.git"
+		"url": "git+ssh://git@github.com/victrme/pocket-editor.git"
 	},
 	"keywords": [
 		"wysiwyg",
@@ -18,10 +18,24 @@
 	],
 	"scripts": {
 		"test": "npx playwright test",
-		"build": "tsc"
+		"build": "tsc",
+		"dev": "vite dev",
+		"deploy": "vite build",
+		"preview": "vite build && vite preview"
 	},
 	"devDependencies": {
-		"@playwright/test": "^1.35.1",
-		"typescript": "^5.1.6"
+		"@playwright/test": "^1.40.0",
+		"typescript": "^5.2.2"
+	},
+	"files": [
+		"/dist"
+	],
+	"exports": {
+		".": {
+			"import": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			}
+		}
 	}
 }

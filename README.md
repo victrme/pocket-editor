@@ -24,13 +24,11 @@ npm install pocket-editor
 ### What you can do
 
 ```ts
-
 function pocketEditor(string): {
-  get: () => string;
-  set: (string) => void;
-  oninput: (Function) => void;
+  get: () => string
+  set: (string) => void
+  oninput: (Function) => void
 }
-
 ```
 
 ### How to use
@@ -58,11 +56,12 @@ editor.oninput(function logToConsole() {
 ### Keybindings
 
 | Keybind            | Action            |
-|--------------------|-------------------|
+| ------------------ | ----------------- |
 | `Ctrl + Shift + 1` | To big heading    |
 | `Ctrl + Shift + 2` | To medium heading |
 | `Ctrl + Shift + 3` | To small heading  |
 | `Ctrl + Shift + 4` | To bullet list    |
 | `Ctrl + Shift + 5` | To todo list      |
+| `Ctrl + Shift + 6` | To normal line    |
 
 _Ctrl is Cmd key on MacOS_
