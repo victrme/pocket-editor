@@ -72,6 +72,7 @@ export default function lineTransform(editable: HTMLElement, mod?: Mods, focus =
 		}
 
 		input.type = "checkbox"
+		input.name = "checkbox"
 		input.setAttribute("aria-label", "todo list checkbox")
 
 		input.addEventListener("input", () => {

@@ -15,7 +15,7 @@ export function addUndoHistory(lastline?: HTMLElement | null): void {
 	const markdown = toMarkdown(lines)
 	const index = lastline ? lines.indexOf(lastline) : 0
 
-	if (markdown === history[0]?.markdown ?? "") {
+	if (markdown === history[0]?.markdown || "") {
 		return
 	}
 

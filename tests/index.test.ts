@@ -1,10 +1,11 @@
 import { test, expect } from "@playwright/test"
 
 test.beforeEach(async ({ page }) => {
-	await page.goto("http://localhost:4173")
+	await page.goto("/")
 })
 
 test("Pocket editor exists", async ({ page }) => {
+	await page.waitForSelector("#pocket-editor")
 	const dom = page.locator("#pocket-editor")
 	expect(dom).toBeTruthy()
 })

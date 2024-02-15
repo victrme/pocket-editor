@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test"
 
 test.beforeEach(async ({ page }) => {
-	await page.goto("http://localhost:4173")
+	await page.goto("/")
 })
 
 test("Empty line places caret to previous", async ({ page }) => {

@@ -3,7 +3,7 @@ import { test, expect, Locator } from "@playwright/test"
 let line: Locator
 
 test.beforeEach(async ({ page }) => {
-	await page.goto("http://localhost:4173")
+	await page.goto("/")
 	line = page.locator(".line").nth(1)
 	await line.locator("[contenteditable]").focus()
 })

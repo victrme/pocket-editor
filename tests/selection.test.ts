@@ -5,7 +5,7 @@ let line: Locator
 let text: string
 
 test.beforeEach(async ({ page }) => {
-	await page.goto("http://localhost:4173")
+	await page.goto("/")
 
 	line = page.locator("#pocket-editor .line").nth(1)
 	element = page.locator("#pocket-editor [contenteditable]").nth(1)

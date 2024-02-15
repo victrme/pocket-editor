@@ -1,7 +1,7 @@
 import { test, expect, Locator } from "@playwright/test"
 
 test.beforeEach(async ({ page }) => {
-	await page.goto("http://localhost:4173")
+	await page.goto("/")
 })
 
 test.describe("Press Enter", () => {
