@@ -17,15 +17,15 @@
 		"rich text"
 	],
 	"scripts": {
-		"test": "npx playwright test",
 		"build": "tsc",
-		"dev": "vite dev",
-		"deploy": "vite build",
-		"preview": "vite build && vite preview"
+		"test": "npx playwright test",
+		"test:ui": "npx playwright test --ui",
+		"dev": "pnpm --filter example dev",
+		"preview": "pnpm --filter example preview"
 	},
 	"devDependencies": {
-		"@playwright/test": "^1.40.0",
-		"typescript": "^5.2.2"
+		"@playwright/test": "^1.41.2",
+		"typescript": "^5.3.3"
 	},
 	"files": [
 		"/dist"
@@ -37,5 +37,11 @@
 				"default": "./dist/index.js"
 			}
 		}
+	},
+	"prettier": {
+		"useTabs": true,
+		"tabWidth": 4,
+		"printWidth": 112,
+		"semi": false
 	}
 }

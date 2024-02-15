@@ -65,3 +65,17 @@ editor.oninput(function logToConsole() {
 | `Ctrl + Shift + 6` | To normal line    |
 
 _Ctrl is Cmd key on MacOS_
+
+### Developement
+
+```bash
+# Install pnpm to use these scripts
+npm i -g pnpm
+
+# First install all
+pnpm i -r
+
+pnpm dev
+pnpm preview
+pnpm build
+```
