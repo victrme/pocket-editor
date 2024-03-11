@@ -2,11 +2,12 @@ import { defineConfig, devices } from "@playwright/test"
 
 export default defineConfig({
 	testDir: "tests",
+	fullyParallel: true,
 	use: {
 		baseURL: "http://localhost:4173",
 	},
 	webServer: {
-		command: "cd example && vite preview",
+		command: "pnpm --filter example preview",
 		url: "http://localhost:4173",
 		reuseExistingServer: !process.env.CI,
 		timeout: 2000,
