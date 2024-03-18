@@ -5,7 +5,7 @@
 <p align="center">
     <a href="https://github.com/victrme/pocket-editor">Github</a> - 
     <a href="https://www.npmjs.com/package/pocket-editor">Npm</a> - 
-    <a href="https://pocketeditor.netlify.app/">Example</a>
+    <a href="https://pocketeditor.victr.me/">Example</a>
 </p>
 
 <br />
