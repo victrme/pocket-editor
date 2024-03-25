@@ -8,6 +8,9 @@ devDependencies:
   '@playwright/test':
     specifier: ^1.41.2
     version: 1.41.2
+  lightningcss-cli:
+    specifier: ^1.24.1
+    version: 1.24.1
   typescript:
     specifier: ^5.3.3
     version: 5.3.3
@@ -22,6 +25,12 @@ packages:
       playwright: 1.41.2
     dev: true
 
+  /detect-libc@1.0.3:
+    resolution: {integrity: sha512-pGjwhsmsp4kL2RTz08wcOlGN83otlqHeD/Z5T8GXZB+/YcpQ/dgo+lbU8ZsGxV0HIvqqxo9l7mqYwyYMD9bKDg==}
+    engines: {node: '>=0.10'}
+    hasBin: true
+    dev: true
+
   /fsevents@2.3.2:
     resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
@@ -29,6 +38,106 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /lightningcss-cli-darwin-arm64@1.24.1:
+    resolution: {integrity: sha512-aEVbAvKd7VCaagHAWh+xHL5HGIj9l5t+XdpFb00/jwrhyPH5NL7KyVmOw1rbzIEp0eGYL2UxVtBYagPxjDyt4Q==}
+    engines: {node: '>= 12.0.0'}
+    cpu: [arm64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /lightningcss-cli-darwin-x64@1.24.1:
+    resolution: {integrity: sha512-CzGxqMibHSH3mFHJBkBp/zip3jmNPY7J3deF5FyL0ibjjfrmdifdwcx7thxcSqrSgWnBUDJ4pLt9vbYykMaDrg==}
+    engines: {node: '>= 12.0.0'}
+    cpu: [x64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /lightningcss-cli-freebsd-x64@1.24.1:
+    resolution: {integrity: sha512-0v2MLwNShwff1qZNWvbxDYN5E0Zy4r+YAHTaG2Q5eThWEcO+1KnokSYFd+sxKFapghyzelYtByvdHUP/r5T4Tw==}
+    engines: {node: '>= 12.0.0'}
+    cpu: [x64]
+    os: [freebsd]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /lightningcss-cli-linux-arm-gnueabihf@1.24.1:
+    resolution: {integrity: sha512-BZOYEFKhBk4C9tgLTvA9XP/K9eOzMebhFHROJ/4bCucRgO4ylOTRZk9ik8BMJJrAB7aeZakzt3/FWLbPL3522g==}
+    engines: {node: '>= 12.0.0'}
+    cpu: [arm]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /lightningcss-cli-linux-arm64-gnu@1.24.1:
+    resolution: {integrity: sha512-TRRqgFzLTvO6hJMDIYtSliLfNaZLf2SXatHUmxP0a1Td8O1LUNILyiUzdjRHxBJ4u0fD93QTWHdNPMmYhZBv+A==}
+    engines: {node: '>= 12.0.0'}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /lightningcss-cli-linux-arm64-musl@1.24.1:
+    resolution: {integrity: sha512-5ymGVRskVcddBwSsOfzMZUVy2mpO+fvU21rPCAVITnxui6B2jwLlwB+b4oQRJWSgfPZuwG8eb/csqKefeftpKg==}
+    engines: {node: '>= 12.0.0'}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /lightningcss-cli-linux-x64-gnu@1.24.1:
+    resolution: {integrity: sha512-vuZbkCb36UuoDVuO+TYDov40Rhw4pWgcJXh/4KKOes0pFlSlBCtL+oTQ2DQopLDkA8BEUoSEhUC2fBB1tmNxsg==}
+    engines: {node: '>= 12.0.0'}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /lightningcss-cli-linux-x64-musl@1.24.1:
+    resolution: {integrity: sha512-gSHaMnq8M2JX8vOU7r0AywWtzQ4abwnHl7hKgu/zqXnX2Vw5TOUJYWILMeJy+G82TsoobNuiWH7Bak58hxdRZA==}
+    engines: {node: '>= 12.0.0'}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /lightningcss-cli-win32-x64-msvc@1.24.1:
+    resolution: {integrity: sha512-8hW4PZ9bNfM/UY1eQqAla1jRvUzcESCbhT4381d+N4g+ul2JrRi0FC4QctgAje5kl1udUt1zUMyhARJowvySVw==}
+    engines: {node: '>= 12.0.0'}
+    cpu: [x64]
+    os: [win32]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /lightningcss-cli@1.24.1:
+    resolution: {integrity: sha512-6HBXVWoHUNmOOoYeZzikGfWJT79NiuNgsztjEBLpen8V57VTG5/CFI/ekRDsHZRyJleUSsFjpqy7PzhtOBJhrQ==}
+    engines: {node: '>= 12.0.0'}
+    hasBin: true
+    requiresBuild: true
+    dependencies:
+      detect-libc: 1.0.3
+    optionalDependencies:
+      lightningcss-cli-darwin-arm64: 1.24.1
+      lightningcss-cli-darwin-x64: 1.24.1
+      lightningcss-cli-freebsd-x64: 1.24.1
+      lightningcss-cli-linux-arm-gnueabihf: 1.24.1
+      lightningcss-cli-linux-arm64-gnu: 1.24.1
+      lightningcss-cli-linux-arm64-musl: 1.24.1
+      lightningcss-cli-linux-x64-gnu: 1.24.1
+      lightningcss-cli-linux-x64-musl: 1.24.1
+      lightningcss-cli-win32-x64-msvc: 1.24.1
+    dev: true
 
   /playwright-core@1.41.2:
     resolution: {integrity: sha512-VaTvwCA4Y8kxEe+kfm2+uUUw5Lubf38RxF7FpBxLPmGe5sdNkSg5e3ChEigaGrX7qdqT3pt2m/98LiyvU2x6CA==}

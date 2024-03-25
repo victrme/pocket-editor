@@ -1,7 +1,7 @@
 {
 	"name": "pocket-editor",
 	"description": "Blazingly fast block style wysiwyg editor that returns markdown",
-	"version": "1.10.0",
+	"version": "1.10.1",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"author": "Victor Azevedo",
@@ -17,7 +17,7 @@
 		"rich text"
 	],
 	"scripts": {
-		"build": "tsc",
+		"build": "tsc && lightningcss src/style.css -o dist/style.css",
 		"test": "npx playwright test",
 		"test:ui": "npx playwright test --ui",
 		"dev": "pnpm --filter example dev",
@@ -25,6 +25,7 @@
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.41.2",
+		"lightningcss-cli": "^1.24.1",
 		"typescript": "^5.3.3"
 	},
 	"files": [
@@ -36,7 +37,8 @@
 				"types": "./dist/index.d.ts",
 				"default": "./dist/index.js"
 			}
-		}
+		},
+		"./style.css": "./dist/style.css"
 	},
 	"prettier": {
 		"useTabs": true,
