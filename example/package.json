@@ -3,8 +3,8 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
-		"build": "vite build",
-		"preview": "vite build && vite preview"
+		"build": "vite build --sourcemap",
+		"preview": "vite build  --sourcemap && vite preview"
 	},
 	"dependencies": {
 		"@fontsource/reenie-beanie": "^5.0.17"
