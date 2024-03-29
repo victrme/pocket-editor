@@ -1,17 +1,11 @@
 {
 	"compilerOptions": {
-		"target": "es2018",
-		"module": "ESNext",
-		"types": [],
-		"lib": ["ESNext", "DOM"],
-		"outDir": "dist",
+		"outDir": "./dist",
+		"target": "ES2022",
+		"lib": ["es2022", "DOM"],
 		"strict": true,
 		"declaration": true,
-		"removeComments": true,
-		"esModuleInterop": true,
-		"moduleResolution": "node",
-		"useDefineForClassFields": true,
-		"forceConsistentCasingInFileNames": true
+		"emitDeclarationOnly": true
 	},
 	"include": ["src"]
 }

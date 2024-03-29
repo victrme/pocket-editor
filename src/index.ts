@@ -10,10 +10,21 @@ import keybindings from "./lib/keybindings"
 import getLine from "./utils/getLines"
 import initUndo from "./lib/undo"
 
-export default function pocketEditor(wrapper: string) {
+/**
+ * This creates an editor.
+ * You might also need to add the basic styling with "style.css"
+ *
+ * @param {string} id - The id of the parent in which to put the editor
+ *
+ * @example
+ * import pocketEditor from 'pocket-editor'
+ * import 'pocket-editor/style.css'
+ *
+ * const editor = pocketEditor("some-id")
+ */
+export default function pocketEditor(id: string) {
 	const container = setContainer(document.createElement("div"))
 
-	// Delete all content before & append generated HTML
 	function set(string: string) {
 		Object.values(container.children).forEach((node) => node.remove())
 		container.appendChild(toHTML(string))
@@ -65,11 +76,11 @@ export default function pocketEditor(wrapper: string) {
 	getLine.init(container)
 
 	container.appendChild(generateLine({ text: "" }))
-	document.getElementById(wrapper)?.appendChild(container)
+	document.getElementById(id)?.appendChild(container)
 
-	if (document.getElementById(wrapper) === null) {
-		throw 'Pocket editor: id "' + wrapper + '" was not found'
+	if (document.getElementById(id) === null) {
+		throw 'Pocket editor: id "' + id + '" was not found'
 	}
 
-	return { set, get, oninput }
+	return { get, set, oninput }
 }

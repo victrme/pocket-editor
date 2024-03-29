@@ -17,7 +17,7 @@
 		"rich text"
 	],
 	"scripts": {
-		"build": "tsc && lightningcss src/style.css -o dist/style.css",
+		"build": "tsc && esbuild ./src/**/*.ts --outdir=./dist && esbuild ./src/style.css --outdir=./dist",
 		"test": "npx playwright test",
 		"test:ui": "npx playwright test --ui",
 		"dev": "pnpm --filter example dev",
@@ -25,11 +25,12 @@
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.41.2",
-		"lightningcss-cli": "^1.24.1",
-		"typescript": "^5.3.3"
+		"esbuild": "^0.20.2"
 	},
 	"files": [
-		"/dist"
+		"./dist/**/*.js",
+		"./dist/index.d.ts",
+		"./dist/style.css"
 	],
 	"exports": {
 		".": {
@@ -45,5 +46,6 @@
 		"tabWidth": 4,
 		"printWidth": 112,
 		"semi": false
-	}
+	},
+	"packageManager": "pnpm@8.15.4"
 }
