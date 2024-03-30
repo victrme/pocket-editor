@@ -4,7 +4,7 @@ import pocketEditor from "../../src/index"
 import "../../src/style.css"
 import "./style.css"
 
-const content = `## This is pocket editor
+const intro = `## This is pocket editor
 
 You can transform a line by starting with these characters:
 -   "# " creates a big heading
@@ -19,18 +19,16 @@ You can transform a line by starting with these characters:
 [ ] Stay hydrated`
 
 if (!sessionStorage.pcktdtr) {
-	sessionStorage.pcktdtr = content
+	sessionStorage.pcktdtr = intro
 }
 
-const editor = pocketEditor("wrapper")
+const editor = pocketEditor("wrapper", sessionStorage.pcktdtr)
 
-editor.set(sessionStorage.pcktdtr)
-
-editor.oninput(function () {
-	sessionStorage.pcktdtr = editor.get()
+editor.oninput((content) => {
+	sessionStorage.pcktdtr = content
 })
 
 document.getElementById("b_reset")?.addEventListener("click", () => {
-	sessionStorage.pcktdtr = content
-	editor.set(content)
+	sessionStorage.pcktdtr = intro
+	editor.set(intro)
 })
