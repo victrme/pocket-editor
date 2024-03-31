@@ -27,7 +27,7 @@ npm install pocket-editor
 function pocketEditor(string): {
   get: () => string
   set: (string) => void
-  oninput: (Function) => void
+  oninput: ((content: string) => void) => void
 }
 ```
 
@@ -35,7 +35,7 @@ function pocketEditor(string): {
 
 ```html
 <body>
-  <div id="wrapper"></div>
+    <div id="wrapper"></div>
 </body>
 ```
 
@@ -47,9 +47,8 @@ const editor = pocketEditor("wrapper")
 
 editor.set("## Hello world !!")
 
-editor.oninput(function logToConsole() {
-  const content = editor.get()
-  console.log(content)
+editor.oninput((content) => {
+    console.log(content)
 })
 ```
 
