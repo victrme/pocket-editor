@@ -41,7 +41,7 @@ function pocketEditor(string): {
 
 ```ts
 import pocketEditor from "pocket-editor"
-import "pocket-editor/dist/style.css"
+import "pocket-editor/style.css"
 
 const editor = pocketEditor("wrapper")
 
