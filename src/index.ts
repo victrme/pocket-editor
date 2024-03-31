@@ -28,8 +28,8 @@ export default function pocketEditor(id: string, init?: string) {
 
 	container.id = "pocket-editor"
 	getLine.init(container)
+	container.appendChild(init ? toHTML(init) : generateLine({ text: "" }))
 	document.getElementById(id)?.appendChild(container)
-	init ? pocketeditor_set(init) : container.appendChild(generateLine({ text: "" }))
 
 	queueMicrotask(() => {
 		container.addEventListener("beforeinput", paragraphControl)
