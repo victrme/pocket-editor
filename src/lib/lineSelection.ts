@@ -212,6 +212,11 @@ export default function lineSelection(container: HTMLElement) {
 	function mouseClickEvent(e: Event) {
 		const path = e.composedPath() as Element[]
 		const clicksOutsideContainer = !path.includes(container)
+		const selectionLength = Object.keys(getLine.selected()).length
+
+		if (selectionLength === 0) {
+			return
+		}
 
 		if (clicksOutsideContainer) {
 			lines = getLine.all()
