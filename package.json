@@ -24,8 +24,8 @@
 		"preview": "pnpm --filter example preview"
 	},
 	"devDependencies": {
-		"@playwright/test": "^1.41.2",
-		"esbuild": "^0.20.2"
+		"@playwright/test": "^1.45.0",
+		"esbuild": "^0.23.0"
 	},
 	"files": [
 		"./dist/**/*.js",
