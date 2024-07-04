@@ -6,7 +6,7 @@ import lineTransform from "./lineTransform"
 import generateLine from "./lineGenerate"
 import { addUndoHistory } from "./undo"
 
-export default function paragraphControl(e: Event) {
+export default function paragraphControl(this: unknown, e: Event) {
 	const container = getContainer()
 	const editable = e.target as HTMLElement
 	let range: Range | undefined
