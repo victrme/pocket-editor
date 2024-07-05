@@ -10,9 +10,16 @@ import setCaret from "./utils/setCaret"
 import lineTransform from "./lib/lineTransform"
 import modList from "./utils/modList"
 
+interface Options {
+	id?: string
+	text?: string
+	defer?: true | number
+}
+
 export default class PocketEditor {
 	container: HTMLElement
 	lines: HTMLElement[]
+	wrapper: Element | null
 
 	/**
 	 * This creates an editor.
@@ -30,46 +37,62 @@ export default class PocketEditor {
 	 *
 	 * const editor = new pocketEditor("some-selector", { text: "Hello world" })
 	 */
-	constructor(selector: string, options?: { text?: string; id?: string; defer?: true | number }) {
-		const self = this
+	constructor(selector: string, options?: Options) {
 		const div = document.createElement("div")
-		const wrapper = document.querySelector(selector)
-		const lines = Object.values(div.querySelectorAll<HTMLElement>(".line"))
+		const { text, defer } = options ?? {}
 
-		div.dataset.pocketEditor = options?.id
+		this.wrapper = document.querySelector(selector)
+		this.container = div
+		this.lines = []
 
-		if (options?.text) {
-			div.appendChild(toHTML(this, options?.text))
-		} else {
-			div.appendChild(this.createLine({ text: "" }))
-		}
-
-		if (wrapper) {
-			wrapper.appendChild(div)
-		} else {
+		if (this.wrapper === null) {
 			throw `Pocket editor: selector "${selector}" was not found`
 		}
 
-		this.container = div
-		this.lines = lines
+		div.dataset.pocketEditor = options?.id
 
-		div.addEventListener("beforeinput", (ev) => paragraphControl(self, ev))
-		div.addEventListener("input", (ev) => paragraphControl(self, ev))
-		div.addEventListener("keydown", (ev) => keybindings(self, ev))
-		div.addEventListener("paste", (ev) => pasteEvent(self, ev))
-		div.addEventListener("copy", (ev) => copyEvent(self, ev))
-		div.addEventListener("cut", (ev) => cutEvent(self, ev))
+		if (typeof defer === "number") {
+			setTimeout(() => this.init(text), defer)
+		} else if (defer === true) {
+			setTimeout(() => this.init(text))
+		} else {
+			this.init(text)
+		}
+	}
+
+	private init(text?: string) {
+		const self = this
+
+		if (text) {
+			this.container.appendChild(toHTML(this, text))
+		} else {
+			this.container.appendChild(this.createLine({ text: "" }))
+		}
+
+		if (this.wrapper) {
+			this.wrapper.appendChild(this.container)
+		}
+
+		this.container.addEventListener("beforeinput", (ev) => paragraphControl(self, ev))
+		this.container.addEventListener("input", (ev) => paragraphControl(self, ev))
+		this.container.addEventListener("keydown", (ev) => keybindings(self, ev))
+		this.container.addEventListener("paste", (ev) => pasteEvent(self, ev))
+		this.container.addEventListener("copy", (ev) => copyEvent(self, ev))
+		this.container.addEventListener("cut", (ev) => cutEvent(self, ev))
+
 		lineSelection(self)
 		caretControl(self)
 		lineDeletion(self)
 		initUndo(self)
 
 		const lineObserverCallback = () => {
-			this.lines = Object.values(div.querySelectorAll<HTMLElement>(".line"))
+			this.lines = Object.values(this.container.querySelectorAll<HTMLElement>(".line"))
 		}
 
 		const observer = new MutationObserver(lineObserverCallback)
-		observer.observe(div, { childList: true })
+		observer.observe(this.container, { childList: true })
+
+		this.lines = Object.values(this.container.querySelectorAll<HTMLElement>(".line"))
 	}
 
 	/**
@@ -87,13 +110,13 @@ export default class PocketEditor {
 	 *
 	 * @example
 	 * // Checks the checkbox every pair seconds
-	 * const editor = new pocketEditor("some-id", { text: "Please wait" })
+	 * const editor = new pocketEditor("#some-id", { text: "Please wait" })
 	 *
 	 * setInterval(() => {
 	 * 	 const second = new Date().getSeconds()
 	 * 	 const checkbox = second % 2 ? "[x]" : "[ ]"
 	 * 	 const text = `${checkbox} Second is pair`
-	 * 	 editor.set(text)
+	 * 	 editor.value = text
 	 * }, 1000)
 	 */
 	set value(text: string) {
@@ -105,22 +128,22 @@ export default class PocketEditor {
 	 * Listens to beforeinput, input, cut, and paste events inside the editor.
 	 * Automatically passes the editor content as markdown as an argument.
 	 * 
-	 * @param callback Get the content as a markdown string
+	 * @param listener Get the content as a markdown string
 	 * @returns An event cleanup function
 	 * 
 	 * @example
 	 * // One-liner logger
-	 * pocketEditor("some-id", { text: "Hello" }).oninput(console.log)
+	 * pocketEditor("#some-id", { text: "Hello" }).oninput = console.log
 	 * 
 	 * @example
 	 * // Saves editor content to localStorage
-	 * const editor = new pocketEditor("some-id", { text: "Hello" })
+	 * const editor = new pocketEditor("#some-id", { text: "Hello" })
 
-	 * editor.oninput((content) => {
+	 * editor.oninput = content => {
 	 *   localStorage.saved = content
 	 * })
- */
-	public oninput(callback: (content: string) => void) {
+ 	 */
+	public oninput(listener: (content: string) => void): () => void {
 		const self = this
 		this.container.addEventListener("cut", cb)
 		this.container.addEventListener("paste", cb)
@@ -142,8 +165,19 @@ export default class PocketEditor {
 				}
 			}
 
-			callback(self.value)
+			listener(self.value)
 		}
+	}
+
+	/**
+	 * An addEventListener wrapper for esthetic purposes.
+	 *
+	 * @param type Listens to everything on "input"
+	 * @param listener Get the content as a markdown string
+	 * @returns An event cleanup function
+	 */
+	public addEventListener(type: "input", listener: (content: string) => void): () => void {
+		return this.oninput(listener)
 	}
 
 	public getSelectedLines(): HTMLElement[] {

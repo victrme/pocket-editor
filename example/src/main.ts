@@ -27,7 +27,7 @@ const editor = new pocketEditor("#wrapper", {
 	id: "example",
 })
 
-editor.oninput((content) => {
+editor.oninput(function (content) {
 	sessionStorage.pcktdtr = content
 })
 
