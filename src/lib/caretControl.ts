@@ -1,8 +1,8 @@
 import detectLineJump from "../utils/detectLineJump"
 import lastTextNode from "../utils/lastTextNode"
-import getLine from "../utils/getLines"
+import PocketEditor from "../index"
 
-export default function caretControl(container: HTMLElement) {
+export default function caretControl(self: PocketEditor) {
 	let averageCharWidth = 0
 
 	function initAverageCharWidth() {
@@ -11,7 +11,7 @@ export default function caretControl(container: HTMLElement) {
 		p.id = "pocket-editor-mock-p"
 		span.textContent = "abcdefghijklmnopqrstuvwxyz"
 		p?.appendChild(span)
-		container.querySelector(".line [contenteditable]")?.appendChild(p)
+		self.container.querySelector(".line [contenteditable]")?.appendChild(p)
 		averageCharWidth = span.offsetWidth / 26 / 2
 
 		p.remove()
@@ -107,13 +107,13 @@ export default function caretControl(container: HTMLElement) {
 		return lines
 	}
 
-	container.addEventListener("keydown", function (e: KeyboardEvent) {
-		const { line, dir } = detectLineJump(e) ?? {}
+	self.container.addEventListener("keydown", function (ev: KeyboardEvent) {
+		const { line, dir } = detectLineJump(self, ev) ?? {}
 
 		if (!line) return
 
-		const goesRight = e.key === "ArrowRight"
-		const goesLeft = e.key === "ArrowLeft"
+		const goesRight = ev.key === "ArrowRight"
+		const goesLeft = ev.key === "ArrowLeft"
 		let sel = window.getSelection()
 		let range = document.createRange()
 		let offset = 0
@@ -124,7 +124,7 @@ export default function caretControl(container: HTMLElement) {
 		}
 
 		if (dir === "down") {
-			const nextline = getLine.next(line) ?? line
+			const nextline = self.getNextLine(line) ?? line
 			node = lastTextNode(nextline)
 			const textlen = node.nodeValue?.length || 0
 
@@ -137,7 +137,7 @@ export default function caretControl(container: HTMLElement) {
 		}
 
 		if (dir === "up") {
-			const prevline = getLine.previous(line) ?? line
+			const prevline = self.getPrevLine(line) ?? line
 			node = lastTextNode(prevline)
 			const textlen = node.nodeValue?.length || 0
 
@@ -161,7 +161,7 @@ export default function caretControl(container: HTMLElement) {
 			sel?.addRange(range)
 			sel?.collapseToEnd()
 
-			e.preventDefault()
+			ev.preventDefault()
 		} catch (_) {
 			console.warn("Cannot set caret")
 		}

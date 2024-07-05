@@ -1,9 +1,8 @@
-import lastTextNode from "../utils/lastTextNode"
-import removeModifier from "../utils/removeModifier"
-import getContainer from "../utils/getContainer"
-import setCaret from "../utils/setCaret"
-import getLine from "../utils/getLines"
 import { addUndoHistory } from "./undo"
+import removeModifier from "../utils/removeModifier"
+import lastTextNode from "../utils/lastTextNode"
+import PocketEditor from "../index"
+import setCaret from "../utils/setCaret"
 
 function removeLineNoText(editable: Element, prevline: Element) {
 	setCaret(prevline)
@@ -29,14 +28,13 @@ function removeLineWithText(editable: Element, prevLine: Element) {
 	parent.remove()
 }
 
-export default function lineDeletion() {
+export default function lineDeletion(self: PocketEditor) {
 	const userAgent = navigator.userAgent.toLowerCase()
-	const container = getContainer()
 	const sel = window.getSelection()
 
 	function applyLineRemove(e: Event) {
 		const editable = e.target as HTMLElement
-		const line = getLine.fromEditable(editable) as HTMLElement
+		const line = self.getLineFromEditable(editable) as HTMLElement
 
 		const isEditable = !!editable.getAttribute("contenteditable")
 		const isAtStart = sel?.getRangeAt(0)?.endOffset === 0
@@ -52,7 +50,7 @@ export default function lineDeletion() {
 		// Add this condition because of a conflit
 		// with "backspace in lineSelection.ts" creating a double history
 		if (line) {
-			addUndoHistory(line)
+			addUndoHistory(self, line)
 		}
 
 		if (line?.classList.length > 1) {
@@ -60,7 +58,7 @@ export default function lineDeletion() {
 			return
 		}
 
-		const prevline = getLine.previous(line)
+		const prevline = self.getPrevLine(line)
 
 		if (prevline) {
 			if (editable.textContent === "") removeLineNoText(editable, prevline)
@@ -68,19 +66,15 @@ export default function lineDeletion() {
 		}
 	}
 
-	//
 	// Default Chromium / Firefox
-	//
 
-	container.addEventListener("beforeinput", applyLineRemove)
+	self.container.addEventListener("beforeinput", applyLineRemove)
 
-	//
 	// Safari macOS:
 	// Special remove event because "input" event doesn't work on empty contenteditables
-	//
 
 	if (userAgent.includes("safari") && !userAgent.match(/chrome|chromium/)) {
-		container.addEventListener("keydown", (e) => {
+		self.container.addEventListener("keydown", (e) => {
 			try {
 				const range = sel?.getRangeAt(0)
 				const isBackspacing = (e as KeyboardEvent).key === "Backspace"
@@ -96,23 +90,21 @@ export default function lineDeletion() {
 		})
 	}
 
-	/*
-	 *	Ok...
-	 *	Virtual keyboard on mobile doesn't trigger "input" event when backspacing empty text
-	 *	But it triggers on "keyup" with Unidentified key.
-	 *	It also triggers an Unidentified keyup on line break and THEN a "Enter" keyup.
-	 *
-	 *	This works by debouncing the first Unidentified key and waiting for the "Enter"
-	 *	If no "Enter" is triggered in 5ms, apply the line remove
-	 */
+	//	Ok...
+	//	Virtual keyboard on mobile doesn't trigger "input" event when backspacing empty text
+	//	But it triggers on "keyup" with Unidentified key.
+	//	It also triggers an Unidentified keyup on line break and THEN a "Enter" keyup.
+	//
+	//	This works by debouncing the first Unidentified key and waiting for the "Enter"
+	//	If no "Enter" is triggered in 5ms, apply the line remove
 
 	// Only on touch devices
 	if ("ontouchstart" in window || navigator.maxTouchPoints > 0) {
 		let touchDeleteDebounce: number
 		let inputEventPrevents = false
 
-		container.addEventListener("input", () => (inputEventPrevents = true))
-		container.addEventListener("keyup", function (ev) {
+		self.container.addEventListener("input", () => (inputEventPrevents = true))
+		self.container.addEventListener("keyup", function (ev) {
 			if (
 				inputEventPrevents ||
 				(ev as KeyboardEvent)?.key !== "Unidentified" ||

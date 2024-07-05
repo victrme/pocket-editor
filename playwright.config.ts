@@ -3,13 +3,14 @@ import { defineConfig, devices } from "@playwright/test"
 export default defineConfig({
 	testDir: "tests",
 	fullyParallel: true,
+	preserveOutput: "never",
 	use: {
 		baseURL: "http://localhost:4173",
 	},
 	webServer: {
 		command: "pnpm --filter example preview",
 		url: "http://localhost:4173",
-		reuseExistingServer: !process.env.CI,
+		reuseExistingServer: true,
 		timeout: 2000,
 	},
 	projects: [

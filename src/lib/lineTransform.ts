@@ -1,13 +1,13 @@
-import getLine from "../utils/getLines"
+import PocketEditor from "../index"
 import modList from "../utils/modList"
 import setCaret from "../utils/setCaret"
 
 type Mods = keyof typeof modList
 
-export default function lineTransform(editable: HTMLElement, mod?: Mods, focus = true) {
+export default function lineTransform(self: PocketEditor, editable: HTMLElement, mod?: Mods, focus = true) {
 	if (!mod) return
 
-	const line = getLine.fromEditable(editable)
+	const line = self.getLineFromEditable(editable)
 
 	if (!line || line?.className.includes(mod)) {
 		return
@@ -60,7 +60,7 @@ export default function lineTransform(editable: HTMLElement, mod?: Mods, focus =
 		const input = document.createElement("input")
 		const span = document.createElement("span")
 		const p = document.createElement("p")
-		const line = getLine.fromEditable(editable)
+		const line = self.getLineFromEditable(editable)
 		let content = editable.textContent ?? ""
 
 		if (!line || line.className.includes("todo")) {

@@ -1,19 +1,16 @@
-import detectLineJump from "../utils/detectLineJump"
-import removeLines from "../utils/removeLines"
-import setCaret from "../utils/setCaret"
-import getLine from "../utils/getLines"
 import { addUndoHistory } from "./undo"
+import detectLineJump from "../utils/detectLineJump"
+import PocketEditor from "../index"
+import setCaret from "../utils/setCaret"
 
-export default function lineSelection(container: HTMLElement) {
-	let lines = getLine.all()
+export default function lineSelection(self: PocketEditor) {
+	let lines = self.lines
 	let caretSelTimeout: number
 	let lineInterval: [number, number] = [-1, -1]
 	let currentLine = -1
 	let firstLine = -1
 
-	//
 	// Funcs
-	//
 
 	function caretSelectionDebounce(callback: Function) {
 		clearTimeout(caretSelTimeout)
@@ -23,7 +20,7 @@ export default function lineSelection(container: HTMLElement) {
 	}
 
 	function createRange(selected?: Element[]) {
-		if (!selected) selected = getLine.selected()
+		if (!selected) selected = self.getSelectedLines()
 		if (selected.length === 0) return
 
 		// create paragraph
@@ -32,7 +29,7 @@ export default function lineSelection(container: HTMLElement) {
 		mockSelection.id = "pocket-editor-mock-sel"
 		mockSelection.textContent = "mock-selection"
 		mockSelection.setAttribute("contenteditable", "true")
-		container.appendChild(mockSelection)
+		self.container.appendChild(mockSelection)
 
 		let sel = window.getSelection()
 		let range = document.createRange()
@@ -46,7 +43,7 @@ export default function lineSelection(container: HTMLElement) {
 	}
 
 	function getLineIndex(editable: HTMLElement) {
-		const line = getLine.fromEditable(editable)
+		const line = self.getLineFromEditable(editable)
 		return line ? lines.indexOf(line) : -1
 	}
 
@@ -63,7 +60,7 @@ export default function lineSelection(container: HTMLElement) {
 
 		// remove mock-sel & move event
 		document.querySelector("#pocket-editor-mock-sel")?.remove()
-		container.removeEventListener("mousemove", mouseMoveEvent)
+		self.container.removeEventListener("mousemove", mouseMoveEvent)
 	}
 
 	function addToLineSelection(index: number) {
@@ -96,14 +93,12 @@ export default function lineSelection(container: HTMLElement) {
 		lineInterval = [index, index]
 	}
 
-	//
 	// Events
-	//
 
 	function keyboardEvent(e: KeyboardEvent) {
-		lines = getLine.all()
+		lines = self.lines
 
-		const selected = getLine.selected()
+		const selected = self.getSelectedLines()
 		const isClipboardKey = e.key.match(/([x|c|v])/g)
 		const isCtrlKey = e.key === "Control" || e.key === "Meta"
 		const noSelection = selected.length > 0
@@ -146,8 +141,8 @@ export default function lineSelection(container: HTMLElement) {
 
 			if (!e.code.match(/Shift|Alt|Control|Caps/)) {
 				resetLineSelection()
-				addUndoHistory(selected[selected.length - -1])
-				removeLines(selected)
+				addUndoHistory(self, selected[selected.length - -1])
+				self.removeLines(selected)
 
 				if (e.code === "Enter") {
 					e.preventDefault()
@@ -158,7 +153,7 @@ export default function lineSelection(container: HTMLElement) {
 		if (!e.shiftKey) return
 
 		// Start line selection
-		const { line } = detectLineJump(e) ?? {}
+		const { line } = detectLineJump(self, e) ?? {}
 
 		if (line) {
 			const index = lines.indexOf(line)
@@ -170,7 +165,7 @@ export default function lineSelection(container: HTMLElement) {
 
 	function mouseMoveEvent(e: MouseEvent) {
 		const target = e.target as HTMLElement
-		const selected = getLine.selected()
+		const selected = self.getSelectedLines()
 
 		if (selected.length > 0) {
 			window.getSelection()?.removeAllRanges()
@@ -194,7 +189,7 @@ export default function lineSelection(container: HTMLElement) {
 	function mouseDownEvent(e: MouseEvent) {
 		const target = e.target as HTMLElement
 
-		lines = getLine.all()
+		lines = self.lines
 
 		if (e.button === 2) e.preventDefault() // right click doesn't trigger click
 		if (e.button !== 0) return
@@ -205,30 +200,30 @@ export default function lineSelection(container: HTMLElement) {
 
 		if (!!target.getAttribute("contenteditable")) {
 			initLineSelection(getLineIndex(target))
-			container.addEventListener("mousemove", mouseMoveEvent)
+			self.container.addEventListener("mousemove", mouseMoveEvent)
 		}
 	}
 
 	function mouseClickEvent(e: Event) {
 		const path = e.composedPath() as Element[]
-		const clicksOutsideContainer = !path.includes(container)
-		const selectionLength = Object.keys(getLine.selected()).length
+		const clicksOutsideContainer = !path.includes(self.container)
+		const selectionLength = Object.keys(self.getSelectedLines()).length
 
 		if (selectionLength === 0) {
 			return
 		}
 
 		if (clicksOutsideContainer) {
-			lines = getLine.all()
+			lines = self.lines
 			resetLineSelection()
 			applyLineSelection(lineInterval)
 		}
 
-		container.removeEventListener("mousemove", mouseMoveEvent)
+		self.container.removeEventListener("mousemove", mouseMoveEvent)
 	}
 
 	window.addEventListener("touchend", mouseClickEvent)
 	window.addEventListener("click", mouseClickEvent)
-	container.addEventListener("keydown", keyboardEvent)
-	container.addEventListener("mousedown", mouseDownEvent)
+	self.container.addEventListener("keydown", keyboardEvent)
+	self.container.addEventListener("mousedown", mouseDownEvent)
 }

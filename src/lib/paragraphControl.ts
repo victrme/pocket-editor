@@ -1,13 +1,11 @@
-import removeModifier from "../utils/removeModifier"
-import getContainer from "../utils/getContainer"
-import modList from "../utils/modList"
-import getLine from "../utils/getLines"
-import lineTransform from "./lineTransform"
-import generateLine from "./lineGenerate"
 import { addUndoHistory } from "./undo"
+import removeModifier from "../utils/removeModifier"
+import lineTransform from "./lineTransform"
+import PocketEditor from "../index"
+import modList from "../utils/modList"
 
-export default function paragraphControl(e: Event) {
-	const container = getContainer()
+export default function paragraphControl(self: PocketEditor, e: Event) {
+	const container = self.container
 	const editable = e.target as HTMLElement
 	let range: Range | undefined
 
@@ -23,14 +21,14 @@ export default function paragraphControl(e: Event) {
 		return
 	}
 
-	const line = getLine.fromEditable(editable)
+	const line = self.getLineFromEditable(editable)
 	const insertParagraph = (e as InputEvent)?.inputType === "insertParagraph"
 	const insertText = (e as InputEvent)?.inputType === "insertText"
 	let modif
 
 	if (e.type === "beforeinput" && insertParagraph && line) {
 		e.preventDefault()
-		addUndoHistory(line)
+		addUndoHistory(self, line)
 
 		const cuttext = (editable.textContent ?? "").slice(0, range.startOffset)
 		const nexttext = (editable.textContent ?? "").slice(range.startOffset)
@@ -44,8 +42,8 @@ export default function paragraphControl(e: Event) {
 		if (line?.classList.contains("list")) modif = "list"
 		if (line?.classList.contains("todo-checked")) modif = "todo"
 
-		const nextline = getLine.next(line)
-		const newline = generateLine({
+		const nextline = self.getNextLine(line)
+		const newline = self.createLine({
 			text: nexttext,
 			modif: modif,
 		})
@@ -76,7 +74,7 @@ export default function paragraphControl(e: Event) {
 
 			if (content.startsWith(val + hardspace) || content.startsWith(val + softspace)) {
 				modif = mod as keyof typeof modList
-				lineTransform(editable, modif)
+				lineTransform(self, editable, modif)
 			}
 		}
 	}
