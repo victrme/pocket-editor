@@ -24,9 +24,9 @@ npm install pocket-editor
 ### What you can do
 
 ```ts
-function pocketEditor(string): {
-  get: () => string
-  set: (string) => void
+class PocketEditor(string): {
+  get value: () => string
+  set value: (string) => void
   oninput: ((content: string) => void) => void
 }
 ```
@@ -40,12 +40,12 @@ function pocketEditor(string): {
 ```
 
 ```ts
-import pocketEditor from "pocket-editor"
+import PocketEditor from "pocket-editor"
 import "pocket-editor/style.css"
 
-const editor = pocketEditor("wrapper")
+const editor = new PocketEditor("#wrapper")
 
-editor.set("## Hello world !!")
+editor.value = "## Hello world !!"
 
 editor.oninput((content) => {
     console.log(content)
