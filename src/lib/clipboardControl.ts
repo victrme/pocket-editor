@@ -1,48 +1,45 @@
 import { toHTML, toMarkdown, checkModifs } from "./contentControl"
-import getContainer from "../utils/getContainer"
-import removeLines from "../utils/removeLines"
-import setCaret from "../utils/setCaret"
-import getLine from "../utils/getLines"
 import { addUndoHistory } from "./undo"
+import PocketEditor from "../index"
+import setCaret from "../utils/setCaret"
 
-export function copyEvent(e: ClipboardEvent) {
-	const selected = getLine.selected()
+export function copyEvent(self: PocketEditor, ev: ClipboardEvent) {
+	const selected = self.getSelectedLines()
 
 	if (selected.length > 0) {
-		e.clipboardData?.setData("text/plain", toMarkdown(selected))
-		e.preventDefault()
+		ev.clipboardData?.setData("text/plain", toMarkdown(selected))
+		ev.preventDefault()
 	}
 }
 
-export function cutEvent(e: ClipboardEvent) {
-	const selected = getLine.selected()
+export function cutEvent(self: PocketEditor, ev: ClipboardEvent) {
+	const selected = self.getSelectedLines()
 
 	if (selected.length > 0) {
-		e.clipboardData?.setData("text/plain", toMarkdown(selected))
-		e.preventDefault()
-		removeLines(selected)
-		addUndoHistory(selected[selected.length - 1])
+		ev.clipboardData?.setData("text/plain", toMarkdown(selected))
+		ev.preventDefault()
+		self.removeLines(selected)
+		addUndoHistory(self, selected[selected.length - 1])
 	}
 }
 
-export function pasteEvent(e: ClipboardEvent) {
-	e.preventDefault()
+export function pasteEvent(self: PocketEditor, ev: ClipboardEvent) {
+	ev.preventDefault()
 
 	// transform paste content to plaintext
-	const container = getContainer()
 	const selection = window.getSelection()
 	const range = selection?.getRangeAt(0)
-	const text = e.clipboardData?.getData("text") || ""
+	const text = ev.clipboardData?.getData("text") || ""
 
 	// Text starts with a spcial char, create new lines
 	if (checkModifs(text) !== "") {
-		const editable = e.target as HTMLElement
-		const newHTML = toHTML(text)
+		const editable = ev.target as HTMLElement
+		const newHTML = toHTML(self, text)
 		const linesInNew = newHTML.childElementCount - 1 // before document fragment gets consumed
-		let line = getLine.fromEditable(editable)
+		let line = self.getLineFromEditable(editable)
 
 		// When pasting after selection, line is last selected block
-		const selected = getLine.selected()
+		const selected = self.getSelectedLines()
 		if (selected.length > 0) {
 			line = selected[selected.length - 1] as HTMLElement
 		}
@@ -52,7 +49,7 @@ export function pasteEvent(e: ClipboardEvent) {
 		}
 
 		// Adds content: after line with caret position
-		container.insertBefore(newHTML, getLine.next(line))
+		self.container.insertBefore(newHTML, self.getNextLine(line))
 
 		// Place caret: Gets last line in paste content
 		let lastline = line.nextSibling
@@ -64,7 +61,7 @@ export function pasteEvent(e: ClipboardEvent) {
 		if (line && line.textContent === "") {
 			const areSameMods = (mod: string) => {
 				const curr = line?.classList
-				const next = getLine.next(line!)?.classList
+				const next = self.getNextLine(line!)?.classList
 				return curr?.contains(mod) === next?.contains(mod)
 			}
 
@@ -78,7 +75,7 @@ export function pasteEvent(e: ClipboardEvent) {
 			}
 		}
 
-		container.dispatchEvent(
+		self.container.dispatchEvent(
 			new InputEvent("input", {
 				inputType: "insertText",
 				bubbles: true,
@@ -103,7 +100,7 @@ export function pasteEvent(e: ClipboardEvent) {
 		}
 	}
 
-	container.dispatchEvent(
+	self.container.dispatchEvent(
 		new InputEvent("input", {
 			inputType: "insertText",
 			bubbles: true,

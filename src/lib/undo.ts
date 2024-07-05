@@ -1,6 +1,5 @@
 import { toHTML, toMarkdown } from "./contentControl"
-import getContainer from "../utils/getContainer"
-import getLine from "../utils/getLines"
+import PocketEditor from "../index"
 import setCaret from "../utils/setCaret"
 
 type History = {
@@ -10,8 +9,8 @@ type History = {
 
 let history: History[] = []
 
-export function addUndoHistory(lastline?: HTMLElement | null): void {
-	const lines = getLine.all()
+export function addUndoHistory(self: PocketEditor, lastline?: HTMLElement | null): void {
+	const lines = self.lines
 	const markdown = toMarkdown(lines)
 	const index = lastline ? lines.indexOf(lastline) : 0
 
@@ -26,44 +25,42 @@ export function addUndoHistory(lastline?: HTMLElement | null): void {
 	}
 }
 
-export default function initUndo() {
+export default function initUndo(self: PocketEditor) {
 	// This observer stops ctrl + z from applying "pocket-editor undo" if the native undo did change something.
 	// Has to do this bc can't preventDefault, and there's no undo API
 
-	const container = getContainer()
 	let timeout: number
 
 	const observer = new MutationObserver(() => {
 		if (timeout) clearTimeout(timeout)
 	})
 
-	observer.observe(container, {
+	observer.observe(self.container, {
 		characterData: true,
 		subtree: true,
 	})
 
-	container.addEventListener("keydown", (e) => {
+	self.container.addEventListener("keydown", (e) => {
 		if ((e.ctrlKey || e.metaKey) && e.key === "z") {
 			timeout = window.setTimeout(() => {
-				applyUndo()
+				applyUndo(self)
 			}, 1)
 		}
 	})
 }
 
-function applyUndo() {
-	const container = getContainer()
+function applyUndo(self: PocketEditor) {
 	const { markdown, index } = history[0] ?? {}
 
 	if (!markdown) {
 		return
 	}
 
-	Object.values(container.children).forEach((node) => node.remove())
-	container.appendChild(toHTML(markdown))
+	Object.values(self.container.children).forEach((node) => node.remove())
+	self.container.appendChild(toHTML(self, markdown))
 
 	setTimeout(() => {
-		const editable = container.querySelectorAll<HTMLElement>("[contenteditable]")[index]
+		const editable = self.container.querySelectorAll<HTMLElement>("[contenteditable]")[index]
 
 		if (editable) {
 			editable.focus()
@@ -73,7 +70,7 @@ function applyUndo() {
 
 	history.shift()
 
-	container.dispatchEvent(
+	self.container.dispatchEvent(
 		new InputEvent("input", {
 			inputType: "insertText",
 			bubbles: true,

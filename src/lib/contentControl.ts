@@ -1,4 +1,4 @@
-import generateLine from "./lineGenerate"
+import PocketEditor from "../index"
 import modList from "../utils/modList"
 
 export function checkModifs(text: string) {
@@ -11,7 +11,7 @@ export function checkModifs(text: string) {
 	return ""
 }
 
-export function toHTML(markdown: string) {
+export function toHTML(self: PocketEditor, markdown: string) {
 	// create fragment to append only once to real DOM
 	const fragment = document.createDocumentFragment()
 
@@ -20,13 +20,13 @@ export function toHTML(markdown: string) {
 
 	for (const line of markdown.split("\n\n")) {
 		if (line.indexOf("\n") === -1) {
-			fragment.appendChild(generateLine({ text: line, modif: checkModifs(line) }))
+			fragment.appendChild(self.createLine({ text: line, modif: checkModifs(line) }))
 			continue
 		}
 
 		// Modifs that use line breaks (list & todos)
 		for (const subline of line.split("\n")) {
-			fragment.appendChild(generateLine({ text: subline, modif: checkModifs(subline) }))
+			fragment.appendChild(self.createLine({ text: subline, modif: checkModifs(subline) }))
 		}
 	}
 

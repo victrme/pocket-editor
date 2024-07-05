@@ -22,9 +22,9 @@ if (!sessionStorage.pcktdtr) {
 	sessionStorage.pcktdtr = intro
 }
 
-const editor = new pocketEditor("wrapper", {
+const editor = new pocketEditor("#wrapper", {
 	text: sessionStorage.pcktdtr,
-	name: "example",
+	id: "example",
 })
 
 editor.oninput((content) => {
@@ -33,10 +33,5 @@ editor.oninput((content) => {
 
 document.getElementById("b_reset")?.addEventListener("click", () => {
 	sessionStorage.pcktdtr = intro
-	editor.set(intro)
-})
-
-const secondEditor = new pocketEditor("wrapper", {
-	text: sessionStorage.pcktdtr,
-	name: "lol",
+	editor.value = intro
 })

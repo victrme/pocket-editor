@@ -1,27 +1,30 @@
-import getLine from "./getLines"
+import PocketEditor from "../index"
 
-export default function detectLineJump(
-	e: KeyboardEvent
-): { line: HTMLElement; dir: "down" | "up" } | undefined {
+type LineJumpReturn = {
+	line: HTMLElement
+	dir: "down" | "up"
+}
+
+export default function detectLineJump(self: PocketEditor, ev: KeyboardEvent): LineJumpReturn | undefined {
 	// Do nothing if not arrow or selection
-	if (!e.key.includes("Arrow") || !window.getSelection()?.anchorNode) {
+	if (!ev.key.includes("Arrow") || !window.getSelection()?.anchorNode) {
 		return
 	}
 
-	const editable = e.target as HTMLElement
-	const line = getLine.fromEditable(editable)
+	const editable = ev.target as HTMLElement
+	const line = self.getLineFromEditable(editable)
 	const range = window?.getSelection()?.getRangeAt(0)
 	const txtLen = range?.startContainer?.nodeValue?.length ?? 0
 
 	if (!range || !line) return
 
-	const prevSibling = getLine.previous(line)
-	const nextSibling = getLine.next(line)
+	const prevSibling = self.getPrevLine(line)
+	const nextSibling = self.getNextLine(line)
 	const isCaretAtZero = Math.min(range?.endOffset, range?.startOffset) === 0
 	const isCaretAtEnd = Math.max(range?.endOffset, range?.startOffset) === txtLen
 
-	if (e.key === "ArrowLeft" && isCaretAtZero && prevSibling) return { line, dir: "up" }
-	if (e.key === "ArrowRight" && isCaretAtEnd && nextSibling) return { line, dir: "down" }
+	if (ev.key === "ArrowLeft" && isCaretAtZero && prevSibling) return { line, dir: "up" }
+	if (ev.key === "ArrowRight" && isCaretAtEnd && nextSibling) return { line, dir: "down" }
 
 	let top = false
 	let bottom = false
@@ -40,6 +43,6 @@ export default function detectLineJump(
 		bottom = rr.bottom + rr.height - lr.bottom > 0
 	}
 
-	if (e.key === "ArrowUp" && prevSibling && top) return { line, dir: "up" }
-	if (e.key === "ArrowDown" && nextSibling && bottom) return { line, dir: "down" }
+	if (ev.key === "ArrowUp" && prevSibling && top) return { line, dir: "up" }
+	if (ev.key === "ArrowDown" && nextSibling && bottom) return { line, dir: "down" }
 }
