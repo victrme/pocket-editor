@@ -24,9 +24,16 @@ npm install pocket-editor
 ### What you can do
 
 ```ts
-class PocketEditor(string): {
-  get value: () => string
-  set value: (string) => void
+interface Options {
+  text?: string
+  id?: string
+  defer?: true | number 
+}
+
+class PocketEditor {
+  constructor(selector: string, options?: Options)
+  get value(): string
+  set value(string): void
   oninput: ((content: string) => void) => void
 }
 ```
