@@ -207,11 +207,6 @@ export default function lineSelection(self: PocketEditor) {
 	function mouseClickEvent(e: Event) {
 		const path = e.composedPath() as Element[]
 		const clicksOutsideContainer = !path.includes(self.container)
-		const selectionLength = Object.keys(self.getSelectedLines()).length
-
-		if (selectionLength === 0) {
-			return
-		}
 
 		if (clicksOutsideContainer) {
 			lines = self.lines
