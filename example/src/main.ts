@@ -24,7 +24,7 @@ if (!sessionStorage.pcktdtr) {
 
 const editor = new pocketEditor("#wrapper", {
 	text: sessionStorage.pcktdtr,
-	id: "example",
+	id: "pocket-editor",
 })
 
 editor.oninput(function (content) {

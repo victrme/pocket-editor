@@ -39,7 +39,7 @@ export default class PocketEditor {
 	 */
 	constructor(selector: string, options?: Options) {
 		const div = document.createElement("div")
-		const { text, defer } = options ?? {}
+		const { text, defer, id } = options ?? {}
 
 		this.wrapper = document.querySelector(selector)
 		this.container = div
@@ -49,7 +49,11 @@ export default class PocketEditor {
 			throw `Pocket editor: selector "${selector}" was not found`
 		}
 
-		div.dataset.pocketEditor = options?.id
+		if (id) {
+			div.id = id
+		}
+
+		div.dataset.pocketEditor = ""
 
 		if (typeof defer === "number") {
 			setTimeout(() => this.init(text), defer)
