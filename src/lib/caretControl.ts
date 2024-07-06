@@ -9,23 +9,22 @@ export default function caretControl(self: PocketEditor) {
 		const p = document.createElement("p")
 		const span = document.createElement("span")
 		p.id = "pocket-editor-mock-p"
-		span.textContent = "abcdefghijklmnopqrstuvwxyz"
+		span.textContent = "abcdefghijklmnopqrstuvwxyz0123456789"
 		p?.appendChild(span)
 		self.container.querySelector(".line [contenteditable]")?.appendChild(p)
-		averageCharWidth = span.offsetWidth / 26 / 2
+		averageCharWidth = span.offsetWidth / 36 / 2
 
 		p.remove()
 	}
 
-	function rangePosInCharLen(line: Element, str: string): number | null {
+	function rangePosInCharLen(line: HTMLElement, str: string): number | null {
 		const sel = window.getSelection()
-		const editable = line?.querySelector("[contenteditable]") as HTMLElement
-		const cx = editable?.getBoundingClientRect().x ?? 0
-		const rx = sel?.getRangeAt(0)?.cloneRange()?.getBoundingClientRect().x ?? 0
-		const ox = rx - cx
 
 		let charCount: number = -1
+		const x = getHorizontalPosition(sel, line)
+		const offset = self.caret_x ?? x.offset
 
+		const editable = line?.querySelector("[contenteditable]") as HTMLElement
 		const textnode = lastTextNode(editable)
 		const range = document.createRange()
 		range.setStart(textnode, 0)
@@ -41,9 +40,9 @@ export default function caretControl(self: PocketEditor) {
 				break
 			}
 
-			rangeX = range.getBoundingClientRect().x - cx
+			rangeX = range.getBoundingClientRect().x - x.editable
 
-			if (rangeX + averageCharWidth >= ox) {
+			if (rangeX + averageCharWidth >= offset) {
 				charCount = i
 				break
 			}
@@ -107,17 +106,34 @@ export default function caretControl(self: PocketEditor) {
 		return lines
 	}
 
-	self.container.addEventListener("keydown", function (ev: KeyboardEvent) {
-		const { line, dir } = detectLineJump(self, ev) ?? {}
+	self.container.addEventListener("pointerdown", function () {
+		self.caret_x = undefined
+	})
 
-		if (!line) return
+	self.container.addEventListener("keydown", function (ev: KeyboardEvent) {
+		if (!ev.key.includes("Arrow")) {
+			return
+		}
 
 		const goesRight = ev.key === "ArrowRight"
 		const goesLeft = ev.key === "ArrowLeft"
+		const { line, dir } = detectLineJump(self, ev) ?? {}
 		let sel = window.getSelection()
 		let range = document.createRange()
 		let offset = 0
 		let node
+
+		if (goesLeft || goesRight) {
+			self.caret_x = undefined
+		}
+		//
+		else if (self.caret_x === undefined) {
+			self.caret_x = getHorizontalPosition(sel, line).offset
+		}
+
+		if (!line) {
+			return
+		}
 
 		if (averageCharWidth === 0) {
 			initAverageCharWidth()
@@ -166,4 +182,16 @@ export default function caretControl(self: PocketEditor) {
 			console.warn("Cannot set caret")
 		}
 	})
+}
+
+function getHorizontalPosition(selection: Selection | null, line?: HTMLElement) {
+	const editable = line?.querySelector("[contenteditable]") as HTMLElement
+	const cx = editable?.getBoundingClientRect().x ?? 0
+	const rx = selection?.getRangeAt(0)?.cloneRange()?.getBoundingClientRect().x ?? 0
+
+	return {
+		editable: cx,
+		range: rx,
+		offset: rx - cx,
+	}
 }

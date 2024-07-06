@@ -1,13 +1,13 @@
 import { cutEvent, copyEvent, pasteEvent } from "./lib/clipboardControl"
 import { toHTML, toMarkdown } from "./lib/contentControl"
 import paragraphControl from "./lib/paragraphControl"
+import lineTransform from "./lib/lineTransform"
 import lineSelection from "./lib/lineSelection"
 import lineDeletion from "./lib/lineDeletion"
 import caretControl from "./lib/caretControl"
 import keybindings from "./lib/keybindings"
 import initUndo from "./lib/undo"
 import setCaret from "./utils/setCaret"
-import lineTransform from "./lib/lineTransform"
 import modList from "./utils/modList"
 
 interface Options {
@@ -20,6 +20,7 @@ export default class PocketEditor {
 	container: HTMLElement
 	lines: HTMLElement[]
 	wrapper: Element | null
+	caret_x: number | undefined
 
 	/**
 	 * This creates an editor.
