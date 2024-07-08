@@ -1,7 +1,7 @@
 {
 	"name": "pocket-editor",
 	"description": "Blazingly fast block style wysiwyg editor that returns markdown",
-	"version": "2.1.0",
+	"version": "2.1.1",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"author": "Victor Azevedo",
@@ -17,7 +17,7 @@
 		"rich text"
 	],
 	"scripts": {
-		"build": " esbuild ./src/*.ts --outdir=./dist && esbuild ./src/style.css --outdir=./dist && tsc",
+		"build": " esbuild ./src/**/*.ts --outdir=./dist && esbuild ./src/style.css --outdir=./dist && tsc",
 		"test": "npx playwright test",
 		"test:ui": "npx playwright test --ui",
 		"dev": "pnpm --filter example dev",
