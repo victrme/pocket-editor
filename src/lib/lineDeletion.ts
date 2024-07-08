@@ -4,6 +4,8 @@ import lastTextNode from "../utils/lastTextNode"
 import PocketEditor from "../index"
 import setCaret from "../utils/setCaret"
 
+const ZERO_WIDTH_WHITESPACE = "​"
+
 function removeLineNoText(editable: Element, prevline: Element) {
 	setCaret(prevline)
 	editable.parentElement?.remove()
@@ -29,23 +31,25 @@ function removeLineWithText(editable: Element, prevLine: Element) {
 }
 
 export default function lineDeletion(self: PocketEditor) {
+	const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0
 	const userAgent = navigator.userAgent.toLowerCase()
 	const sel = window.getSelection()
 
-	function applyLineRemove(e: Event) {
-		const editable = e.target as HTMLElement
+	function applyLineRemove(ev: Event) {
+		const editable = ev.target as HTMLElement
 		const line = self.getLineFromEditable(editable) as HTMLElement
 
+		const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0
 		const isEditable = !!editable.getAttribute("contenteditable")
 		const isAtStart = sel?.getRangeAt(0)?.endOffset === 0
-		const isDelEvent = (e as InputEvent).inputType === "deleteContentBackward"
-		const isBeforeinput = e.type === "beforeinput"
+		const isDelEvent = (ev as InputEvent).inputType === "deleteContentBackward"
+		const isBeforeinput = ev.type === "beforeinput"
 
 		if ((isBeforeinput && !isDelEvent) || !isAtStart || !isEditable) {
 			return
 		}
 
-		e.preventDefault()
+		ev.preventDefault()
 
 		// Add this condition because of a conflit
 		// with "backspace in lineSelection.ts" creating a double history
@@ -54,7 +58,13 @@ export default function lineDeletion(self: PocketEditor) {
 		}
 
 		if (line?.classList.length > 1) {
-			removeModifier(editable)
+			const newEditable = removeModifier(editable)
+
+			if (isTouch && newEditable && newEditable.textContent === "") {
+				newEditable.textContent = ZERO_WIDTH_WHITESPACE
+				setCaret(newEditable)
+			}
+
 			return
 		}
 
@@ -90,32 +100,36 @@ export default function lineDeletion(self: PocketEditor) {
 		})
 	}
 
-	//	Ok...
-	//	Virtual keyboard on mobile doesn't trigger "input" event when backspacing empty text
-	//	But it triggers on "keyup" with Unidentified key.
-	//	It also triggers an Unidentified keyup on line break and THEN a "Enter" keyup.
-	//
-	//	This works by debouncing the first Unidentified key and waiting for the "Enter"
-	//	If no "Enter" is triggered in 5ms, apply the line remove
+	//  Virtual keyboards:
+	//	"input" events are not triggered when backspacing empty text with a virtual keyboard.
+	//	This adds a whitespace when deleting to force an "input" event.
 
-	// Only on touch devices
-	if ("ontouchstart" in window || navigator.maxTouchPoints > 0) {
-		let touchDeleteDebounce: number
-		let inputEventPrevents = false
+	if (isTouchDevice) {
+		let triggerDeleteLine = false
 
-		self.container.addEventListener("input", () => (inputEventPrevents = true))
-		self.container.addEventListener("keyup", function (ev) {
-			if (
-				inputEventPrevents ||
-				(ev as KeyboardEvent)?.key !== "Unidentified" ||
-				sel?.getRangeAt(0)?.endOffset !== 0
-			) {
-				clearTimeout(touchDeleteDebounce)
-				inputEventPrevents = false
+		self.container.addEventListener("beforeinput", (ev) => {
+			const editable = ev.target as HTMLElement
+			const deleteContent = ev.inputType === "deleteContentBackward"
+			const whitespaceOnly = editable.textContent === ZERO_WIDTH_WHITESPACE
+
+			if (deleteContent && whitespaceOnly) {
+				triggerDeleteLine = true
+			}
+		})
+
+		self.container.addEventListener("keyup", (ev) => {
+			const editable = ev.target as HTMLElement
+
+			if (triggerDeleteLine) {
+				triggerDeleteLine = false
+				applyLineRemove(ev)
 				return
 			}
 
-			touchDeleteDebounce = window.setTimeout(() => applyLineRemove(ev), 5)
+			if (editable.textContent === "") {
+				editable.textContent = ZERO_WIDTH_WHITESPACE
+				setCaret(editable)
+			}
 		})
 	}
 }

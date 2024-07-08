@@ -1,7 +1,10 @@
-export default function removeModifier(editable: Element) {
+export default function removeModifier(editable: Element): HTMLDivElement | undefined {
 	const content = document.createElement("div")
 	const parent = editable.parentElement as HTMLElement
-	if (!parent) return
+
+	if (!parent) {
+		return
+	}
 
 	parent.className = "line"
 	content.textContent = parent.textContent
@@ -11,4 +14,6 @@ export default function removeModifier(editable: Element) {
 
 	parent.appendChild(content)
 	content.focus()
+
+	return content
 }
