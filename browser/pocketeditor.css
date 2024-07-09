@@ -1,0 +1,57 @@
+:root {
+  --pe-color-text: #37352f;
+  --pe-color-text-selection: #37352f;
+  --pe-color-background: #fff;
+  --pe-color-line-selection: #e0edfb;
+}
+[data-pocket-editor] {
+  padding: 1.5em;
+  line-height: 1.7em;
+  word-break: break-word;
+  color: var(--pe-color-text);
+  background-color: var(--pe-color-background);
+}
+[data-pocket-editor] > div {
+  display: flex;
+  column-gap: 0.5em;
+  padding: 0 0.75em;
+  margin: 0.25em 0;
+  border-radius: 0.15em;
+  transition: color 0.1s, background-color 0.1s;
+}
+[data-pocket-editor] [data-selected] {
+  color: var(--pe-color-text-selection);
+  background-color: var(--pe-color-line-selection);
+}
+[data-pocket-editor] [contenteditable] {
+  width: 100%;
+  margin: 0;
+  outline: none;
+  cursor: text;
+}
+[data-pocket-editor] h1[contenteditable],
+[data-pocket-editor] h2[contenteditable],
+[data-pocket-editor] h3[contenteditable] {
+  margin: 0.5em 0;
+}
+[data-pocket-editor] [type=checkbox] {
+  width: 1.3em;
+  height: 1.3em;
+}
+[data-pocket-editor] [data-todo-checked] p {
+  text-decoration: line-through;
+  opacity: 0.8;
+}
+[data-pocket-editor] [data-list] [data-list-marker] {
+  text-align: center;
+  width: 1em;
+}
+[data-pocket-editor] [data-list] [data-list-marker]::before {
+  content: attr(data-content);
+}
+#pocket-editor-mock-sel,
+#pocket-editor-mock-p {
+  position: absolute;
+  overflow: hidden;
+  height: 0;
+}
