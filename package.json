@@ -17,7 +17,7 @@
 		"rich text"
 	],
 	"scripts": {
-		"build": " esbuild ./src/**/*.ts --outdir=./dist && esbuild ./src/style.css --outdir=./dist && tsc",
+		"build": " node ./build.config.js && tsc",
 		"test": "npx playwright test",
 		"test:ui": "npx playwright test --ui",
 		"dev": "pnpm --filter example dev",
@@ -47,5 +47,7 @@
 		"printWidth": 112,
 		"semi": false
 	},
-	"packageManager": "pnpm@8.15.4"
+	"engines": {
+		"pnpm": ">=7"
+	}
 }
