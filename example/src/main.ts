@@ -1,6 +1,6 @@
 import "@fontsource/reenie-beanie"
 
-import pocketEditor from "../../src/index"
+import "../../src/index.ts"
 import "../../src/style.css"
 import "./style.css"
 
@@ -22,7 +22,7 @@ if (!sessionStorage.pcktdtr) {
 	sessionStorage.pcktdtr = intro
 }
 
-const editor = new pocketEditor("#wrapper", {
+const editor = new PocketEditor("#wrapper", {
 	text: sessionStorage.pcktdtr,
 	id: "pocket-editor",
 })

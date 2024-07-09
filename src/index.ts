@@ -9,13 +9,7 @@ import keybindings from "./lib/keybindings"
 import initUndo from "./lib/undo"
 import setCaret from "./utils/setCaret"
 
-interface Options {
-	id?: string
-	text?: string
-	defer?: true | number
-}
-
-export default class PocketEditor {
+class PocketEditor {
 	container: HTMLElement
 	lines: HTMLElement[]
 	wrapper: Element | null
@@ -226,8 +220,11 @@ export default class PocketEditor {
 
 		lines.forEach((line) => line.remove())
 
-		if (prevline) insertAfter(emptyLine, prevline)
-		else this.container.prepend(emptyLine)
+		if (prevline) {
+			this.insertAfter(emptyLine, prevline)
+		} else {
+			this.container.prepend(emptyLine)
+		}
 
 		setCaret(emptyLine)
 
@@ -261,8 +258,28 @@ export default class PocketEditor {
 
 		return notesline
 	}
+
+	private insertAfter(newNode: Node, existingNode: Node) {
+		existingNode?.parentNode?.insertBefore(newNode, existingNode.nextSibling)
+	}
 }
 
-function insertAfter(newNode: Node, existingNode: Node) {
-	existingNode?.parentNode?.insertBefore(newNode, existingNode.nextSibling)
+// Exports
+
+export default PocketEditor
+
+globalThis.PocketEditor = PocketEditor
+
+// Types
+
+declare global {
+	var PocketEditor: _PocketEditor
+}
+
+type _PocketEditor = typeof PocketEditor
+
+type Options = {
+	id?: string
+	text?: string
+	defer?: true | number
 }
