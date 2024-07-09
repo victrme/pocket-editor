@@ -11,13 +11,12 @@ export default function lineTransform(
 
 	const line = self.getLineFromEditable(editable)
 
-	if (!line || line?.className.includes(mod)) {
+	if (!line || line?.dataset[mod]) {
 		return
 	}
 
-	line.className = "line"
-	line.querySelector("span.list-dot")?.remove()
-	line.querySelector("span.todo-marker")?.remove()
+	line.querySelector("span[data-list-marker]")?.remove()
+	line.querySelector("span[data-todo-marker]")?.remove()
 
 	switch (mod) {
 		case "h1":
@@ -49,7 +48,7 @@ export default function lineTransform(
 		heading.setAttribute("contenteditable", "true")
 
 		if (line) {
-			line.className = "line " + tag
+			line.dataset[tag] = ""
 			editable.replaceWith(heading)
 		}
 
@@ -65,7 +64,7 @@ export default function lineTransform(
 		const line = self.getLineFromEditable(editable)
 		let content = editable.textContent ?? ""
 
-		if (!line || line.className.includes("todo")) {
+		if (!line || line.dataset.todo) {
 			return
 		}
 
@@ -78,18 +77,23 @@ export default function lineTransform(
 		input.setAttribute("aria-label", "todo list checkbox")
 
 		input.addEventListener("input", () => {
-			line.classList.toggle("todo-checked", input.checked)
-			line.classList.toggle("todo", !input.checked)
-			if (input.checked) input.setAttribute("checked", "")
-			else input.removeAttribute("checked")
+			if (input.checked) {
+				line.setAttribute("data-todo-checked", "")
+				input.setAttribute("checked", "")
+			} else {
+				line.removeAttribute("data-todo-checked")
+				line.setAttribute("data-todo", "")
+				input.removeAttribute("checked")
+			}
 		})
 
 		if (checked) {
 			input.setAttribute("checked", "")
+			line.dataset.todoChecked = ""
 		}
 
-		line.className = "line todo" + (checked ? "-checked" : "")
-		span.className = "todo-marker"
+		line.dataset.todo = ""
+		span.dataset.todoMarker = ""
 		p.textContent = content
 		p.setAttribute("contenteditable", "true")
 		editable.replaceWith(p)
@@ -106,7 +110,7 @@ export default function lineTransform(
 		const p = document.createElement("p")
 		let content = editable.textContent ?? ""
 
-		if (!line || line.className.includes("list")) {
+		if (!line || line.dataset.list === "") {
 			return
 		}
 
@@ -114,9 +118,9 @@ export default function lineTransform(
 			content = content?.replace("-", "").trimStart()
 		}
 
+		line.dataset.list = ""
 		span.dataset.content = "•"
-		span.className = "list-dot"
-		line.className = "line list"
+		span.dataset.listMarker = ""
 		p.textContent = content
 		p.setAttribute("contenteditable", "true")
 		editable.replaceWith(p)

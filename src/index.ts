@@ -99,13 +99,13 @@ export default class PocketEditor {
 		initUndo(self)
 
 		const lineObserverCallback = () => {
-			this.lines = Object.values(this.container.querySelectorAll<HTMLElement>(".line"))
+			this.lines = Object.values(this.container.children) as HTMLElement[]
 		}
 
 		const observer = new MutationObserver(lineObserverCallback)
 		observer.observe(this.container, { childList: true })
 
-		this.lines = Object.values(this.container.querySelectorAll<HTMLElement>(".line"))
+		this.lines = Object.values(this.container.children) as HTMLElement[]
 	}
 
 	/**
@@ -194,7 +194,7 @@ export default class PocketEditor {
 	}
 
 	public getSelectedLines(): HTMLElement[] {
-		return this.lines.filter((line) => line.classList.contains("sel")) ?? []
+		return this.lines.filter((line) => line.dataset.selected !== undefined) ?? []
 	}
 
 	public getPrevLine(line: HTMLElement): HTMLElement | null {
@@ -207,11 +207,14 @@ export default class PocketEditor {
 
 	public getLineFromEditable(elem: HTMLElement): HTMLElement | null {
 		while (elem?.parentElement) {
-			if (elem.parentElement.classList.contains("line")) {
-				return elem.parentElement
-			}
+			const parent = elem.parentElement
+			const isDiv = parent.tagName === "DIV"
 
-			elem = elem.parentElement
+			if (isDiv) {
+				return parent
+			} else {
+				elem = parent
+			}
 		}
 
 		return null
@@ -245,7 +248,6 @@ export default class PocketEditor {
 		const mods = this.mods
 
 		editable.setAttribute("contenteditable", "true")
-		notesline.classList.add("line")
 		notesline.appendChild(editable)
 
 		// Add text if any

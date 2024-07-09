@@ -13,7 +13,7 @@
 	background-color: var(--pe-color-background);
 }
 
-[data-pocket-editor] .line {
+[data-pocket-editor] > div {
 	display: flex;
 	column-gap: 0.5em;
 	padding: 0 0.75em;
@@ -22,7 +22,7 @@
 	transition: color 0.1s, background-color 0.1s;
 }
 
-[data-pocket-editor] .line.sel {
+[data-pocket-editor] [data-selected] {
 	color: var(--pe-color-text-selection);
 	background-color: var(--pe-color-line-selection);
 }
@@ -34,28 +34,28 @@
 	cursor: text;
 }
 
-[data-pocket-editor] div.line h1,
-[data-pocket-editor] div.line h2,
-[data-pocket-editor] div.line h3 {
+[data-pocket-editor] h1[contenteditable],
+[data-pocket-editor] h2[contenteditable],
+[data-pocket-editor] h3[contenteditable] {
 	margin: 0.5em 0;
 }
 
-[data-pocket-editor] input[type="checkbox"] {
+[data-pocket-editor] [type="checkbox"] {
 	width: 1.3em;
 	height: 1.3em;
 }
 
-[data-pocket-editor] div.todo-checked p {
+[data-pocket-editor] [data-todo-checked] p {
 	text-decoration: line-through;
 	opacity: 0.8;
 }
 
-[data-pocket-editor] div.list .list-dot {
+[data-pocket-editor] [data-list] [data-list-marker] {
 	text-align: center;
 	width: 1em;
 }
 
-[data-pocket-editor] div.list .list-dot::before {
+[data-pocket-editor] [data-list] [data-list-marker]::before {
 	content: attr(data-content);
 }
 

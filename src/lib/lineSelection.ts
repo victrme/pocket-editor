@@ -79,9 +79,9 @@ export default function lineSelection(self: PocketEditor) {
 		lines.forEach((line, i) => {
 			// Index is between interval
 			if (i >= interval[0] && i <= interval[1]) {
-				line.classList.add("sel")
+				line.setAttribute("data-selected", "")
 			} else {
-				line.classList.remove("sel")
+				line.removeAttribute("data-selected")
 			}
 		})
 
@@ -172,7 +172,7 @@ export default function lineSelection(self: PocketEditor) {
 		}
 
 		const isCheckbox = target.getAttribute("aria-label") === "todo list checkbox"
-		const isListMarker = target.className.includes("list-dot")
+		const isListMarker = target.dataset.listMarker
 		const isEditable = !!target.getAttribute("contenteditable")
 
 		if (isCheckbox || isListMarker || isEditable) {

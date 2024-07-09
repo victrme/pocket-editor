@@ -44,7 +44,7 @@ export function pasteEvent(self: PocketEditor, ev: ClipboardEvent) {
 			line = selected[selected.length - 1] as HTMLElement
 		}
 
-		if (!line?.classList.contains("line")) {
+		if (!line?.parentElement?.dataset.pocketEditor) {
 			return
 		}
 
@@ -60,17 +60,12 @@ export function pasteEvent(self: PocketEditor, ev: ClipboardEvent) {
 		// For plaintext, lists & todos
 		if (line && line.textContent === "") {
 			const areSameMods = (mod: string) => {
-				const curr = line?.classList
-				const next = self.getNextLine(line!)?.classList
-				return curr?.contains(mod) === next?.contains(mod)
+				const currIsMod = line?.dataset[mod] === mod
+				const nextIsMod = self.getNextLine(line!)?.dataset[mod] === mod
+				return currIsMod === nextIsMod
 			}
 
-			if (
-				line.classList.length > 1 ||
-				areSameMods("list") ||
-				areSameMods("todo") ||
-				areSameMods("todo-checked")
-			) {
+			if (line || areSameMods("list") || areSameMods("todo") || areSameMods("todo-checked")) {
 				line.remove()
 			}
 		}

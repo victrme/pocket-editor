@@ -6,7 +6,13 @@ export default function removeModifier(editable: Element): HTMLDivElement | unde
 		return
 	}
 
-	parent.className = "line"
+	delete parent.dataset.list
+	delete parent.dataset.todo
+	delete parent.dataset.h1
+	delete parent.dataset.h2
+	delete parent.dataset.h3
+	delete parent.dataset.todoChecked
+
 	content.textContent = parent.textContent
 	content.setAttribute("contenteditable", "true")
 

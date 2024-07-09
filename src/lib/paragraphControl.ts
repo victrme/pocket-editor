@@ -21,6 +21,7 @@ export default function paragraphControl(self: PocketEditor, e: Event) {
 	}
 
 	const line = self.getLineFromEditable(editable)
+	const datasets = Object.keys(line?.dataset ?? {})
 	const insertParagraph = (e as InputEvent)?.inputType === "insertParagraph"
 	const insertText = (e as InputEvent)?.inputType === "insertText"
 	let modif
@@ -32,14 +33,16 @@ export default function paragraphControl(self: PocketEditor, e: Event) {
 		const cuttext = (editable.textContent ?? "").slice(0, range.startOffset)
 		const nexttext = (editable.textContent ?? "").slice(range.startOffset)
 
-		if (range.startOffset === 0 && line?.classList?.length > 1) {
+		if (range.startOffset === 0 && datasets.length > 0) {
 			removeModifier(editable)
 			return
 		}
 
-		if (line?.classList.contains("todo")) modif = "todo"
-		if (line?.classList.contains("list")) modif = "list"
-		if (line?.classList.contains("todo-checked")) modif = "todo"
+		if (line.dataset.todo === "") modif = "todo"
+		if (line.dataset.list === "") modif = "list"
+		if (line.dataset.todoChecked === "") modif = "todo"
+
+		console.log(line)
 
 		const nextline = self.getNextLine(line)
 		const newline = self.createLine({

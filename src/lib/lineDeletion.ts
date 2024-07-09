@@ -57,7 +57,7 @@ export default function lineDeletion(self: PocketEditor) {
 			addUndoHistory(self, line)
 		}
 
-		if (line?.classList.length > 1) {
+		if (Object.keys(line?.dataset ?? {}).length > 0) {
 			const newEditable = removeModifier(editable)
 
 			if (isTouch && newEditable && newEditable.textContent === "") {

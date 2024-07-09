@@ -32,14 +32,14 @@ export function toHTML(self: PocketEditor, markdown: string) {
 	return fragment
 }
 
-export function toMarkdown(lines: Element[]) {
-	function addModif(line: Element) {
-		if (line.classList.contains("list")) return "- "
-		if (line.classList.contains("h1")) return "# "
-		if (line.classList.contains("h2")) return "## "
-		if (line.classList.contains("h3")) return "### "
-		if (line.classList.contains("todo")) return "[ ] "
-		if (line.classList.contains("todo-checked")) return "[x] "
+export function toMarkdown(lines: HTMLElement[]) {
+	function addModif(line: HTMLElement) {
+		if (line.dataset.list === "") return "- "
+		else if (line.dataset.h1 === "") return "# "
+		else if (line.dataset.h2 === "") return "## "
+		else if (line.dataset.h3 === "") return "### "
+		else if (line.dataset.todoChecked === "") return "[x] "
+		else if (line.dataset.todo === "") return "[ ] "
 
 		return ""
 	}
@@ -47,8 +47,8 @@ export function toMarkdown(lines: Element[]) {
 	let plaintext = ""
 	let modif = ""
 
-	const isList = (line?: Element) => {
-		return line?.classList.contains("list") || line?.classList.contains("todo")
+	const isList = (line?: HTMLElement) => {
+		return line?.dataset.list || line?.dataset.todo
 	}
 
 	lines.forEach((line, i) => {
