@@ -2,7 +2,6 @@ import { addUndoHistory } from "./undo"
 import removeModifier from "../utils/removeModifier"
 import lineTransform from "./lineTransform"
 import PocketEditor from "../index"
-import modList from "../utils/modList"
 
 export default function paragraphControl(self: PocketEditor, e: Event) {
 	const container = self.container
@@ -68,12 +67,12 @@ export default function paragraphControl(self: PocketEditor, e: Event) {
 	if (e.type === "input" && insertText) {
 		const content = editable?.textContent ?? ""
 
-		for (const [mod, val] of Object.entries(modList)) {
+		for (const [mod, val] of Object.entries(self.mods)) {
 			const softspace = String.fromCharCode(160)
 			const hardspace = String.fromCharCode(32)
 
 			if (content.startsWith(val + hardspace) || content.startsWith(val + softspace)) {
-				modif = mod as keyof typeof modList
+				modif = mod as keyof typeof self.mods
 				lineTransform(self, editable, modif)
 			}
 		}

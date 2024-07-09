@@ -32,7 +32,7 @@ export function pasteEvent(self: PocketEditor, ev: ClipboardEvent) {
 	const text = ev.clipboardData?.getData("text") || ""
 
 	// Text starts with a spcial char, create new lines
-	if (checkModifs(text) !== "") {
+	if (checkModifs(text, self.mods) !== "") {
 		const editable = ev.target as HTMLElement
 		const newHTML = toHTML(self, text)
 		const linesInNew = newHTML.childElementCount - 1 // before document fragment gets consumed

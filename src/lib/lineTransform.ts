@@ -1,10 +1,12 @@
 import PocketEditor from "../index"
-import modList from "../utils/modList"
 import setCaret from "../utils/setCaret"
 
-type Mods = keyof typeof modList
-
-export default function lineTransform(self: PocketEditor, editable: HTMLElement, mod?: Mods, focus = true) {
+export default function lineTransform(
+	self: PocketEditor,
+	editable: HTMLElement,
+	mod?: keyof typeof self.mods,
+	focus = true
+) {
 	if (!mod) return
 
 	const line = self.getLineFromEditable(editable)

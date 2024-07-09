@@ -1,7 +1,6 @@
 import removeModifier from "../utils/removeModifier"
 import lineTransform from "./lineTransform"
 import PocketEditor from "../index"
-import modList from "../utils/modList"
 
 export default async function keybindings(self: PocketEditor, ev: KeyboardEvent) {
 	const editable = ev.target as HTMLElement
@@ -10,7 +9,7 @@ export default async function keybindings(self: PocketEditor, ev: KeyboardEvent)
 
 	if (isValid && editable) {
 		const index = parseInt(ev.code.replace("Digit", "")) - 1
-		const targetMod = Object.keys(modList)[index]
+		const targetMod = Object.keys(self.mods)[index]
 
 		if (index === 5) {
 			ev.preventDefault()
@@ -18,9 +17,9 @@ export default async function keybindings(self: PocketEditor, ev: KeyboardEvent)
 			return
 		}
 
-		if (targetMod in modList && targetMod !== "todo-checked") {
+		if (targetMod in self.mods && targetMod !== "todo-checked") {
 			ev.preventDefault()
-			lineTransform(self, editable, targetMod as keyof typeof modList)
+			lineTransform(self, editable, targetMod as keyof typeof self.mods)
 		}
 	}
 }

@@ -8,7 +8,6 @@ import caretControl from "./lib/caretControl"
 import keybindings from "./lib/keybindings"
 import initUndo from "./lib/undo"
 import setCaret from "./utils/setCaret"
-import modList from "./utils/modList"
 
 interface Options {
 	id?: string
@@ -21,6 +20,15 @@ export default class PocketEditor {
 	lines: HTMLElement[]
 	wrapper: Element | null
 	caret_x: number | undefined
+
+	mods = {
+		h1: "#",
+		h2: "##",
+		h3: "###",
+		list: "-",
+		todo: "[ ]",
+		"todo-checked": "[x]",
+	}
 
 	/**
 	 * This creates an editor.
@@ -234,6 +242,7 @@ export default class PocketEditor {
 		const notesline = document.createElement("div")
 		const editable = document.createElement("p")
 		const mod = props?.modif ?? ""
+		const mods = this.mods
 
 		editable.setAttribute("contenteditable", "true")
 		notesline.classList.add("line")
@@ -244,8 +253,8 @@ export default class PocketEditor {
 			editable.textContent = props.text
 		}
 
-		if (mod in modList) {
-			lineTransform(this, editable, mod as keyof typeof modList, false)
+		if (mod in mods) {
+			lineTransform(this, editable, mod as keyof typeof mods, false)
 		}
 
 		return notesline

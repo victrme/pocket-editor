@@ -1,8 +1,7 @@
 import PocketEditor from "../index"
-import modList from "../utils/modList"
 
-export function checkModifs(text: string) {
-	for (const [name, str] of Object.entries(modList)) {
+export function checkModifs(text: string, mods: Record<string, string>) {
+	for (const [name, str] of Object.entries(mods)) {
 		if (text.startsWith(str + " ")) {
 			return name
 		}
@@ -20,13 +19,13 @@ export function toHTML(self: PocketEditor, markdown: string) {
 
 	for (const line of markdown.split("\n\n")) {
 		if (line.indexOf("\n") === -1) {
-			fragment.appendChild(self.createLine({ text: line, modif: checkModifs(line) }))
+			fragment.appendChild(self.createLine({ text: line, modif: checkModifs(line, self.mods) }))
 			continue
 		}
 
 		// Modifs that use line breaks (list & todos)
 		for (const subline of line.split("\n")) {
-			fragment.appendChild(self.createLine({ text: subline, modif: checkModifs(subline) }))
+			fragment.appendChild(self.createLine({ text: subline, modif: checkModifs(subline, self.mods) }))
 		}
 	}
 
