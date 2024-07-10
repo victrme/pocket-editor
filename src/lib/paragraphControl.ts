@@ -42,8 +42,6 @@ export default function paragraphControl(self: PocketEditor, e: Event) {
 		if (line.dataset.list === "") modif = "list"
 		if (line.dataset.todoChecked === "") modif = "todo"
 
-		console.log(line)
-
 		const nextline = self.getNextLine(line)
 		const newline = self.createLine({
 			text: nexttext,
