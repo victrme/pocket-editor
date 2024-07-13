@@ -362,7 +362,6 @@
       if (line.dataset.todo === "") modif = "todo";
       if (line.dataset.list === "") modif = "list";
       if (line.dataset.todoChecked === "") modif = "todo";
-      console.log(line);
       const nextline = self.getNextLine(line);
       const newline = self.createLine({
         text: nexttext,
@@ -382,7 +381,8 @@
       return;
     }
     if (e.type === "input" && insertText) {
-      const content = editable?.textContent ?? "";
+      const ZERO_WIDTH_WHITESPACE2 = "\u200B";
+      const content = (editable?.textContent ?? "").replace(ZERO_WIDTH_WHITESPACE2, "");
       for (const [mod, val] of Object.entries(self.mods)) {
         const softspace = String.fromCharCode(160);
         const hardspace = String.fromCharCode(32);
