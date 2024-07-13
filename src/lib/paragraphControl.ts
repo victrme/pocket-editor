@@ -66,7 +66,8 @@ export default function paragraphControl(self: PocketEditor, e: Event) {
 	}
 
 	if (e.type === "input" && insertText) {
-		const content = editable?.textContent ?? ""
+		const ZERO_WIDTH_WHITESPACE = "​"
+		const content = (editable?.textContent ?? "").replace(ZERO_WIDTH_WHITESPACE, "")
 
 		for (const [mod, val] of Object.entries(self.mods)) {
 			const softspace = String.fromCharCode(160)
