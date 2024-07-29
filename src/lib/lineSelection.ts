@@ -186,13 +186,21 @@ export default function lineSelection(self: PocketEditor) {
 		}
 	}
 
-	function mouseDownEvent(e: MouseEvent) {
-		const target = e.target as HTMLElement
+	function mouseDownEvent(event: MouseEvent) {
+		const target = event.target as HTMLElement
+		const rightclick = event.button === 2
+		const leftclick = event.button === 0
+		const noSelection = self.getSelectedLines().length === 0
 
 		lines = self.lines
 
-		if (e.button === 2) e.preventDefault() // right click doesn't trigger click
-		if (e.button !== 0) return
+		if (rightclick) {
+			event.preventDefault()
+		}
+
+		if (!leftclick || noSelection) {
+			return
+		}
 
 		// reset first
 		resetLineSelection()
@@ -204,9 +212,14 @@ export default function lineSelection(self: PocketEditor) {
 		}
 	}
 
-	function mouseClickEvent(e: Event) {
-		const path = e.composedPath() as Element[]
+	function mouseClickEvent(event: Event) {
+		const path = event.composedPath() as Element[]
+		const noSelection = self.getSelectedLines().length === 0
 		const clicksOutsideContainer = !path.includes(self.container)
+
+		if (noSelection) {
+			return
+		}
 
 		if (clicksOutsideContainer) {
 			lines = self.lines
