@@ -562,11 +562,18 @@
         applyLineSelection(lineInterval);
       }
     }
-    function mouseDownEvent(e) {
-      const target = e.target;
+    function mouseDownEvent(event) {
+      const target = event.target;
+      const rightclick = event.button === 2;
+      const leftclick = event.button === 0;
+      const noSelection = self.getSelectedLines().length === 0;
       lines = self.lines;
-      if (e.button === 2) e.preventDefault();
-      if (e.button !== 0) return;
+      if (rightclick) {
+        event.preventDefault();
+      }
+      if (!leftclick || noSelection) {
+        return;
+      }
       resetLineSelection();
       applyLineSelection(lineInterval);
       if (!!target.getAttribute("contenteditable")) {
@@ -574,9 +581,13 @@
         self.container.addEventListener("mousemove", mouseMoveEvent);
       }
     }
-    function mouseClickEvent(e) {
-      const path = e.composedPath();
+    function mouseClickEvent(event) {
+      const path = event.composedPath();
+      const noSelection = self.getSelectedLines().length === 0;
       const clicksOutsideContainer = !path.includes(self.container);
+      if (noSelection) {
+        return;
+      }
       if (clicksOutsideContainer) {
         lines = self.lines;
         resetLineSelection();
