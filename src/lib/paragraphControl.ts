@@ -30,10 +30,12 @@ export default function paragraphControl(self: PocketEditor, e: Event) {
 		e.preventDefault()
 		addUndoHistory(self, line)
 
-		const cuttext = (editable.textContent ?? "").slice(0, range.startOffset)
-		const nexttext = (editable.textContent ?? "").slice(range.startOffset)
+		const textContent = (editable.textContent ?? "").replace(self.ZERO_WIDTH_WHITESPACE, "")
+		const cuttext = textContent.slice(0, range.startOffset)
+		const nexttext = textContent.slice(range.startOffset)
+		const isAtStart = range.startOffset === 0 || (textContent === "" && range.startOffset === 1)
 
-		if (range.startOffset === 0 && datasets.length > 0) {
+		if (isAtStart && datasets.length > 0) {
 			removeModifier(editable)
 			return
 		}

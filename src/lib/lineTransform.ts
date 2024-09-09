@@ -62,7 +62,7 @@ export default function lineTransform(
 		const span = document.createElement("span")
 		const p = document.createElement("p")
 		const line = self.getLineFromEditable(editable)
-		let content = editable.textContent ?? ""
+		let content = (editable.textContent ?? "").replace(self.ZERO_WIDTH_WHITESPACE, "")
 
 		if (!line || line.dataset.todo) {
 			return
@@ -108,7 +108,7 @@ export default function lineTransform(
 	function toList() {
 		const span = document.createElement("span")
 		const p = document.createElement("p")
-		let content = editable.textContent ?? ""
+		let content = (editable.textContent ?? "").replace(self.ZERO_WIDTH_WHITESPACE, "")
 
 		if (!line || line.dataset.list === "") {
 			return

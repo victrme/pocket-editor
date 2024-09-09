@@ -4,7 +4,9 @@ let element: Locator
 let line: Locator
 let text: string
 
-test.beforeEach(async ({ page }) => {
+test.beforeEach(async ({ page, isMobile }) => {
+	test.fixme(isMobile, "Selection is not available on mobile")
+
 	await page.goto("/")
 
 	line = page.locator("[data-pocket-editor] > div").nth(1)
@@ -108,13 +110,14 @@ test.describe("Action", () => {
 	})
 
 	test("Click outside removes selection", async ({ page }) => {
-		await page.locator("body").click()
-		expect(await line.getAttribute("data-selected")).toBeUndefined()
+		await page.locator("header").click()
+		await page.waitForTimeout(100)
+		expect(!(await line.getAttribute("data-selected"))).toBeTruthy()
 	})
 
 	test("Escape removes selection", async ({ page }) => {
 		await page.keyboard.press("Escape")
-		expect(await line.getAttribute("data-selected")).toBeUndefined()
+		expect(!(await line.getAttribute("data-selected"))).toBeTruthy()
 	})
 
 	test("Backspace removes lines", async ({ page }) => {

@@ -4,8 +4,6 @@ import lastTextNode from "../utils/lastTextNode"
 import PocketEditor from "../index"
 import setCaret from "../utils/setCaret"
 
-const ZERO_WIDTH_WHITESPACE = "​"
-
 function removeLineNoText(editable: Element, prevline: Element) {
 	setCaret(prevline)
 	editable.parentElement?.remove()
@@ -61,7 +59,7 @@ export default function lineDeletion(self: PocketEditor) {
 			const newEditable = removeModifier(editable)
 
 			if (isTouch && newEditable && newEditable.textContent === "") {
-				newEditable.textContent = ZERO_WIDTH_WHITESPACE
+				newEditable.textContent = self.ZERO_WIDTH_WHITESPACE
 				setCaret(newEditable)
 			}
 
@@ -110,7 +108,7 @@ export default function lineDeletion(self: PocketEditor) {
 		self.container.addEventListener("beforeinput", (ev) => {
 			const editable = ev.target as HTMLElement
 			const deleteContent = ev.inputType === "deleteContentBackward"
-			const whitespaceOnly = editable.textContent === ZERO_WIDTH_WHITESPACE
+			const whitespaceOnly = editable.textContent === self.ZERO_WIDTH_WHITESPACE
 
 			if (deleteContent && whitespaceOnly) {
 				triggerDeleteLine = true
@@ -127,7 +125,7 @@ export default function lineDeletion(self: PocketEditor) {
 			}
 
 			if (editable.textContent === "") {
-				editable.textContent = ZERO_WIDTH_WHITESPACE
+				editable.textContent = self.ZERO_WIDTH_WHITESPACE
 				setCaret(editable)
 			}
 		})

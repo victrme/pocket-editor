@@ -185,13 +185,19 @@ export default function caretControl(self: PocketEditor) {
 }
 
 function getHorizontalPosition(selection: Selection | null, line?: HTMLElement) {
-	const editable = line?.querySelector("[contenteditable]") as HTMLElement
-	const cx = editable?.getBoundingClientRect().x ?? 0
-	const rx = selection?.getRangeAt(0)?.cloneRange()?.getBoundingClientRect().x ?? 0
+	const selectionNotValid = !selection?.anchorNode
+
+	if (!line || selectionNotValid) {
+		return { editable: 0, range: 0, offset: 0 }
+	}
+
+	const editable = line.querySelector("[contenteditable]") as HTMLElement
+	const editable_x = editable?.getBoundingClientRect().x ?? 0
+	const range_x = selection?.getRangeAt(0)?.cloneRange()?.getBoundingClientRect().x ?? 0
 
 	return {
-		editable: cx,
-		range: rx,
-		offset: rx - cx,
+		editable: editable_x,
+		range: range_x,
+		offset: range_x - editable_x,
 	}
 }

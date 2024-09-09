@@ -190,7 +190,7 @@ export default function lineSelection(self: PocketEditor) {
 		const target = event.target as HTMLElement
 		const rightclick = event.button === 2
 		const leftclick = event.button === 0
-		const noSelection = self.getSelectedLines().length === 0
+		const hasSelection = self.getSelectedLines().length > 0
 
 		lines = self.lines
 
@@ -198,13 +198,15 @@ export default function lineSelection(self: PocketEditor) {
 			event.preventDefault()
 		}
 
-		if (!leftclick || noSelection) {
+		if (!leftclick) {
 			return
 		}
 
-		// reset first
-		resetLineSelection()
-		applyLineSelection(lineInterval)
+		if (hasSelection) {
+			// reset first
+			resetLineSelection()
+			applyLineSelection(lineInterval)
+		}
 
 		if (!!target.getAttribute("contenteditable")) {
 			initLineSelection(getLineIndex(target))
@@ -214,12 +216,7 @@ export default function lineSelection(self: PocketEditor) {
 
 	function mouseClickEvent(event: Event) {
 		const path = event.composedPath() as Element[]
-		const noSelection = self.getSelectedLines().length === 0
 		const clicksOutsideContainer = !path.includes(self.container)
-
-		if (noSelection) {
-			return
-		}
 
 		if (clicksOutsideContainer) {
 			lines = self.lines

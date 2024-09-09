@@ -15,6 +15,8 @@ class PocketEditor {
 	wrapper: Element | null
 	caret_x: number | undefined
 
+	ZERO_WIDTH_WHITESPACE = "​"
+
 	mods = {
 		h1: "#",
 		h2: "##",
