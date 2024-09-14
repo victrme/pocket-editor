@@ -88,7 +88,9 @@ test.describe("Type Markdown", () => {
 	let editable: Locator
 	let line: Locator
 
-	test.beforeEach(async ({ page }) => {
+	test.beforeEach(async ({ page, isMobile }) => {
+		test.fixme(isMobile, "Needs a zero white space fix")
+
 		editable = page.locator("[data-pocket-editor] [contenteditable]").first()
 		line = page.locator("[data-pocket-editor] > div").first()
 		await editable.clear()

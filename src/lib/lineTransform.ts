@@ -18,6 +18,13 @@ export default function lineTransform(
 	line.querySelector("span[data-list-marker]")?.remove()
 	line.querySelector("span[data-todo-marker]")?.remove()
 
+	delete line.dataset.h1
+	delete line.dataset.h2
+	delete line.dataset.h3
+	delete line.dataset.list
+	delete line.dataset.todo
+	delete line.dataset.todoChecked
+
 	switch (mod) {
 		case "h1":
 		case "h2":
