@@ -238,6 +238,12 @@
     }
     line.querySelector("span[data-list-marker]")?.remove();
     line.querySelector("span[data-todo-marker]")?.remove();
+    delete line.dataset.h1;
+    delete line.dataset.h2;
+    delete line.dataset.h3;
+    delete line.dataset.list;
+    delete line.dataset.todo;
+    delete line.dataset.todoChecked;
     switch (mod) {
       case "h1":
       case "h2":
@@ -272,7 +278,7 @@
       const span = document.createElement("span");
       const p = document.createElement("p");
       const line2 = self.getLineFromEditable(editable);
-      let content = editable.textContent ?? "";
+      let content = (editable.textContent ?? "").replace(self.ZERO_WIDTH_WHITESPACE, "");
       if (!line2 || line2.dataset.todo) {
         return;
       }
@@ -310,7 +316,7 @@
     function toList() {
       const span = document.createElement("span");
       const p = document.createElement("p");
-      let content = editable.textContent ?? "";
+      let content = (editable.textContent ?? "").replace(self.ZERO_WIDTH_WHITESPACE, "");
       if (!line || line.dataset.list === "") {
         return;
       }
@@ -353,9 +359,11 @@
     if (e.type === "beforeinput" && insertParagraph && line) {
       e.preventDefault();
       addUndoHistory(self, line);
-      const cuttext = (editable.textContent ?? "").slice(0, range.startOffset);
-      const nexttext = (editable.textContent ?? "").slice(range.startOffset);
-      if (range.startOffset === 0 && datasets.length > 0) {
+      const textContent = (editable.textContent ?? "").replace(self.ZERO_WIDTH_WHITESPACE, "");
+      const cuttext = textContent.slice(0, range.startOffset);
+      const nexttext = textContent.slice(range.startOffset);
+      const isAtStart = range.startOffset === 0 || textContent === "" && range.startOffset === 1;
+      if (isAtStart && datasets.length > 0) {
         removeModifier(editable);
         return;
       }
@@ -381,8 +389,8 @@
       return;
     }
     if (e.type === "input" && insertText) {
-      const ZERO_WIDTH_WHITESPACE2 = "\u200B";
-      const content = (editable?.textContent ?? "").replace(ZERO_WIDTH_WHITESPACE2, "");
+      const ZERO_WIDTH_WHITESPACE = "\u200B";
+      const content = (editable?.textContent ?? "").replace(ZERO_WIDTH_WHITESPACE, "");
       for (const [mod, val] of Object.entries(self.mods)) {
         const softspace = String.fromCharCode(160);
         const hardspace = String.fromCharCode(32);
@@ -566,16 +574,18 @@
       const target = event.target;
       const rightclick = event.button === 2;
       const leftclick = event.button === 0;
-      const noSelection = self.getSelectedLines().length === 0;
+      const hasSelection = self.getSelectedLines().length > 0;
       lines = self.lines;
       if (rightclick) {
         event.preventDefault();
       }
-      if (!leftclick || noSelection) {
+      if (!leftclick) {
         return;
       }
-      resetLineSelection();
-      applyLineSelection(lineInterval);
+      if (hasSelection) {
+        resetLineSelection();
+        applyLineSelection(lineInterval);
+      }
       if (!!target.getAttribute("contenteditable")) {
         initLineSelection(getLineIndex(target));
         self.container.addEventListener("mousemove", mouseMoveEvent);
@@ -583,11 +593,7 @@
     }
     function mouseClickEvent(event) {
       const path = event.composedPath();
-      const noSelection = self.getSelectedLines().length === 0;
       const clicksOutsideContainer = !path.includes(self.container);
-      if (noSelection) {
-        return;
-      }
       if (clicksOutsideContainer) {
         lines = self.lines;
         resetLineSelection();
@@ -602,7 +608,6 @@
   }
 
   // src/lib/lineDeletion.ts
-  var ZERO_WIDTH_WHITESPACE = "\u200B";
   function removeLineNoText(editable, prevline) {
     setCaret(prevline);
     editable.parentElement?.remove();
@@ -644,7 +649,7 @@
       if (Object.keys(line?.dataset ?? {}).length > 0) {
         const newEditable = removeModifier(editable);
         if (isTouch && newEditable && newEditable.textContent === "") {
-          newEditable.textContent = ZERO_WIDTH_WHITESPACE;
+          newEditable.textContent = self.ZERO_WIDTH_WHITESPACE;
           setCaret(newEditable);
         }
         return;
@@ -674,7 +679,7 @@
       self.container.addEventListener("beforeinput", (ev) => {
         const editable = ev.target;
         const deleteContent = ev.inputType === "deleteContentBackward";
-        const whitespaceOnly = editable.textContent === ZERO_WIDTH_WHITESPACE;
+        const whitespaceOnly = editable.textContent === self.ZERO_WIDTH_WHITESPACE;
         if (deleteContent && whitespaceOnly) {
           triggerDeleteLine = true;
         }
@@ -687,7 +692,7 @@
           return;
         }
         if (editable.textContent === "") {
-          editable.textContent = ZERO_WIDTH_WHITESPACE;
+          editable.textContent = self.ZERO_WIDTH_WHITESPACE;
           setCaret(editable);
         }
       });
@@ -831,13 +836,17 @@
     });
   }
   function getHorizontalPosition(selection, line) {
-    const editable = line?.querySelector("[contenteditable]");
-    const cx = editable?.getBoundingClientRect().x ?? 0;
-    const rx = selection?.getRangeAt(0)?.cloneRange()?.getBoundingClientRect().x ?? 0;
+    const selectionNotValid = !selection?.anchorNode;
+    if (!line || selectionNotValid) {
+      return { editable: 0, range: 0, offset: 0 };
+    }
+    const editable = line.querySelector("[contenteditable]");
+    const editable_x = editable?.getBoundingClientRect().x ?? 0;
+    const range_x = selection?.getRangeAt(0)?.cloneRange()?.getBoundingClientRect().x ?? 0;
     return {
-      editable: cx,
-      range: rx,
-      offset: rx - cx
+      editable: editable_x,
+      range: range_x,
+      offset: range_x - editable_x
     };
   }
 
@@ -846,10 +855,13 @@
     const editable = ev.target;
     const ctrl = ev.ctrlKey || ev.metaKey;
     const isValid = ctrl && ev.shiftKey && ev.code.includes("Digit");
+    const line = self.getLineFromEditable(editable);
     if (isValid && editable) {
       const index = parseInt(ev.code.replace("Digit", "")) - 1;
-      const targetMod = Object.keys(self.mods)[index];
-      if (index === 5) {
+      const mods = Object.keys(self.mods);
+      const targetMod = mods[index];
+      const currentModIsTarget = line?.hasAttribute(`data-${targetMod}`);
+      if (currentModIsTarget || index === 5) {
         ev.preventDefault();
         removeModifier(editable);
         return;
@@ -867,6 +879,7 @@
     lines;
     wrapper;
     caret_x;
+    ZERO_WIDTH_WHITESPACE = "\u200B";
     mods = {
       h1: "#",
       h2: "##",
