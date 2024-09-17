@@ -19,7 +19,6 @@
 	"scripts": {
 		"build": " node ./build.config.js && tsc",
 		"test": "npx playwright test",
-		"test:ci": "npx playwright test --with-deps",
 		"test:ui": "npx playwright test --ui",
 		"dev": "pnpm --filter example dev",
 		"preview": "pnpm --filter example preview"
