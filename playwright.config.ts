@@ -13,7 +13,7 @@ export default defineConfig({
 		command: "pnpm --filter example preview",
 		url: "http://127.0.0.1:4173",
 		reuseExistingServer: !isCI,
-		timeout: 2000,
+		timeout: 15000,
 	},
 	projects: [
 		{
