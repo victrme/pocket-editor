@@ -1,16 +1,18 @@
 import { defineConfig, devices } from "@playwright/test"
 
+const isCI = process.env.CI
+
 export default defineConfig({
 	testDir: "tests",
-	fullyParallel: true,
 	preserveOutput: "never",
+	fullyParallel: !isCI,
 	use: {
-		baseURL: "http://localhost:4173",
+		baseURL: "http://127.0.0.1:4173",
 	},
 	webServer: {
 		command: "pnpm --filter example preview",
-		url: "http://localhost:4173",
-		reuseExistingServer: true,
+		url: "http://127.0.0.1:4173",
+		reuseExistingServer: !isCI,
 		timeout: 2000,
 	},
 	projects: [

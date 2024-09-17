@@ -7,10 +7,10 @@
 		"preview": "vite build  --sourcemap && vite preview"
 	},
 	"dependencies": {
-		"@fontsource/reenie-beanie": "^5.0.17"
+		"@fontsource/reenie-beanie": "^5.1.0"
 	},
 	"devDependencies": {
-		"typescript": "^5.2.2",
-		"vite": "^5.0.3"
+		"typescript": "^5.6.2",
+		"vite": "^5.4.6"
 	}
 }
