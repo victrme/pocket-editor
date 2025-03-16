@@ -24,6 +24,7 @@
 		"preview": "pnpm --filter example preview"
 	},
 	"devDependencies": {
+		"@biomejs/biome": "^1.9.4",
 		"@playwright/test": "^1.47.1",
 		"esbuild": "^0.23.1"
 	},
@@ -49,5 +50,11 @@
 	},
 	"engines": {
 		"pnpm": ">=7"
+	},
+	"pnpm": {
+		"onlyBuiltDependencies": [
+			"@biomejs/biome",
+			"esbuild"
+		]
 	}
 }
