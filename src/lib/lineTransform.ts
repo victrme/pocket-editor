@@ -1,13 +1,15 @@
-import PocketEditor from "../index"
-import setCaret from "../utils/setCaret"
+import { setCaret } from "../utils/setCaret"
+import type PocketEditor from "../index"
 
-export default function lineTransform(
+export function lineTransform(
 	self: PocketEditor,
 	editable: HTMLElement,
 	mod?: keyof typeof self.mods,
-	focus = true
-) {
-	if (!mod) return
+	focus = true,
+): void {
+	if (!mod) {
+		return
+	}
 
 	const line = self.getLineFromEditable(editable)
 
@@ -43,13 +45,16 @@ export default function lineTransform(
 		case "todo-checked":
 			toTodolist(true)
 			break
+
+		default:
+		// ...
 	}
 
-	function toHeading(tag: "h1" | "h2" | "h3") {
+	function toHeading(tag: "h1" | "h2" | "h3"): void {
 		const heading = document.createElement(tag)
 
 		// Remove markdown characters
-		let mod = tag === "h1" ? "#" : tag === "h2" ? "##" : "###"
+		const mod = tag === "h1" ? "#" : tag === "h2" ? "##" : "###"
 		heading.textContent = editable.textContent?.replace(mod, "").trimStart() || ""
 
 		heading.setAttribute("contenteditable", "true")
@@ -64,7 +69,7 @@ export default function lineTransform(
 		}
 	}
 
-	function toTodolist(checked: boolean) {
+	function toTodolist(checked: boolean): void {
 		const input = document.createElement("input")
 		const span = document.createElement("span")
 		const p = document.createElement("p")
@@ -112,7 +117,7 @@ export default function lineTransform(
 		}
 	}
 
-	function toList() {
+	function toList(): void {
 		const span = document.createElement("span")
 		const p = document.createElement("p")
 		let content = (editable.textContent ?? "").replace(self.ZERO_WIDTH_WHITESPACE, "")

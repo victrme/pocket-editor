@@ -1,4 +1,4 @@
-export default function lastTextNode(line: Node) {
+export function lastTextNode(line: Node): Node {
 	let lastNode = line
 
 	while (lastNode?.childNodes.length > 0) {
@@ -7,9 +7,9 @@ export default function lastTextNode(line: Node) {
 
 		if (textNodes.length > 0) {
 			return textNodes[0]
-		} else {
-			lastNode = childNodes[0]
 		}
+
+		lastNode = childNodes[0]
 	}
 
 	return lastNode

@@ -1,13 +1,13 @@
 import { toHTML, toMarkdown } from "./contentControl"
-import PocketEditor from "../index"
-import setCaret from "../utils/setCaret"
+import { setCaret } from "../utils/setCaret"
+import type PocketEditor from "../index"
 
 type History = {
 	index: number
 	markdown: string
 }
 
-let history: History[] = []
+const history: History[] = []
 
 export function addUndoHistory(self: PocketEditor, lastline?: HTMLElement | null): void {
 	const lines = self.lines
@@ -25,14 +25,16 @@ export function addUndoHistory(self: PocketEditor, lastline?: HTMLElement | null
 	}
 }
 
-export default function initUndo(self: PocketEditor) {
+export function initUndo(self: PocketEditor): void {
 	// This observer stops ctrl + z from applying "pocket-editor undo" if the native undo did change something.
 	// Has to do this bc can't preventDefault, and there's no undo API
 
 	let timeout: number
 
 	const observer = new MutationObserver(() => {
-		if (timeout) clearTimeout(timeout)
+		if (timeout) {
+			clearTimeout(timeout)
+		}
 	})
 
 	observer.observe(self.container, {
@@ -49,14 +51,17 @@ export default function initUndo(self: PocketEditor) {
 	})
 }
 
-function applyUndo(self: PocketEditor) {
+function applyUndo(self: PocketEditor): void {
 	const { markdown, index } = history[0] ?? {}
 
 	if (!markdown) {
 		return
 	}
 
-	Object.values(self.container.children).forEach((node) => node.remove())
+	for (const node of Object.values(self.container.children)) {
+		node.remove()
+	}
+
 	self.container.appendChild(toHTML(self, markdown))
 
 	setTimeout(() => {
@@ -75,6 +80,6 @@ function applyUndo(self: PocketEditor) {
 			inputType: "insertText",
 			bubbles: true,
 			data: "",
-		})
+		}),
 	)
 }

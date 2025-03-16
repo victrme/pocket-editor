@@ -1,9 +1,10 @@
 import { toHTML, toMarkdown, checkModifs } from "./contentControl"
 import { addUndoHistory } from "./undo"
-import PocketEditor from "../index"
-import setCaret from "../utils/setCaret"
+import { setCaret } from "../utils/setCaret"
 
-export function copyEvent(self: PocketEditor, ev: ClipboardEvent) {
+import type PocketEditor from "../index"
+
+export function copyEvent(self: PocketEditor, ev: ClipboardEvent): void {
 	const selected = self.getSelectedLines()
 
 	if (selected.length > 0) {
@@ -12,7 +13,7 @@ export function copyEvent(self: PocketEditor, ev: ClipboardEvent) {
 	}
 }
 
-export function cutEvent(self: PocketEditor, ev: ClipboardEvent) {
+export function cutEvent(self: PocketEditor, ev: ClipboardEvent): void {
 	const selected = self.getSelectedLines()
 
 	if (selected.length > 0) {
@@ -23,7 +24,7 @@ export function cutEvent(self: PocketEditor, ev: ClipboardEvent) {
 	}
 }
 
-export function pasteEvent(self: PocketEditor, ev: ClipboardEvent) {
+export function pasteEvent(self: PocketEditor, ev: ClipboardEvent): void {
 	ev.preventDefault()
 
 	// transform paste content to plaintext
@@ -34,8 +35,8 @@ export function pasteEvent(self: PocketEditor, ev: ClipboardEvent) {
 	// Text starts with a spcial char, create new lines
 	if (checkModifs(text, self.mods) !== "") {
 		const editable = ev.target as HTMLElement
-		const newHTML = toHTML(self, text)
-		const linesInNew = newHTML.childElementCount - 1 // before document fragment gets consumed
+		const newHtml = toHTML(self, text)
+		const linesInNew = newHtml.childElementCount - 1 // before document fragment gets consumed
 		let line = self.getLineFromEditable(editable)
 
 		// When pasting after selection, line is last selected block
@@ -49,19 +50,27 @@ export function pasteEvent(self: PocketEditor, ev: ClipboardEvent) {
 		}
 
 		// Adds content: after line with caret position
-		self.container.insertBefore(newHTML, self.getNextLine(line))
+		self.container.insertBefore(newHtml, self.getNextLine(line))
 
 		// Place caret: Gets last line in paste content
 		let lastline = line.nextSibling
-		for (let ii = 0; ii < linesInNew; ii++) lastline ? (lastline = lastline.nextSibling) : ""
-		if (lastline) setCaret(lastline)
+
+		for (let ii = 0; ii < linesInNew; ii++) {
+			if (lastline) {
+				lastline = lastline.nextSibling
+			}
+		}
+
+		if (lastline) {
+			setCaret(lastline)
+		}
 
 		// Pasting "on same line" (it actually removes empty line)
 		// For plaintext, lists & todos
 		if (line && line.textContent === "") {
 			const areSameMods = (mod: string) => {
 				const currIsMod = line?.dataset[mod] === mod
-				const nextIsMod = self.getNextLine(line!)?.dataset[mod] === mod
+				const nextIsMod = self.getNextLine(line)?.dataset[mod] === mod
 				return currIsMod === nextIsMod
 			}
 
@@ -75,7 +84,7 @@ export function pasteEvent(self: PocketEditor, ev: ClipboardEvent) {
 				inputType: "insertText",
 				bubbles: true,
 				data: "",
-			})
+			}),
 		)
 
 		return
@@ -100,6 +109,6 @@ export function pasteEvent(self: PocketEditor, ev: ClipboardEvent) {
 			inputType: "insertText",
 			bubbles: true,
 			data: "",
-		})
+		}),
 	)
 }

@@ -1,9 +1,9 @@
 import { addUndoHistory } from "./undo"
-import removeModifier from "../utils/removeModifier"
-import lineTransform from "./lineTransform"
-import PocketEditor from "../index"
+import { removeModifier } from "../utils/removeModifier"
+import { lineTransform } from "./lineTransform"
+import type PocketEditor from "../index"
 
-export default function paragraphControl(self: PocketEditor, e: Event) {
+export function paragraphControl(self: PocketEditor, e: Event): void {
 	const container = self.container
 	const editable = e.target as HTMLElement
 	let range: Range | undefined
@@ -14,7 +14,7 @@ export default function paragraphControl(self: PocketEditor, e: Event) {
 		range = window.getSelection()?.getRangeAt(0)
 
 		if (!range || !isContenteditable || isInput) {
-			throw ""
+			throw new Error("?")
 		}
 	} catch (_) {
 		return
@@ -24,7 +24,7 @@ export default function paragraphControl(self: PocketEditor, e: Event) {
 	const datasets = Object.keys(line?.dataset ?? {})
 	const insertParagraph = (e as InputEvent)?.inputType === "insertParagraph"
 	const insertText = (e as InputEvent)?.inputType === "insertText"
-	let modif
+	let modif: keyof typeof self.mods | undefined
 
 	if (e.type === "beforeinput" && insertParagraph && line) {
 		e.preventDefault()
@@ -40,9 +40,15 @@ export default function paragraphControl(self: PocketEditor, e: Event) {
 			return
 		}
 
-		if (line.dataset.todo === "") modif = "todo"
-		if (line.dataset.list === "") modif = "list"
-		if (line.dataset.todoChecked === "") modif = "todo"
+		if (line.dataset.todo === "") {
+			modif = "todo"
+		}
+		if (line.dataset.list === "") {
+			modif = "list"
+		}
+		if (line.dataset.todoChecked === "") {
+			modif = "todo"
+		}
 
 		const nextline = self.getNextLine(line)
 		const newline = self.createLine({
@@ -50,8 +56,11 @@ export default function paragraphControl(self: PocketEditor, e: Event) {
 			modif: modif,
 		})
 
-		if (nextline) container.insertBefore(newline, nextline)
-		else container?.appendChild(newline)
+		if (nextline) {
+			container.insertBefore(newline, nextline)
+		} else {
+			container?.appendChild(newline)
+		}
 
 		newline.querySelector<HTMLElement>("[contenteditable]")?.focus()
 		editable.textContent = cuttext
@@ -61,15 +70,15 @@ export default function paragraphControl(self: PocketEditor, e: Event) {
 				inputType: "insertText",
 				bubbles: true,
 				data: "",
-			})
+			}),
 		)
 
 		return
 	}
 
 	if (e.type === "input" && insertText) {
-		const ZERO_WIDTH_WHITESPACE = "​"
-		const content = (editable?.textContent ?? "").replace(ZERO_WIDTH_WHITESPACE, "")
+		const zeroWidthWhitespace = "​"
+		const content = (editable?.textContent ?? "").replace(zeroWidthWhitespace, "")
 
 		for (const [mod, val] of Object.entries(self.mods)) {
 			const softspace = String.fromCharCode(160)

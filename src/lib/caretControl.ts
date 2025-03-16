@@ -1,8 +1,8 @@
-import detectLineJump from "../utils/detectLineJump"
-import lastTextNode from "../utils/lastTextNode"
-import PocketEditor from "../index"
+import { detectLineJump } from "../utils/detectLineJump"
+import { lastTextNode } from "../utils/lastTextNode"
+import type PocketEditor from "../index"
 
-export default function caretControl(self: PocketEditor) {
+export function caretControl(self: PocketEditor) {
 	let averageCharWidth = 0
 
 	function initAverageCharWidth() {
@@ -20,7 +20,7 @@ export default function caretControl(self: PocketEditor) {
 	function rangePosInCharLen(line: HTMLElement, str: string): number | null {
 		const sel = window.getSelection()
 
-		let charCount: number = -1
+		let charCount = -1
 		const x = getHorizontalPosition(sel, line)
 		const offset = self.caret_x ?? x.offset
 
@@ -62,9 +62,9 @@ export default function caretControl(self: PocketEditor) {
 		let pos = 0
 		let rangeY = 0
 		let rangeYlast = 0
-		let lines: string[] = [""]
-		let words = (editable.textContent ?? "").split(" ")
-		let textnode = lastTextNode(editable)
+		const lines: string[] = [""]
+		const words = (editable.textContent ?? "").split(" ")
+		const textnode = lastTextNode(editable)
 
 		const range = document.createRange()
 		range.setStart(textnode, 0)
@@ -74,31 +74,39 @@ export default function caretControl(self: PocketEditor) {
 		rangeYlast = rangeY = range.getBoundingClientRect().y
 
 		for (let word of words) {
-			word = word + " "
+			word = `${word} `
 			pos += word.length
 
 			try {
 				range.setStart(textnode, pos)
 				range.setEnd(textnode, pos)
 				rangeY = range.getBoundingClientRect().y
-			} catch (_) {}
+			} catch (_) {
+				// ...
+			}
 
 			// QUIRK: because webkit trims the last space on newlines,
 			// the space manually added above will send the range to line below.
 			// meaning the paragraph lines will always be one word off
 			// FIX: Add word before Y comparison on webkit
-			if (isWebkit) lines[0] += word
+			if (isWebkit) {
+				lines[0] += word
+			}
 
 			if (rangeY > rangeYlast) {
 				// trim space like webkit
-				if (isWebkit) lines[0] = lines[0].trimEnd()
+				if (isWebkit) {
+					lines[0] = lines[0].trimEnd()
+				}
 
 				lines.unshift("")
 				rangeYlast = rangeY
 			}
 
 			// Add word normally on firefox
-			if (isWebkit === false) lines[0] += word
+			if (isWebkit === false) {
+				lines[0] += word
+			}
 		}
 
 		lines.reverse()
@@ -106,11 +114,11 @@ export default function caretControl(self: PocketEditor) {
 		return lines
 	}
 
-	self.container.addEventListener("pointerdown", function () {
+	self.container.addEventListener("pointerdown", () => {
 		self.caret_x = undefined
 	})
 
-	self.container.addEventListener("keydown", function (ev: KeyboardEvent) {
+	self.container.addEventListener("keydown", (ev: KeyboardEvent) => {
 		if (!ev.key.includes("Arrow")) {
 			return
 		}
@@ -118,10 +126,10 @@ export default function caretControl(self: PocketEditor) {
 		const goesRight = ev.key === "ArrowRight"
 		const goesLeft = ev.key === "ArrowLeft"
 		const { line, dir } = detectLineJump(self, ev) ?? {}
-		let sel = window.getSelection()
-		let range = document.createRange()
+		const sel = window.getSelection()
+		const range = document.createRange()
+		let node: Node = document.createTextNode("")
 		let offset = 0
-		let node
 
 		if (goesLeft || goesRight) {
 			self.caret_x = undefined
@@ -148,7 +156,9 @@ export default function caretControl(self: PocketEditor) {
 				const rows = getParagraphAsArray(nextline)
 				offset = rangePosInCharLen(nextline, rows[0]) ?? -1
 
-				if (offset < 0) offset = textlen
+				if (offset < 0) {
+					offset = textlen
+				}
 			}
 		}
 
@@ -162,17 +172,19 @@ export default function caretControl(self: PocketEditor) {
 			if (!goesLeft) {
 				const rows = getParagraphAsArray(prevline)
 				const lastrow = rows[rows.length - 1].trimEnd()
-				let lastrowOffset = rangePosInCharLen(prevline, lastrow) ?? textlen
+				const lastrowOffset = rangePosInCharLen(prevline, lastrow) ?? textlen
 
 				offset = textlen - (lastrow.length - lastrowOffset)
 
-				if (lastrowOffset < 0) offset = textlen
+				if (lastrowOffset < 0) {
+					offset = textlen
+				}
 			}
 		}
 
 		try {
-			range.setStart(node as Node, offset)
-			range.setEnd(node as Node, offset)
+			range.setStart(node, offset)
+			range.setEnd(node, offset)
 			sel?.removeAllRanges()
 			sel?.addRange(range)
 			sel?.collapseToEnd()
@@ -192,12 +204,12 @@ function getHorizontalPosition(selection: Selection | null, line?: HTMLElement) 
 	}
 
 	const editable = line.querySelector("[contenteditable]") as HTMLElement
-	const editable_x = editable?.getBoundingClientRect().x ?? 0
-	const range_x = selection?.getRangeAt(0)?.cloneRange()?.getBoundingClientRect().x ?? 0
+	const editableX = editable?.getBoundingClientRect().x ?? 0
+	const rangeX = selection?.getRangeAt(0)?.cloneRange()?.getBoundingClientRect().x ?? 0
 
 	return {
-		editable: editable_x,
-		range: range_x,
-		offset: range_x - editable_x,
+		editable: editableX,
+		range: rangeX,
+		offset: rangeX - editableX,
 	}
 }

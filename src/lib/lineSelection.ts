@@ -1,9 +1,9 @@
 import { addUndoHistory } from "./undo"
-import detectLineJump from "../utils/detectLineJump"
-import PocketEditor from "../index"
-import setCaret from "../utils/setCaret"
+import { detectLineJump } from "../utils/detectLineJump"
+import { setCaret } from "../utils/setCaret"
+import type PocketEditor from "../index"
 
-export default function lineSelection(self: PocketEditor) {
+export function lineSelection(self: PocketEditor): void {
 	let lines = self.lines
 	let caretSelTimeout: number
 	let lineInterval: [number, number] = [-1, -1]
@@ -12,16 +12,21 @@ export default function lineSelection(self: PocketEditor) {
 
 	// Funcs
 
-	function caretSelectionDebounce(callback: Function) {
+	function caretSelectionDebounce(callback: () => unknown): void {
 		clearTimeout(caretSelTimeout)
 		caretSelTimeout = window.setTimeout(() => {
 			callback()
 		}, 200)
 	}
 
-	function createRange(selected?: Element[]) {
-		if (!selected) selected = self.getSelectedLines()
-		if (selected.length === 0) return
+	function createRange(selected?: Element[]): void {
+		if (!selected) {
+			selected = self.getSelectedLines()
+		}
+
+		if (selected.length === 0) {
+			return
+		}
 
 		// create paragraph
 		document.querySelector("#pocket-editor-mock-sel")?.remove()
@@ -31,9 +36,9 @@ export default function lineSelection(self: PocketEditor) {
 		mockSelection.setAttribute("contenteditable", "true")
 		self.container.appendChild(mockSelection)
 
-		let sel = window.getSelection()
-		let range = document.createRange()
-		let textlen = mockSelection.childNodes[0].nodeValue?.length || 0
+		const sel = window.getSelection()
+		const range = document.createRange()
+		const textlen = mockSelection.childNodes[0].nodeValue?.length || 0
 
 		range.setStart(mockSelection.childNodes[0], 0)
 		range.setEnd(mockSelection.childNodes[0], textlen)
@@ -42,16 +47,20 @@ export default function lineSelection(self: PocketEditor) {
 		sel?.addRange(range)
 	}
 
-	function getLineIndex(editable: HTMLElement) {
+	function getLineIndex(editable: HTMLElement): number {
 		const line = self.getLineFromEditable(editable)
 		return line ? lines.indexOf(line) : -1
 	}
 
-	function resetLineSelection() {
+	function resetLineSelection(): void {
 		// Focus on last highlighted line
+
 		const line = lines[currentLine]
 		const editable = line?.querySelector("[contenteditable]")
-		if (editable) setCaret(line)
+
+		if (editable) {
+			setCaret(line)
+		}
 
 		// Reset selection variables
 		currentLine = -1
@@ -63,19 +72,26 @@ export default function lineSelection(self: PocketEditor) {
 		self.container.removeEventListener("mousemove", mouseMoveEvent)
 	}
 
-	function addToLineSelection(index: number) {
+	function addToLineSelection(index: number): void {
 		// Change selection interval depending on direction
-		if (index > firstLine) lineInterval[1] = index
-		if (index < firstLine) lineInterval[0] = index
-		if (index === firstLine) lineInterval = [index, index]
+
+		if (index > firstLine) {
+			lineInterval[1] = index
+		}
+		if (index < firstLine) {
+			lineInterval[0] = index
+		}
+		if (index === firstLine) {
+			lineInterval = [index, index]
+		}
 	}
 
-	function changeLineSelection(index: number) {
+	function changeLineSelection(index: number): void {
 		firstLine = index
 		lineInterval = [index, index]
 	}
 
-	function applyLineSelection(interval: [number, number]) {
+	function applyLineSelection(interval: [number, number]): void {
 		lines.forEach((line, i) => {
 			// Index is between interval
 			if (i >= interval[0] && i <= interval[1]) {
@@ -88,14 +104,14 @@ export default function lineSelection(self: PocketEditor) {
 		caretSelectionDebounce(() => createRange())
 	}
 
-	function initLineSelection(index: number) {
+	function initLineSelection(index: number): void {
 		currentLine = firstLine = index
 		lineInterval = [index, index]
 	}
 
 	// Events
 
-	function keyboardEvent(e: KeyboardEvent) {
+	function keyboardEvent(e: KeyboardEvent): void {
 		lines = self.lines
 
 		const selected = self.getSelectedLines()
@@ -150,7 +166,9 @@ export default function lineSelection(self: PocketEditor) {
 			}
 		}
 
-		if (!e.shiftKey) return
+		if (!e.shiftKey) {
+			return
+		}
 
 		// Start line selection
 		const { line } = detectLineJump(self, e) ?? {}
@@ -163,7 +181,7 @@ export default function lineSelection(self: PocketEditor) {
 		}
 	}
 
-	function mouseMoveEvent(e: MouseEvent) {
+	function mouseMoveEvent(e: MouseEvent): void {
 		const target = e.target as HTMLElement
 		const selected = self.getSelectedLines()
 
@@ -186,7 +204,7 @@ export default function lineSelection(self: PocketEditor) {
 		}
 	}
 
-	function mouseDownEvent(event: MouseEvent) {
+	function mouseDownEvent(event: MouseEvent): void {
 		const target = event.target as HTMLElement
 		const rightclick = event.button === 2
 		const leftclick = event.button === 0
@@ -208,13 +226,13 @@ export default function lineSelection(self: PocketEditor) {
 			applyLineSelection(lineInterval)
 		}
 
-		if (!!target.getAttribute("contenteditable")) {
+		if (target.getAttribute("contenteditable")) {
 			initLineSelection(getLineIndex(target))
 			self.container.addEventListener("mousemove", mouseMoveEvent)
 		}
 	}
 
-	function mouseClickEvent(event: Event) {
+	function mouseClickEvent(event: Event): void {
 		const path = event.composedPath() as Element[]
 		const clicksOutsideContainer = !path.includes(self.container)
 

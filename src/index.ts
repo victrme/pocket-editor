@@ -1,13 +1,13 @@
 import { cutEvent, copyEvent, pasteEvent } from "./lib/clipboardControl"
 import { toHTML, toMarkdown } from "./lib/contentControl"
-import paragraphControl from "./lib/paragraphControl"
-import lineTransform from "./lib/lineTransform"
-import lineSelection from "./lib/lineSelection"
-import lineDeletion from "./lib/lineDeletion"
-import caretControl from "./lib/caretControl"
-import keybindings from "./lib/keybindings"
-import initUndo from "./lib/undo"
-import setCaret from "./utils/setCaret"
+import { paragraphControl } from "./lib/paragraphControl"
+import { lineTransform } from "./lib/lineTransform"
+import { lineSelection } from "./lib/lineSelection"
+import { lineDeletion } from "./lib/lineDeletion"
+import { caretControl } from "./lib/caretControl"
+import { keybindings } from "./lib/keybindings"
+import { initUndo } from "./lib/undo"
+import { setCaret } from "./utils/setCaret"
 
 class PocketEditor {
 	container: HTMLElement
@@ -51,7 +51,7 @@ class PocketEditor {
 		this.lines = []
 
 		if (this.wrapper === null) {
-			throw `Pocket editor: selector "${selector}" was not found`
+			throw new Error(`Pocket editor: selector "${selector}" was not found`)
 		}
 
 		if (id) {
@@ -69,9 +69,7 @@ class PocketEditor {
 		}
 	}
 
-	private init(text?: string) {
-		const self = this
-
+	private init(text?: string): void {
 		if (text) {
 			this.container.appendChild(toHTML(this, text))
 		} else {
@@ -82,17 +80,17 @@ class PocketEditor {
 			this.wrapper.appendChild(this.container)
 		}
 
-		this.container.addEventListener("beforeinput", (ev) => paragraphControl(self, ev))
-		this.container.addEventListener("input", (ev) => paragraphControl(self, ev))
-		this.container.addEventListener("keydown", (ev) => keybindings(self, ev))
-		this.container.addEventListener("paste", (ev) => pasteEvent(self, ev))
-		this.container.addEventListener("copy", (ev) => copyEvent(self, ev))
-		this.container.addEventListener("cut", (ev) => cutEvent(self, ev))
+		this.container.addEventListener("beforeinput", (ev) => paragraphControl(this, ev))
+		this.container.addEventListener("input", (ev) => paragraphControl(this, ev))
+		this.container.addEventListener("keydown", (ev) => keybindings(this, ev))
+		this.container.addEventListener("paste", (ev) => pasteEvent(this, ev))
+		this.container.addEventListener("copy", (ev) => copyEvent(this, ev))
+		this.container.addEventListener("cut", (ev) => cutEvent(this, ev))
 
-		lineSelection(self)
-		caretControl(self)
-		lineDeletion(self)
-		initUndo(self)
+		lineSelection(this)
+		caretControl(this)
+		lineDeletion(this)
+		initUndo(this)
 
 		const lineObserverCallback = () => {
 			this.lines = Object.values(this.container.children) as HTMLElement[]
@@ -108,7 +106,7 @@ class PocketEditor {
 	 * Gets the editor content as Markdown
 	 * @returns A valid markdown string
 	 */
-	get value() {
+	get value(): string {
 		return toMarkdown(this.lines)
 	}
 
@@ -129,21 +127,24 @@ class PocketEditor {
 	 * }, 1000)
 	 */
 	set value(text: string) {
-		Object.values(this.container.children).forEach((node) => node.remove())
+		for (const node of Object.values(this.container.children)) {
+			node.remove()
+		}
+
 		this.container.appendChild(toHTML(this, text))
 	}
 
 	/**
 	 * Listens to beforeinput, input, cut, and paste events inside the editor.
 	 * Automatically passes the editor content as markdown as an argument.
-	 * 
+	 *
 	 * @param listener Get the content as a markdown string
 	 * @returns An event cleanup function
-	 * 
+	 *
 	 * @example
 	 * // One-liner logger
 	 * pocketEditor("#some-id", { text: "Hello" }).oninput = console.log
-	 * 
+	 *
 	 * @example
 	 * // Saves editor content to localStorage
 	 * const editor = new pocketEditor("#some-id", { text: "Hello" })
@@ -185,7 +186,7 @@ class PocketEditor {
 	 * @param listener Get the content as a markdown string
 	 * @returns An event cleanup function
 	 */
-	public addEventListener(type: "input", listener: (content: string) => void): () => void {
+	public addEventListener(_: "input", listener: (content: string) => void): () => void {
 		return this.oninput(listener)
 	}
 
@@ -208,19 +209,21 @@ class PocketEditor {
 
 			if (isDiv) {
 				return parent
-			} else {
-				elem = parent
 			}
+
+			elem = parent
 		}
 
 		return null
 	}
 
-	public removeLines(lines: HTMLElement[]) {
+	public removeLines(lines: HTMLElement[]): void {
 		const emptyLine = this.createLine()
 		const prevline = this.getPrevLine(lines[0])
 
-		lines.forEach((line) => line.remove())
+		for (const line of lines) {
+			line.remove()
+		}
 
 		if (prevline) {
 			this.insertAfter(emptyLine, prevline)
@@ -236,11 +239,11 @@ class PocketEditor {
 				inputType: "deleteContent",
 				bubbles: true,
 				data: "",
-			})
+			}),
 		)
 	}
 
-	public createLine(props?: { text?: string; modif?: string }) {
+	public createLine(props?: { text?: string; modif?: string }): Node {
 		const notesline = document.createElement("div")
 		const editable = document.createElement("p")
 		const mod = props?.modif ?? ""
@@ -261,7 +264,7 @@ class PocketEditor {
 		return notesline
 	}
 
-	private insertAfter(newNode: Node, existingNode: Node) {
+	private insertAfter(newNode: Node, existingNode: Node): void {
 		existingNode?.parentNode?.insertBefore(newNode, existingNode.nextSibling)
 	}
 }

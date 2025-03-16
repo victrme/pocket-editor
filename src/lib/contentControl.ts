@@ -1,8 +1,8 @@
-import PocketEditor from "../index"
+import type PocketEditor from "../index"
 
 export function checkModifs(text: string, mods: Record<string, string>) {
 	for (const [name, str] of Object.entries(mods)) {
-		if (text.startsWith(str + " ")) {
+		if (text.startsWith(`${str} `)) {
 			return name
 		}
 	}
@@ -10,7 +10,7 @@ export function checkModifs(text: string, mods: Record<string, string>) {
 	return ""
 }
 
-export function toHTML(self: PocketEditor, markdown: string) {
+export function toHTML(self: PocketEditor, markdown: string): DocumentFragment {
 	// create fragment to append only once to real DOM
 	const fragment = document.createDocumentFragment()
 
@@ -32,7 +32,7 @@ export function toHTML(self: PocketEditor, markdown: string) {
 	return fragment
 }
 
-export function toMarkdown(lines: HTMLElement[]) {
+export function toMarkdown(lines: HTMLElement[]): string {
 	function addModif(line: HTMLElement) {
 		if (line.dataset.list === "") return "- "
 		else if (line.dataset.h1 === "") return "# "

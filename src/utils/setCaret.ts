@@ -1,11 +1,11 @@
-import lastTextNode from "./lastTextNode"
+import { lastTextNode } from "./lastTextNode"
 
-export default function setCaret(elem: Element | Node, atStart?: boolean) {
+export function setCaret(elem: Element | Node, atStart?: boolean): void {
 	const node = lastTextNode(elem)
-	let sel = window.getSelection()
-	let range = document.createRange()
+	const sel = window.getSelection()
+	const range = document.createRange()
 
-	let textlen = node.nodeValue?.length || 0
+	const textlen = node.nodeValue?.length || 0
 	range.setStart(node, atStart ? 0 : textlen)
 	range.setEnd(node, atStart ? 0 : textlen)
 
