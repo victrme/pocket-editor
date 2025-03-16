@@ -30,7 +30,7 @@ class PocketEditor {
 	 * This creates an editor.
 	 * You might also need to add the basic styling with "style.css"
 	 *
-	 * @param {string} selector The selector of the parent in which to put the editor
+	 * @param {string | HTMLElement} parent The wrapper in which to put the editor. Either an element or a CSS selector
 	 * @param {Object} [options] Pocket editor options
 	 * @param {string} [options.text] Default text to add when initializing pocket editor
 	 * @param {string} [options.id] Specify an id for this instance of the editor
@@ -42,11 +42,11 @@ class PocketEditor {
 	 *
 	 * const editor = new pocketEditor("some-selector", { text: "Hello world" })
 	 */
-	constructor(selector: string, options?: Options) {
+	constructor(parent: string | HTMLElement, options?: Options) {
 		const div = document.createElement("div")
 		const { text, defer, id } = options ?? {}
 
-		this.wrapper = document.querySelector(selector)
+		this.wrapper = typeof parent === "string" ? document.querySelector(parent) : parent
 		this.container = div
 		this.lines = []
 
