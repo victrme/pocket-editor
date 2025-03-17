@@ -6,9 +6,6 @@ export default defineConfig({
 	testDir: "tests",
 	preserveOutput: "never",
 	fullyParallel: !isCI,
-	use: {
-		baseURL: "http://127.0.0.1:4173",
-	},
 	webServer: {
 		command: "pnpm --filter example preview",
 		reuseExistingServer: !isCI,
