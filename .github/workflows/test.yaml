@@ -25,7 +25,7 @@ jobs:
               with:
                   node-version: 20
                   cache: "pnpm"
-            - run: npx playwright install --with-deps
             - run: pnpm install --recursive
+            - run: npx playwright install --with-deps
             - run: pnpm --filter example build
             - run: pnpm test
