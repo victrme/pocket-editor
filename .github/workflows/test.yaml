@@ -26,4 +26,5 @@ jobs:
                   node-version: 20
                   cache: "pnpm"
             - run: pnpm install --recursive
+            - run: pnpm --filter example build
             - run: pnpm test
