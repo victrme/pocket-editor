@@ -25,8 +25,8 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
-		"@playwright/test": "^1.47.1",
-		"esbuild": "^0.23.1"
+		"@playwright/test": "^1.51.0",
+		"esbuild": "^0.25.1"
 	},
 	"files": [
 		"./dist/**/*.js",

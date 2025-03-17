@@ -6,11 +6,18 @@
 	"linter": {
 		"enabled": true,
 		"include": ["src"],
+		"ignore": ["example"],
 		"rules": {
-			"all": true
+			"all": true,
+			"style": { "noParameterAssign": "info" },
+			"suspicious": { "noConsole": "off" },
+			"correctness": { "useImportExtensions": "off" }
 		}
 	},
 	"organizeImports": {
-		"enabled": true
+		"enabled": false
+	},
+	"javascript": {
+		"globals": ["PocketEditor"]
 	}
 }
