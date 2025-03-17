@@ -3,7 +3,7 @@
   // src/lib/contentControl.ts
   function checkModifs(text, mods) {
     for (const [name, str] of Object.entries(mods)) {
-      if (text.startsWith(str + " ")) {
+      if (text.startsWith(`${str} `)) {
         return name;
       }
     }
@@ -25,12 +25,24 @@
   }
   function toMarkdown(lines) {
     function addModif(line) {
-      if (line.dataset.list === "") return "- ";
-      else if (line.dataset.h1 === "") return "# ";
-      else if (line.dataset.h2 === "") return "## ";
-      else if (line.dataset.h3 === "") return "### ";
-      else if (line.dataset.todoChecked === "") return "[x] ";
-      else if (line.dataset.todo === "") return "[ ] ";
+      if (line.dataset.list === "") {
+        return "- ";
+      }
+      if (line.dataset.h1 === "") {
+        return "# ";
+      }
+      if (line.dataset.h2 === "") {
+        return "## ";
+      }
+      if (line.dataset.h3 === "") {
+        return "### ";
+      }
+      if (line.dataset.todoChecked === "") {
+        return "[x] ";
+      }
+      if (line.dataset.todo === "") {
+        return "[ ] ";
+      }
       return "";
     }
     let plaintext = "";
@@ -56,9 +68,8 @@
       const textNodes = childNodes.filter((child) => child.nodeName === "#text");
       if (textNodes.length > 0) {
         return textNodes[0];
-      } else {
-        lastNode = childNodes[0];
       }
+      lastNode = childNodes[0];
     }
     return lastNode;
   }
@@ -66,9 +77,9 @@
   // src/utils/setCaret.ts
   function setCaret(elem, atStart) {
     const node = lastTextNode(elem);
-    let sel = window.getSelection();
-    let range = document.createRange();
-    let textlen = node.nodeValue?.length || 0;
+    const sel = window.getSelection();
+    const range = document.createRange();
+    const textlen = node.nodeValue?.length || 0;
     range.setStart(node, atStart ? 0 : textlen);
     range.setEnd(node, atStart ? 0 : textlen);
     sel?.removeAllRanges();
@@ -93,7 +104,9 @@
   function initUndo(self) {
     let timeout;
     const observer = new MutationObserver(() => {
-      if (timeout) clearTimeout(timeout);
+      if (timeout) {
+        clearTimeout(timeout);
+      }
     });
     observer.observe(self.container, {
       characterData: true,
@@ -112,7 +125,9 @@
     if (!markdown) {
       return;
     }
-    Object.values(self.container.children).forEach((node) => node.remove());
+    for (const node of Object.values(self.container.children)) {
+      node.remove();
+    }
     self.container.appendChild(toHTML(self, markdown));
     setTimeout(() => {
       const editable = self.container.querySelectorAll("[contenteditable]")[index];
@@ -155,8 +170,8 @@
     const text = ev.clipboardData?.getData("text") || "";
     if (checkModifs(text, self.mods) !== "") {
       const editable = ev.target;
-      const newHTML = toHTML(self, text);
-      const linesInNew = newHTML.childElementCount - 1;
+      const newHtml = toHTML(self, text);
+      const linesInNew = newHtml.childElementCount - 1;
       let line = self.getLineFromEditable(editable);
       const selected = self.getSelectedLines();
       if (selected.length > 0) {
@@ -165,10 +180,16 @@
       if (!line?.parentElement?.dataset.pocketEditor) {
         return;
       }
-      self.container.insertBefore(newHTML, self.getNextLine(line));
+      self.container.insertBefore(newHtml, self.getNextLine(line));
       let lastline = line.nextSibling;
-      for (let ii = 0; ii < linesInNew; ii++) lastline ? lastline = lastline.nextSibling : "";
-      if (lastline) setCaret(lastline);
+      for (let ii = 0; ii < linesInNew; ii++) {
+        if (lastline) {
+          lastline = lastline.nextSibling;
+        }
+      }
+      if (lastline) {
+        setCaret(lastline);
+      }
       if (line && line.textContent === "") {
         const areSameMods = (mod) => {
           const currIsMod = line?.dataset[mod] === mod;
@@ -223,7 +244,9 @@
     delete parent.dataset.todoChecked;
     content.textContent = parent.textContent;
     content.setAttribute("contenteditable", "true");
-    Object.values(parent.childNodes).forEach((node) => node.remove());
+    for (const node of Object.values(parent.childNodes)) {
+      node.remove();
+    }
     parent.appendChild(content);
     content.focus();
     return content;
@@ -231,7 +254,9 @@
 
   // src/lib/lineTransform.ts
   function lineTransform(self, editable, mod, focus = true) {
-    if (!mod) return;
+    if (!mod) {
+      return;
+    }
     const line = self.getLineFromEditable(editable);
     if (!line || line?.dataset[mod]) {
       return;
@@ -259,10 +284,11 @@
       case "todo-checked":
         toTodolist(true);
         break;
+      default:
     }
     function toHeading(tag) {
       const heading = document.createElement(tag);
-      let mod2 = tag === "h1" ? "#" : tag === "h2" ? "##" : "###";
+      const mod2 = tag === "h1" ? "#" : tag === "h2" ? "##" : "###";
       heading.textContent = editable.textContent?.replace(mod2, "").trimStart() || "";
       heading.setAttribute("contenteditable", "true");
       if (line) {
@@ -345,8 +371,8 @@
       const isContenteditable = editable?.hasAttribute("contenteditable");
       const isInput = editable?.tagName === "INPUT";
       range = window.getSelection()?.getRangeAt(0);
-      if (!range || !isContenteditable || isInput) {
-        throw "";
+      if (!(range && isContenteditable) || isInput) {
+        throw new Error("?");
       }
     } catch (_) {
       return;
@@ -367,16 +393,26 @@
         removeModifier(editable);
         return;
       }
-      if (line.dataset.todo === "") modif = "todo";
-      if (line.dataset.list === "") modif = "list";
-      if (line.dataset.todoChecked === "") modif = "todo";
+      if (line.dataset.todo === "") {
+        modif = "todo";
+      }
+      if (line.dataset.list === "") {
+        modif = "list";
+      }
+      if (line.dataset.todoChecked === "") {
+        modif = "todo";
+      }
       const nextline = self.getNextLine(line);
       const newline = self.createLine({
         text: nexttext,
         modif
       });
-      if (nextline) container.insertBefore(newline, nextline);
-      else container?.appendChild(newline);
+      if (nextline) {
+        container.insertBefore(newline, nextline);
+      } else {
+        container?.appendChild(newline);
+      }
+      ;
       newline.querySelector("[contenteditable]")?.focus();
       editable.textContent = cuttext;
       container.dispatchEvent(
@@ -389,8 +425,8 @@
       return;
     }
     if (e.type === "input" && insertText) {
-      const ZERO_WIDTH_WHITESPACE = "\u200B";
-      const content = (editable?.textContent ?? "").replace(ZERO_WIDTH_WHITESPACE, "");
+      const zeroWidthWhitespace = "\u200B";
+      const content = (editable?.textContent ?? "").replace(zeroWidthWhitespace, "");
       for (const [mod, val] of Object.entries(self.mods)) {
         const softspace = String.fromCharCode(160);
         const hardspace = String.fromCharCode(32);
@@ -404,25 +440,35 @@
 
   // src/utils/detectLineJump.ts
   function detectLineJump(self, ev) {
-    if (!ev.key.includes("Arrow") || !window.getSelection()?.anchorNode) {
+    const notArrowKey = !ev.key.includes("Arrow");
+    const notSelection = !window.getSelection()?.anchorNode;
+    if (notArrowKey || notSelection) {
       return;
     }
     const editable = ev.target;
     const line = self.getLineFromEditable(editable);
     const range = window?.getSelection()?.getRangeAt(0);
     const txtLen = range?.startContainer?.nodeValue?.length ?? 0;
-    if (!range || !line) return;
+    if (!(range && line)) {
+      return;
+    }
     const prevSibling = self.getPrevLine(line);
     const nextSibling = self.getNextLine(line);
     const isCaretAtZero = Math.min(range?.endOffset, range?.startOffset) === 0;
     const isCaretAtEnd = Math.max(range?.endOffset, range?.startOffset) === txtLen;
-    if (ev.key === "ArrowLeft" && isCaretAtZero && prevSibling) return { line, dir: "up" };
-    if (ev.key === "ArrowRight" && isCaretAtEnd && nextSibling) return { line, dir: "down" };
+    const goingLeftToPrevious = ev.key === "ArrowLeft" && isCaretAtZero && prevSibling;
+    const goingRightToNext = ev.key === "ArrowRight" && isCaretAtEnd && nextSibling;
+    if (goingLeftToPrevious) {
+      return { line, dir: "up" };
+    }
+    if (goingRightToNext) {
+      return { line, dir: "down" };
+    }
     let top = false;
     let bottom = false;
     const rr = range?.getBoundingClientRect();
     const lr = line?.getBoundingClientRect();
-    const noRanges = !lr || !rr || rr.y === 0;
+    const noRanges = !(lr && rr) || rr.y === 0;
     if (noRanges) {
       top = true;
       bottom = true;
@@ -430,8 +476,14 @@
       top = lr.top - rr.top + rr.height > 0;
       bottom = rr.bottom + rr.height - lr.bottom > 0;
     }
-    if (ev.key === "ArrowUp" && prevSibling && top) return { line, dir: "up" };
-    if (ev.key === "ArrowDown" && nextSibling && bottom) return { line, dir: "down" };
+    const goingUpToPrevious = ev.key === "ArrowUp" && prevSibling && top;
+    const goingDownToNext = ev.key === "ArrowDown" && nextSibling && bottom;
+    if (goingUpToPrevious) {
+      return { line, dir: "up" };
+    }
+    if (goingDownToNext) {
+      return { line, dir: "down" };
+    }
   }
 
   // src/lib/lineSelection.ts
@@ -448,17 +500,21 @@
       }, 200);
     }
     function createRange(selected) {
-      if (!selected) selected = self.getSelectedLines();
-      if (selected.length === 0) return;
+      if (!selected) {
+        selected = self.getSelectedLines();
+      }
+      if (selected.length === 0) {
+        return;
+      }
       document.querySelector("#pocket-editor-mock-sel")?.remove();
       const mockSelection = document.createElement("pre");
       mockSelection.id = "pocket-editor-mock-sel";
       mockSelection.textContent = "mock-selection";
       mockSelection.setAttribute("contenteditable", "true");
       self.container.appendChild(mockSelection);
-      let sel = window.getSelection();
-      let range = document.createRange();
-      let textlen = mockSelection.childNodes[0].nodeValue?.length || 0;
+      const sel = window.getSelection();
+      const range = document.createRange();
+      const textlen = mockSelection.childNodes[0].nodeValue?.length || 0;
       range.setStart(mockSelection.childNodes[0], 0);
       range.setEnd(mockSelection.childNodes[0], textlen);
       sel?.removeAllRanges();
@@ -471,7 +527,9 @@
     function resetLineSelection() {
       const line = lines[currentLine];
       const editable = line?.querySelector("[contenteditable]");
-      if (editable) setCaret(line);
+      if (editable) {
+        setCaret(line);
+      }
       currentLine = -1;
       firstLine = -1;
       lineInterval = [-1, -1];
@@ -479,9 +537,15 @@
       self.container.removeEventListener("mousemove", mouseMoveEvent);
     }
     function addToLineSelection(index) {
-      if (index > firstLine) lineInterval[1] = index;
-      if (index < firstLine) lineInterval[0] = index;
-      if (index === firstLine) lineInterval = [index, index];
+      if (index > firstLine) {
+        lineInterval[1] = index;
+      }
+      if (index < firstLine) {
+        lineInterval[0] = index;
+      }
+      if (index === firstLine) {
+        lineInterval = [index, index];
+      }
     }
     function changeLineSelection(index) {
       firstLine = index;
@@ -528,15 +592,23 @@
           return;
         }
         if (e.key.includes("Arrow")) {
-          if (e.key.includes("Down")) currentLine = Math.min(currentLine + 1, lines.length - 1);
-          if (e.key.includes("Up")) currentLine = Math.max(0, currentLine - 1);
-          if (e.shiftKey) addToLineSelection(currentLine);
-          if (!e.shiftKey) changeLineSelection(currentLine);
+          if (e.key.includes("Down")) {
+            currentLine = Math.min(currentLine + 1, lines.length - 1);
+          }
+          if (e.key.includes("Up")) {
+            currentLine = Math.max(0, currentLine - 1);
+          }
+          if (e.shiftKey) {
+            addToLineSelection(currentLine);
+          }
+          if (!e.shiftKey) {
+            changeLineSelection(currentLine);
+          }
           applyLineSelection(lineInterval);
           e.preventDefault();
           return;
         }
-        if (!e.code.match(/Shift|Alt|Control|Caps/)) {
+        if (!includesAny(e.code, "Shift", "Alt", "Control", "Caps")) {
           resetLineSelection();
           addUndoHistory(self, selected[selected.length - -1]);
           self.removeLines(selected);
@@ -545,7 +617,9 @@
           }
         }
       }
-      if (!e.shiftKey) return;
+      if (!e.shiftKey) {
+        return;
+      }
       const { line } = detectLineJump(self, e) ?? {};
       if (line) {
         const index = lines.indexOf(line);
@@ -565,7 +639,9 @@
       const isEditable = !!target.getAttribute("contenteditable");
       if (isCheckbox || isListMarker || isEditable) {
         currentLine = getLineIndex(target);
-        if (currentLine === firstLine && selected.length === 0) return;
+        if (currentLine === firstLine && selected.length === 0) {
+          return;
+        }
         addToLineSelection(currentLine);
         applyLineSelection(lineInterval);
       }
@@ -586,7 +662,7 @@
         resetLineSelection();
         applyLineSelection(lineInterval);
       }
-      if (!!target.getAttribute("contenteditable")) {
+      if (target.getAttribute("contenteditable")) {
         initLineSelection(getLineIndex(target));
         self.container.addEventListener("mousemove", mouseMoveEvent);
       }
@@ -605,6 +681,14 @@
     window.addEventListener("click", mouseClickEvent);
     self.container.addEventListener("keydown", keyboardEvent);
     self.container.addEventListener("mousedown", mouseDownEvent);
+  }
+  function includesAny(str, ...matches) {
+    for (const match of matches) {
+      if (str.includes(match)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   // src/lib/lineDeletion.ts
@@ -656,12 +740,16 @@
       }
       const prevline = self.getPrevLine(line);
       if (prevline) {
-        if (editable.textContent === "") removeLineNoText(editable, prevline);
-        if (editable.textContent !== "") removeLineWithText(editable, prevline);
+        if (editable.textContent === "") {
+          removeLineNoText(editable, prevline);
+        }
+        if (editable.textContent !== "") {
+          removeLineWithText(editable, prevline);
+        }
       }
     }
     self.container.addEventListener("beforeinput", applyLineRemove);
-    if (userAgent.includes("safari") && !userAgent.match(/chrome|chromium/)) {
+    if (userAgent.includes("safari") && !(userAgent.includes("chrome") && userAgent.includes("chromium"))) {
       self.container.addEventListener("keydown", (e) => {
         try {
           const range = sel?.getRangeAt(0);
@@ -670,7 +758,7 @@
           if (isBackspacing && isAtContainerStart) {
             applyLineRemove(e);
           }
-        } catch (e2) {
+        } catch (_) {
         }
       });
     }
@@ -747,16 +835,16 @@
       let pos = 0;
       let rangeY = 0;
       let rangeYlast = 0;
-      let lines = [""];
-      let words = (editable.textContent ?? "").split(" ");
-      let textnode = lastTextNode(editable);
+      const lines = [""];
+      const words = (editable.textContent ?? "").split(" ");
+      const textnode = lastTextNode(editable);
       const range = document.createRange();
       range.setStart(textnode, 0);
       range.setEnd(textnode, 0);
       const isWebkit = navigator.userAgent.includes("AppleWebKit");
       rangeYlast = rangeY = range.getBoundingClientRect().y;
       for (let word of words) {
-        word = word + " ";
+        word = `${word} `;
         pos += word.length;
         try {
           range.setStart(textnode, pos);
@@ -764,31 +852,37 @@
           rangeY = range.getBoundingClientRect().y;
         } catch (_) {
         }
-        if (isWebkit) lines[0] += word;
+        if (isWebkit) {
+          lines[0] += word;
+        }
         if (rangeY > rangeYlast) {
-          if (isWebkit) lines[0] = lines[0].trimEnd();
+          if (isWebkit) {
+            lines[0] = lines[0].trimEnd();
+          }
           lines.unshift("");
           rangeYlast = rangeY;
         }
-        if (isWebkit === false) lines[0] += word;
+        if (isWebkit === false) {
+          lines[0] += word;
+        }
       }
       lines.reverse();
       return lines;
     }
-    self.container.addEventListener("pointerdown", function() {
+    self.container.addEventListener("pointerdown", () => {
       self.caret_x = void 0;
     });
-    self.container.addEventListener("keydown", function(ev) {
+    self.container.addEventListener("keydown", (ev) => {
       if (!ev.key.includes("Arrow")) {
         return;
       }
       const goesRight = ev.key === "ArrowRight";
       const goesLeft = ev.key === "ArrowLeft";
       const { line, dir } = detectLineJump(self, ev) ?? {};
-      let sel = window.getSelection();
-      let range = document.createRange();
+      const sel = window.getSelection();
+      const range = document.createRange();
+      let node = document.createTextNode("");
       let offset = 0;
-      let node;
       if (goesLeft || goesRight) {
         self.caret_x = void 0;
       } else if (self.caret_x === void 0) {
@@ -807,7 +901,9 @@
         if (!goesRight) {
           const rows = getParagraphAsArray(nextline);
           offset = rangePosInCharLen(nextline, rows[0]) ?? -1;
-          if (offset < 0) offset = textlen;
+          if (offset < 0) {
+            offset = textlen;
+          }
         }
       }
       if (dir === "up") {
@@ -818,9 +914,11 @@
         if (!goesLeft) {
           const rows = getParagraphAsArray(prevline);
           const lastrow = rows[rows.length - 1].trimEnd();
-          let lastrowOffset = rangePosInCharLen(prevline, lastrow) ?? textlen;
+          const lastrowOffset = rangePosInCharLen(prevline, lastrow) ?? textlen;
           offset = textlen - (lastrow.length - lastrowOffset);
-          if (lastrowOffset < 0) offset = textlen;
+          if (lastrowOffset < 0) {
+            offset = textlen;
+          }
         }
       }
       try {
@@ -841,23 +939,23 @@
       return { editable: 0, range: 0, offset: 0 };
     }
     const editable = line.querySelector("[contenteditable]");
-    const editable_x = editable?.getBoundingClientRect().x ?? 0;
-    const range_x = selection?.getRangeAt(0)?.cloneRange()?.getBoundingClientRect().x ?? 0;
+    const editableX = editable?.getBoundingClientRect().x ?? 0;
+    const rangeX = selection?.getRangeAt(0)?.cloneRange()?.getBoundingClientRect().x ?? 0;
     return {
-      editable: editable_x,
-      range: range_x,
-      offset: range_x - editable_x
+      editable: editableX,
+      range: rangeX,
+      offset: rangeX - editableX
     };
   }
 
   // src/lib/keybindings.ts
-  async function keybindings(self, ev) {
+  function keybindings(self, ev) {
     const editable = ev.target;
     const ctrl = ev.ctrlKey || ev.metaKey;
     const isValid = ctrl && ev.shiftKey && ev.code.includes("Digit");
     const line = self.getLineFromEditable(editable);
     if (isValid && editable) {
-      const index = parseInt(ev.code.replace("Digit", "")) - 1;
+      const index = Number.parseInt(ev.code.replace("Digit", "")) - 1;
       const mods = Object.keys(self.mods);
       const targetMod = mods[index];
       const currentModIsTarget = line?.hasAttribute(`data-${targetMod}`);
@@ -911,7 +1009,7 @@
       this.container = div;
       this.lines = [];
       if (this.wrapper === null) {
-        throw new Error(`Pocket editor: parent "${parent}" was not found`);
+        throw new Error(`Pocket editor: selector "${parent}" was not found`);
       }
       if (id) {
         div.id = id;
@@ -926,7 +1024,6 @@
       }
     }
     init(text) {
-      const self = this;
       if (text) {
         this.container.appendChild(toHTML(this, text));
       } else {
@@ -935,16 +1032,16 @@
       if (this.wrapper) {
         this.wrapper.appendChild(this.container);
       }
-      this.container.addEventListener("beforeinput", (ev) => paragraphControl(self, ev));
-      this.container.addEventListener("input", (ev) => paragraphControl(self, ev));
-      this.container.addEventListener("keydown", (ev) => keybindings(self, ev));
-      this.container.addEventListener("paste", (ev) => pasteEvent(self, ev));
-      this.container.addEventListener("copy", (ev) => copyEvent(self, ev));
-      this.container.addEventListener("cut", (ev) => cutEvent(self, ev));
-      lineSelection(self);
-      caretControl(self);
-      lineDeletion(self);
-      initUndo(self);
+      this.container.addEventListener("beforeinput", (ev) => paragraphControl(this, ev));
+      this.container.addEventListener("input", (ev) => paragraphControl(this, ev));
+      this.container.addEventListener("keydown", (ev) => keybindings(this, ev));
+      this.container.addEventListener("paste", (ev) => pasteEvent(this, ev));
+      this.container.addEventListener("copy", (ev) => copyEvent(this, ev));
+      this.container.addEventListener("cut", (ev) => cutEvent(this, ev));
+      lineSelection(this);
+      caretControl(this);
+      lineDeletion(this);
+      initUndo(this);
       const lineObserverCallback = () => {
         this.lines = Object.values(this.container.children);
       };
@@ -976,20 +1073,22 @@
      * }, 1000)
      */
     set value(text) {
-      Object.values(this.container.children).forEach((node) => node.remove());
+      for (const node of Object.values(this.container.children)) {
+        node.remove();
+      }
       this.container.appendChild(toHTML(this, text));
     }
     /**
     	 * Listens to beforeinput, input, cut, and paste events inside the editor.
     	 * Automatically passes the editor content as markdown as an argument.
-    	 * 
+    	 *
     	 * @param listener Get the content as a markdown string
     	 * @returns An event cleanup function
-    	 * 
+    	 *
     	 * @example
     	 * // One-liner logger
     	 * pocketEditor("#some-id", { text: "Hello" }).oninput = console.log
-    	 * 
+    	 *
     	 * @example
     	 * // Saves editor content to localStorage
     	 * const editor = new pocketEditor("#some-id", { text: "Hello" })
@@ -1026,7 +1125,7 @@
      * @param listener Get the content as a markdown string
      * @returns An event cleanup function
      */
-    addEventListener(type, listener) {
+    addEventListener(_, listener) {
       return this.oninput(listener);
     }
     getSelectedLines() {
@@ -1044,16 +1143,17 @@
         const isDiv = parent.tagName === "DIV";
         if (isDiv) {
           return parent;
-        } else {
-          elem = parent;
         }
+        elem = parent;
       }
       return null;
     }
     removeLines(lines) {
       const emptyLine = this.createLine();
       const prevline = this.getPrevLine(lines[0]);
-      lines.forEach((line) => line.remove());
+      for (const line of lines) {
+        line.remove();
+      }
       if (prevline) {
         this.insertAfter(emptyLine, prevline);
       } else {
@@ -1087,6 +1187,6 @@
       existingNode?.parentNode?.insertBefore(newNode, existingNode.nextSibling);
     }
   };
-  var src_default = PocketEditor;
+  var index_default = PocketEditor;
   globalThis.PocketEditor = PocketEditor;
 })();
