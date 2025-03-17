@@ -85,7 +85,7 @@ export function lineDeletion(self: PocketEditor) {
 	// Safari macOS:
 	// Special remove event because "input" event doesn't work on empty contenteditables
 
-	if (userAgent.includes("safari") && !userAgent.match(/chrome|chromium/)) {
+	if (userAgent.includes("safari") && !(userAgent.includes("chrome") && userAgent.includes("chromium"))) {
 		self.container.addEventListener("keydown", (e) => {
 			try {
 				const range = sel?.getRangeAt(0)
@@ -95,7 +95,7 @@ export function lineDeletion(self: PocketEditor) {
 				if (isBackspacing && isAtContainerStart) {
 					applyLineRemove(e)
 				}
-			} catch (e) {
+			} catch (_) {
 				// IndexSizeError: The index is not in the allowed range.
 				// No idea how to handle getRangeAt() error properly
 			}

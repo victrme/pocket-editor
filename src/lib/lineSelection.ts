@@ -144,18 +144,26 @@ export function lineSelection(self: PocketEditor): void {
 			}
 
 			if (e.key.includes("Arrow")) {
-				if (e.key.includes("Down")) currentLine = Math.min(currentLine + 1, lines.length - 1)
-				if (e.key.includes("Up")) currentLine = Math.max(0, currentLine - 1)
+				if (e.key.includes("Down")) {
+					currentLine = Math.min(currentLine + 1, lines.length - 1)
+				}
+				if (e.key.includes("Up")) {
+					currentLine = Math.max(0, currentLine - 1)
+				}
 
-				if (e.shiftKey) addToLineSelection(currentLine)
-				if (!e.shiftKey) changeLineSelection(currentLine)
+				if (e.shiftKey) {
+					addToLineSelection(currentLine)
+				}
+				if (!e.shiftKey) {
+					changeLineSelection(currentLine)
+				}
 
 				applyLineSelection(lineInterval)
 				e.preventDefault()
 				return
 			}
 
-			if (!e.code.match(/Shift|Alt|Control|Caps/)) {
+			if (!includesAny(e.code, "Shift", "Alt", "Control", "Caps")) {
 				resetLineSelection()
 				addUndoHistory(self, selected[selected.length - -1])
 				self.removeLines(selected)
@@ -197,7 +205,9 @@ export function lineSelection(self: PocketEditor): void {
 			currentLine = getLineIndex(target)
 
 			// Don't select when moving inside first line
-			if (currentLine === firstLine && selected.length === 0) return
+			if (currentLine === firstLine && selected.length === 0) {
+				return
+			}
 
 			addToLineSelection(currentLine)
 			applyLineSelection(lineInterval)
@@ -249,4 +259,14 @@ export function lineSelection(self: PocketEditor): void {
 	window.addEventListener("click", mouseClickEvent)
 	self.container.addEventListener("keydown", keyboardEvent)
 	self.container.addEventListener("mousedown", mouseDownEvent)
+}
+
+function includesAny(str: string, ...matches: string[]): boolean {
+	for (const match of matches) {
+		if (str.includes(match)) {
+			return true
+		}
+	}
+
+	return false
 }

@@ -51,7 +51,7 @@ class PocketEditor {
 		this.lines = []
 
 		if (this.wrapper === null) {
-			throw new Error(`Pocket editor: selector "${selector}" was not found`)
+			throw new Error(`Pocket editor: selector "${parent}" was not found`)
 		}
 
 		if (id) {
@@ -269,22 +269,17 @@ class PocketEditor {
 	}
 }
 
-// Exports
-
-export default PocketEditor
-
-globalThis.PocketEditor = PocketEditor
-
 // Types
-
-declare global {
-	var PocketEditor: _PocketEditor
-}
-
-type _PocketEditor = typeof PocketEditor
 
 type Options = {
 	id?: string
 	text?: string
 	defer?: true | number
 }
+
+// Exports
+
+export default PocketEditor
+
+//
+;(globalThis as Record<string, unknown>).PocketEditor = PocketEditor

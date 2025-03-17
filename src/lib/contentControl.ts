@@ -1,4 +1,4 @@
-import type PocketEditor from "../index"
+import type PocketEditor from "../index.ts"
 
 export function checkModifs(text: string, mods: Record<string, string>) {
 	for (const [name, str] of Object.entries(mods)) {
@@ -34,12 +34,24 @@ export function toHTML(self: PocketEditor, markdown: string): DocumentFragment {
 
 export function toMarkdown(lines: HTMLElement[]): string {
 	function addModif(line: HTMLElement) {
-		if (line.dataset.list === "") return "- "
-		else if (line.dataset.h1 === "") return "# "
-		else if (line.dataset.h2 === "") return "## "
-		else if (line.dataset.h3 === "") return "### "
-		else if (line.dataset.todoChecked === "") return "[x] "
-		else if (line.dataset.todo === "") return "[ ] "
+		if (line.dataset.list === "") {
+			return "- "
+		}
+		if (line.dataset.h1 === "") {
+			return "# "
+		}
+		if (line.dataset.h2 === "") {
+			return "## "
+		}
+		if (line.dataset.h3 === "") {
+			return "### "
+		}
+		if (line.dataset.todoChecked === "") {
+			return "[x] "
+		}
+		if (line.dataset.todo === "") {
+			return "[ ] "
+		}
 
 		return ""
 	}
@@ -64,5 +76,3 @@ export function toMarkdown(lines: HTMLElement[]): string {
 
 	return plaintext
 }
-
-export default { toHTML, toMarkdown }

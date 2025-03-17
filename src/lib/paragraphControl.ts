@@ -13,7 +13,7 @@ export function paragraphControl(self: PocketEditor, e: Event): void {
 		const isInput = editable?.tagName === "INPUT"
 		range = window.getSelection()?.getRangeAt(0)
 
-		if (!range || !isContenteditable || isInput) {
+		if (!(range && isContenteditable) || isInput) {
 			throw new Error("?")
 		}
 	} catch (_) {
@@ -62,7 +62,7 @@ export function paragraphControl(self: PocketEditor, e: Event): void {
 			container?.appendChild(newline)
 		}
 
-		newline.querySelector<HTMLElement>("[contenteditable]")?.focus()
+		;(newline as HTMLElement).querySelector<HTMLElement>("[contenteditable]")?.focus()
 		editable.textContent = cuttext
 
 		container.dispatchEvent(

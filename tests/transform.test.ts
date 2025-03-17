@@ -1,4 +1,5 @@
-import { test, expect, Locator } from "@playwright/test"
+import { test, expect } from "@playwright/test"
+import type { Locator } from "@playwright/test"
 
 test.beforeEach(async ({ page }) => {
 	await page.goto("/")

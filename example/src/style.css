@@ -32,7 +32,7 @@ header h1 {
 	margin: 0 0.3em 0 1em;
 	padding: 0 1em 0 0.3em;
 	background-color: yellow;
-	font-family: "Reenie Beanie";
+	font-family: "Reenie Beanie", "Times New Roman", Times, serif;
 }
 
 #links {

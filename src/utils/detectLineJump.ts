@@ -18,7 +18,7 @@ export function detectLineJump(self: PocketEditor, ev: KeyboardEvent): LineJumpR
 	const range = window?.getSelection()?.getRangeAt(0)
 	const txtLen = range?.startContainer?.nodeValue?.length ?? 0
 
-	if (!range || !line) {
+	if (!(range && line)) {
 		return
 	}
 
@@ -41,7 +41,7 @@ export function detectLineJump(self: PocketEditor, ev: KeyboardEvent): LineJumpR
 	let bottom = false
 	const rr = range?.getBoundingClientRect()
 	const lr = line?.getBoundingClientRect()
-	const noRanges = !lr || !rr || rr.y === 0
+	const noRanges = !(lr && rr) || rr.y === 0
 
 	// just accept when undefined (it seems to be undefined just after a jump)
 	if (noRanges) {
