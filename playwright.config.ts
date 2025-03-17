@@ -10,10 +10,10 @@ export default defineConfig({
 		baseURL: "http://127.0.0.1:4173",
 	},
 	webServer: {
-		command: "cd example && npm i && npm run preview",
-		url: "http://127.0.0.1:4173",
+		command: "pnpm --filter example preview",
 		reuseExistingServer: !isCI,
-		timeout: 20000,
+		port: 4173,
+		timeout: 10000,
 	},
 	projects: [
 		{

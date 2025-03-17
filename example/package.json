@@ -4,7 +4,7 @@
 	"scripts": {
 		"dev": "vite",
 		"build": "vite build --sourcemap",
-		"preview": "vite build  --sourcemap && vite preview"
+		"preview": "vite preview"
 	},
 	"dependencies": {
 		"@fontsource/reenie-beanie": "^5.1.0"
