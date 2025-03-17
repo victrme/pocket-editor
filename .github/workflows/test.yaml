@@ -1,24 +1,31 @@
 name: Tests
-
 on:
     push:
-        branches:
-            - main
-
+        branches: [main]
+    paths-ignore:
+        - "README.md"
+        - "browser/**"
+        - "example/**"
 jobs:
-    test:
+    lint:
         runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: biomejs/setup-biome@v2
+              with:
+                  version: latest
+            - run: biome ci
 
+    test:
+        needs: lint
+        runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
             - uses: pnpm/action-setup@v2
               with:
                   version: latest
-
             - uses: actions/setup-node@v4
               with:
                   node-version: 20
                   cache: "pnpm"
-
-            - run: pnpm install -r
-            - run: pnpm test
+            - run: pnpm install -r && pnpm test
