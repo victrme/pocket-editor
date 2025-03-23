@@ -42,7 +42,7 @@ export function initUndo(self: PocketEditor): void {
 		subtree: true,
 	})
 
-	self.container.addEventListener("keydown", (e) => {
+	self.container.addEventListener("keydown", e => {
 		if ((e.ctrlKey || e.metaKey) && e.key === "z") {
 			timeout = window.setTimeout(() => {
 				applyUndo(self)

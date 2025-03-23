@@ -3,7 +3,7 @@ export function lastTextNode(line: Node): Node {
 
 	while (lastNode?.childNodes.length > 0) {
 		const childNodes = Object.values(lastNode.childNodes).reverse()
-		const textNodes = childNodes.filter((child) => child.nodeName === "#text")
+		const textNodes = childNodes.filter(child => child.nodeName === "#text")
 
 		if (textNodes.length > 0) {
 			return textNodes[0]

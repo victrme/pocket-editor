@@ -80,12 +80,12 @@ class PocketEditor {
 			this.wrapper.appendChild(this.container)
 		}
 
-		this.container.addEventListener("beforeinput", (ev) => paragraphControl(this, ev))
-		this.container.addEventListener("input", (ev) => paragraphControl(this, ev))
-		this.container.addEventListener("keydown", (ev) => keybindings(this, ev))
-		this.container.addEventListener("paste", (ev) => pasteEvent(this, ev))
-		this.container.addEventListener("copy", (ev) => copyEvent(this, ev))
-		this.container.addEventListener("cut", (ev) => cutEvent(this, ev))
+		this.container.addEventListener("beforeinput", ev => paragraphControl(this, ev))
+		this.container.addEventListener("input", ev => paragraphControl(this, ev))
+		this.container.addEventListener("keydown", ev => keybindings(this, ev))
+		this.container.addEventListener("paste", ev => pasteEvent(this, ev))
+		this.container.addEventListener("copy", ev => copyEvent(this, ev))
+		this.container.addEventListener("cut", ev => cutEvent(this, ev))
 
 		lineSelection(this)
 		caretControl(this)
@@ -191,7 +191,7 @@ class PocketEditor {
 	}
 
 	public getSelectedLines(): HTMLElement[] {
-		return this.lines.filter((line) => line.dataset.selected !== undefined) ?? []
+		return this.lines.filter(line => line.dataset.selected !== undefined) ?? []
 	}
 
 	public getPrevLine(line: HTMLElement): HTMLElement | null {

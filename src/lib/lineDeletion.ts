@@ -86,7 +86,7 @@ export function lineDeletion(self: PocketEditor) {
 	// Special remove event because "input" event doesn't work on empty contenteditables
 
 	if (userAgent.includes("safari") && !(userAgent.includes("chrome") && userAgent.includes("chromium"))) {
-		self.container.addEventListener("keydown", (e) => {
+		self.container.addEventListener("keydown", e => {
 			try {
 				const range = sel?.getRangeAt(0)
 				const isBackspacing = (e as KeyboardEvent).key === "Backspace"
@@ -109,7 +109,7 @@ export function lineDeletion(self: PocketEditor) {
 	if (isTouchDevice) {
 		let triggerDeleteLine = false
 
-		self.container.addEventListener("beforeinput", (ev) => {
+		self.container.addEventListener("beforeinput", ev => {
 			const editable = ev.target as HTMLElement
 			const deleteContent = ev.inputType === "deleteContentBackward"
 			const whitespaceOnly = editable.textContent === self.ZERO_WIDTH_WHITESPACE
@@ -119,7 +119,7 @@ export function lineDeletion(self: PocketEditor) {
 			}
 		})
 
-		self.container.addEventListener("keyup", (ev) => {
+		self.container.addEventListener("keyup", ev => {
 			const editable = ev.target as HTMLElement
 
 			if (triggerDeleteLine) {

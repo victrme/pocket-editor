@@ -38,7 +38,7 @@ test.describe("Press Enter", () => {
 		await editable.focus()
 		await page.keyboard.down("Shift")
 
-		for (let i = 0; i < editabletext.length; i++) {
+		for (const _ of editabletext) {
 			await page.keyboard.press("ArrowRight")
 		}
 
@@ -64,7 +64,7 @@ test.describe("Press Enter", () => {
 		await editable.focus()
 		await page.keyboard.down("Shift")
 
-		for (let i = 0; i < editabletext.length; i++) {
+		for (const _ of editabletext) {
 			await page.keyboard.press("ArrowRight")
 		}
 
@@ -98,7 +98,7 @@ test.describe("Type Markdown", () => {
 		await page.keyboard.press("Backspace")
 	})
 
-	test("Editable is empty", async ({ page }) => {
+	test("Editable is empty", async () => {
 		expect(await editable.textContent()).toBe("")
 	})
 

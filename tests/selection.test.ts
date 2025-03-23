@@ -20,7 +20,7 @@ test.describe("Selection", () => {
 	test("All text in single line", async ({ page }) => {
 		await page.keyboard.down("Shift")
 
-		for (let i = 0; i < text.length; i++) {
+		for (const _ of text) {
 			await page.keyboard.press("ArrowRight")
 		}
 
@@ -37,7 +37,7 @@ test.describe("Selection", () => {
 	})
 
 	test("With shift + right", async ({ page }) => {
-		for (let i = 0; i < text.length; i++) {
+		for (const _ of text) {
 			await page.keyboard.press("ArrowRight")
 		}
 

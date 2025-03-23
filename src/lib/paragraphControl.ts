@@ -61,7 +61,6 @@ export function paragraphControl(self: PocketEditor, e: Event): void {
 		} else {
 			container?.appendChild(newline)
 		}
-
 		;(newline as HTMLElement).querySelector<HTMLElement>("[contenteditable]")?.focus()
 		editable.textContent = cuttext
 

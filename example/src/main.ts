@@ -1,6 +1,6 @@
 import "@fontsource/reenie-beanie"
 
-import "../../src/index.ts"
+import PocketEditor from "../../src/index.ts"
 import "../../src/style.css"
 import "./style.css"
 
@@ -27,7 +27,7 @@ const editor = new PocketEditor("#wrapper", {
 	id: "pocket-editor",
 })
 
-editor.oninput((content) => {
+editor.oninput(content => {
 	sessionStorage.pcktdtr = content
 })
 
