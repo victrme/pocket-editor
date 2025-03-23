@@ -10,16 +10,10 @@
 	"repository": {
 		"url": "git+ssh://git@github.com/victrme/pocket-editor.git"
 	},
-	"keywords": [
-		"wysiwyg",
-		"contenteditable",
-		"text editor",
-		"rich text"
-	],
+	"keywords": ["wysiwyg", "contenteditable", "text editor", "rich text"],
 	"scripts": {
 		"build": " node ./build.config.js && tsc",
 		"test": "npx playwright test",
-		"test:ui": "npx playwright test --ui",
 		"dev": "pnpm --filter example dev",
 		"preview": "pnpm --filter example preview"
 	},
@@ -28,11 +22,7 @@
 		"@playwright/test": "^1.51.0",
 		"esbuild": "^0.25.1"
 	},
-	"files": [
-		"./dist/**/*.js",
-		"./dist/index.d.ts",
-		"./dist/style.css"
-	],
+	"files": ["./dist/**/*.js", "./dist/index.d.ts", "./dist/style.css"],
 	"exports": {
 		".": {
 			"import": {
@@ -42,19 +32,7 @@
 		},
 		"./style.css": "./dist/style.css"
 	},
-	"prettier": {
-		"useTabs": true,
-		"tabWidth": 4,
-		"printWidth": 112,
-		"semi": false
-	},
-	"engines": {
-		"pnpm": ">=7"
-	},
 	"pnpm": {
-		"onlyBuiltDependencies": [
-			"@biomejs/biome",
-			"esbuild"
-		]
+		"onlyBuiltDependencies": ["@biomejs/biome", "esbuild"]
 	}
 }
