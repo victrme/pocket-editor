@@ -244,9 +244,10 @@ export function lineSelection(self: PocketEditor): void {
 
 	function mouseClickEvent(event: Event): void {
 		const path = event.composedPath() as Element[]
+		const hasSelection = self.getSelectedLines().length > 0
 		const clicksOutsideContainer = !path.includes(self.container)
 
-		if (clicksOutsideContainer) {
+		if (clicksOutsideContainer && hasSelection) {
 			lines = self.lines
 			resetLineSelection()
 			applyLineSelection(lineInterval)
