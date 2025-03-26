@@ -4,8 +4,9 @@ const isCI = process.env.CI
 
 export default defineConfig({
 	testDir: "tests",
-	preserveOutput: "never",
 	fullyParallel: !isCI,
+	reporter: "list",
+	outputDir:"./tests/results",
 	webServer: {
 		command: "pnpm --filter example preview",
 		reuseExistingServer: !isCI,
