@@ -9,7 +9,11 @@ import { keybindings } from "./lib/keybindings.ts";
 import { initUndo } from "./lib/undo.ts";
 import { setCaret } from "./utils/setCaret.ts";
 
-class PocketEditor {
+/**
+ * This creates an editor.
+ * You might also need to add the basic styling with "style.css"
+ */
+export class PocketEditor {
 	container: HTMLElement;
 	lines: HTMLElement[];
 	wrapper: Element | null;
@@ -27,9 +31,6 @@ class PocketEditor {
 	};
 
 	/**
-	 * This creates an editor.
-	 * You might also need to add the basic styling with "style.css"
-	 *
 	 * @param {string | HTMLElement} parent The wrapper in which to put the editor. Either an element or a CSS selector
 	 * @param {Object} [options] Pocket editor options
 	 * @param {string} [options.text] Default text to add when initializing pocket editor
@@ -306,5 +307,4 @@ type Options = {
 
 // Exports
 
-export default PocketEditor; //
 (globalThis as Record<string, unknown>).PocketEditor = PocketEditor;
