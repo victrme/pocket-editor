@@ -1,8 +1,8 @@
-import { toHTML, toMarkdown, checkModifs } from "./contentControl"
-import { addUndoHistory } from "./undo"
-import { setCaret } from "../utils/setCaret"
+import { toHTML, toMarkdown, checkModifs } from "./contentControl.ts"
+import { addUndoHistory } from "./undo.ts"
+import { setCaret } from "../utils/setCaret.ts"
 
-import type PocketEditor from "../index"
+import type PocketEditor from "../index.ts"
 
 export function copyEvent(self: PocketEditor, ev: ClipboardEvent): void {
 	const selected = self.getSelectedLines()
@@ -28,7 +28,7 @@ export function pasteEvent(self: PocketEditor, ev: ClipboardEvent): void {
 	ev.preventDefault()
 
 	// transform paste content to plaintext
-	const selection = window.getSelection()
+	const selection = globalThis.getSelection()
 	const range = selection?.getRangeAt(0)
 	const text = ev.clipboardData?.getData("text") || ""
 

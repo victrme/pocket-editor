@@ -1,8 +1,8 @@
-import { addUndoHistory } from "./undo"
-import { removeModifier } from "../utils/removeModifier"
-import { lastTextNode } from "../utils/lastTextNode"
-import { setCaret } from "../utils/setCaret"
-import type PocketEditor from "../index"
+import { addUndoHistory } from "./undo.ts"
+import { removeModifier } from "../utils/removeModifier.ts"
+import { lastTextNode } from "../utils/lastTextNode.ts"
+import { setCaret } from "../utils/setCaret.ts"
+import type PocketEditor from "../index.ts"
 
 function removeLineNoText(editable: Element, prevline: Element) {
 	setCaret(prevline)
@@ -17,7 +17,7 @@ function removeLineWithText(editable: Element, prevLine: Element) {
 	const targetText = editable?.textContent || ""
 	node[isTextNode ? "nodeValue" : "textContent"] += targetText
 
-	const selection = window.getSelection()
+	const selection = globalThis.getSelection()
 	const range = document.createRange()
 	range.setStart(node, isTextNode ? charAmount : 0)
 	range.setEnd(node, isTextNode ? charAmount : 0)
@@ -31,7 +31,7 @@ function removeLineWithText(editable: Element, prevLine: Element) {
 export function lineDeletion(self: PocketEditor) {
 	const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0
 	const userAgent = navigator.userAgent.toLowerCase()
-	const sel = window.getSelection()
+	const sel = globalThis.getSelection()
 
 	function applyLineRemove(ev: Event): void {
 		const editable = ev.target as HTMLElement

@@ -1,5 +1,5 @@
-import { setCaret } from "../utils/setCaret"
-import type PocketEditor from "../index"
+import { setCaret } from "../utils/setCaret.ts"
+import type PocketEditor from "../index.ts"
 
 export function lineTransform(
 	self: PocketEditor,

@@ -1,7 +1,7 @@
-import { addUndoHistory } from "./undo"
-import { detectLineJump } from "../utils/detectLineJump"
-import { setCaret } from "../utils/setCaret"
-import type PocketEditor from "../index"
+import { addUndoHistory } from "./undo.ts"
+import { detectLineJump } from "../utils/detectLineJump.ts"
+import { setCaret } from "../utils/setCaret.ts"
+import type PocketEditor from "../index.ts"
 
 export function lineSelection(self: PocketEditor): void {
 	let lines = self.lines
@@ -14,7 +14,7 @@ export function lineSelection(self: PocketEditor): void {
 
 	function caretSelectionDebounce(callback: () => unknown): void {
 		clearTimeout(caretSelTimeout)
-		caretSelTimeout = window.setTimeout(() => {
+		caretSelTimeout = globalThis.setTimeout(() => {
 			callback()
 		}, 200)
 	}
@@ -36,7 +36,7 @@ export function lineSelection(self: PocketEditor): void {
 		mockSelection.setAttribute("contenteditable", "true")
 		self.container.appendChild(mockSelection)
 
-		const sel = window.getSelection()
+		const sel = globalThis.getSelection()
 		const range = document.createRange()
 		const textlen = mockSelection.childNodes[0].nodeValue?.length || 0
 
@@ -125,7 +125,7 @@ export function lineSelection(self: PocketEditor): void {
 		}
 
 		if (ctrl && e.key === "a") {
-			window.getSelection()?.removeAllRanges()
+			globalThis.getSelection()?.removeAllRanges()
 			currentLine = firstLine = 0
 			lineInterval = [0, lines.length - 1]
 			applyLineSelection(lineInterval)
@@ -134,7 +134,7 @@ export function lineSelection(self: PocketEditor): void {
 		}
 
 		if (noSelection) {
-			window.getSelection()?.removeAllRanges()
+			globalThis.getSelection()?.removeAllRanges()
 
 			if (e.key === "Escape" || e.key === "Tab") {
 				resetLineSelection()
@@ -185,7 +185,7 @@ export function lineSelection(self: PocketEditor): void {
 			const index = lines.indexOf(line)
 			initLineSelection(index)
 			applyLineSelection(lineInterval)
-			window.getSelection()?.removeAllRanges()
+			globalThis.getSelection()?.removeAllRanges()
 		}
 	}
 
@@ -194,7 +194,7 @@ export function lineSelection(self: PocketEditor): void {
 		const selected = self.getSelectedLines()
 
 		if (selected.length > 0) {
-			window.getSelection()?.removeAllRanges()
+			globalThis.getSelection()?.removeAllRanges()
 		}
 
 		const isCheckbox = target.getAttribute("aria-label") === "todo list checkbox"
@@ -256,8 +256,8 @@ export function lineSelection(self: PocketEditor): void {
 		self.container.removeEventListener("mousemove", mouseMoveEvent)
 	}
 
-	window.addEventListener("touchend", mouseClickEvent)
-	window.addEventListener("click", mouseClickEvent)
+	globalThis.addEventListener("touchend", mouseClickEvent)
+	globalThis.addEventListener("click", mouseClickEvent)
 	self.container.addEventListener("keydown", keyboardEvent)
 	self.container.addEventListener("mousedown", mouseDownEvent)
 }

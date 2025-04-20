@@ -1,4 +1,4 @@
-import type PocketEditor from "../index"
+import type PocketEditor from "../index.ts"
 
 type LineJumpReturn = {
 	line: HTMLElement
@@ -7,7 +7,7 @@ type LineJumpReturn = {
 
 export function detectLineJump(self: PocketEditor, ev: KeyboardEvent): LineJumpReturn | undefined {
 	const notArrowKey = !ev.key.includes("Arrow")
-	const notSelection = !window.getSelection()?.anchorNode
+	const notSelection = !globalThis.getSelection()?.anchorNode
 
 	if (notArrowKey || notSelection) {
 		return
@@ -15,7 +15,7 @@ export function detectLineJump(self: PocketEditor, ev: KeyboardEvent): LineJumpR
 
 	const editable = ev.target as HTMLElement
 	const line = self.getLineFromEditable(editable)
-	const range = window?.getSelection()?.getRangeAt(0)
+	const range = globalThis?.getSelection()?.getRangeAt(0)
 	const txtLen = range?.startContainer?.nodeValue?.length ?? 0
 
 	if (!(range && line)) {

@@ -1,6 +1,6 @@
-import { removeModifier } from "../utils/removeModifier"
-import { lineTransform } from "./lineTransform"
-import type PocketEditor from "../index"
+import { removeModifier } from "../utils/removeModifier.ts"
+import { lineTransform } from "./lineTransform.ts"
+import type PocketEditor from "../index.ts"
 
 export function keybindings(self: PocketEditor, ev: KeyboardEvent): void {
 	const editable = ev.target as HTMLElement

@@ -1,7 +1,7 @@
-import { addUndoHistory } from "./undo"
-import { removeModifier } from "../utils/removeModifier"
-import { lineTransform } from "./lineTransform"
-import type PocketEditor from "../index"
+import { addUndoHistory } from "./undo.ts"
+import { removeModifier } from "../utils/removeModifier.ts"
+import { lineTransform } from "./lineTransform.ts"
+import type PocketEditor from "../index.ts"
 
 export function paragraphControl(self: PocketEditor, e: Event): void {
 	const container = self.container
@@ -11,7 +11,7 @@ export function paragraphControl(self: PocketEditor, e: Event): void {
 	try {
 		const isContenteditable = editable?.hasAttribute("contenteditable")
 		const isInput = editable?.tagName === "INPUT"
-		range = window.getSelection()?.getRangeAt(0)
+		range = globalThis.getSelection()?.getRangeAt(0)
 
 		if (!(range && isContenteditable) || isInput) {
 			throw new Error("?")

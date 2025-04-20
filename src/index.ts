@@ -1,21 +1,21 @@
-import { cutEvent, copyEvent, pasteEvent } from "./lib/clipboardControl"
-import { toHTML, toMarkdown } from "./lib/contentControl"
-import { paragraphControl } from "./lib/paragraphControl"
-import { lineTransform } from "./lib/lineTransform"
-import { lineSelection } from "./lib/lineSelection"
-import { lineDeletion } from "./lib/lineDeletion"
-import { caretControl } from "./lib/caretControl"
-import { keybindings } from "./lib/keybindings"
-import { initUndo } from "./lib/undo"
-import { setCaret } from "./utils/setCaret"
+import { copyEvent, cutEvent, pasteEvent } from "./lib/clipboardControl.ts";
+import { toHTML, toMarkdown } from "./lib/contentControl.ts";
+import { paragraphControl } from "./lib/paragraphControl.ts";
+import { lineTransform } from "./lib/lineTransform.ts";
+import { lineSelection } from "./lib/lineSelection.ts";
+import { lineDeletion } from "./lib/lineDeletion.ts";
+import { caretControl } from "./lib/caretControl.ts";
+import { keybindings } from "./lib/keybindings.ts";
+import { initUndo } from "./lib/undo.ts";
+import { setCaret } from "./utils/setCaret.ts";
 
 class PocketEditor {
-	container: HTMLElement
-	lines: HTMLElement[]
-	wrapper: Element | null
-	caret_x: number | undefined
+	container: HTMLElement;
+	lines: HTMLElement[];
+	wrapper: Element | null;
+	caret_x: number | undefined;
 
-	ZERO_WIDTH_WHITESPACE = "​"
+	ZERO_WIDTH_WHITESPACE = "​";
 
 	mods = {
 		h1: "#",
@@ -24,7 +24,7 @@ class PocketEditor {
 		list: "-",
 		todo: "[ ]",
 		"todo-checked": "[x]",
-	}
+	};
 
 	/**
 	 * This creates an editor.
@@ -43,63 +43,78 @@ class PocketEditor {
 	 * const editor = new pocketEditor("some-selector", { text: "Hello world" })
 	 */
 	constructor(parent: string | HTMLElement, options?: Options) {
-		const div = document.createElement("div")
-		const { text, defer, id } = options ?? {}
+		const div = document.createElement("div");
+		const { text, defer, id } = options ?? {};
 
-		this.wrapper = typeof parent === "string" ? document.querySelector(parent) : parent
-		this.container = div
-		this.lines = []
+		this.wrapper = typeof parent === "string"
+			? document.querySelector(parent)
+			: parent;
+		this.container = div;
+		this.lines = [];
 
 		if (this.wrapper === null) {
-			throw new Error(`Pocket editor: selector "${parent}" was not found`)
+			throw new Error(
+				`Pocket editor: selector "${parent}" was not found`,
+			);
 		}
 
 		if (id) {
-			div.id = id
+			div.id = id;
 		}
 
-		div.dataset.pocketEditor = ""
+		div.dataset.pocketEditor = "";
 
 		if (typeof defer === "number") {
-			setTimeout(() => this.init(text), defer)
+			setTimeout(() => this.init(text), defer);
 		} else if (defer === true) {
-			setTimeout(() => this.init(text))
+			setTimeout(() => this.init(text));
 		} else {
-			this.init(text)
+			this.init(text);
 		}
 	}
 
 	private init(text?: string): void {
 		if (text) {
-			this.container.appendChild(toHTML(this, text))
+			this.container.appendChild(toHTML(this, text));
 		} else {
-			this.container.appendChild(this.createLine({ text: "" }))
+			this.container.appendChild(this.createLine({ text: "" }));
 		}
 
 		if (this.wrapper) {
-			this.wrapper.appendChild(this.container)
+			this.wrapper.appendChild(this.container);
 		}
 
-		this.container.addEventListener("beforeinput", ev => paragraphControl(this, ev))
-		this.container.addEventListener("input", ev => paragraphControl(this, ev))
-		this.container.addEventListener("keydown", ev => keybindings(this, ev))
-		this.container.addEventListener("paste", ev => pasteEvent(this, ev))
-		this.container.addEventListener("copy", ev => copyEvent(this, ev))
-		this.container.addEventListener("cut", ev => cutEvent(this, ev))
+		this.container.addEventListener(
+			"beforeinput",
+			(ev) => paragraphControl(this, ev),
+		);
+		this.container.addEventListener(
+			"input",
+			(ev) => paragraphControl(this, ev),
+		);
+		this.container.addEventListener(
+			"keydown",
+			(ev) => keybindings(this, ev),
+		);
+		this.container.addEventListener("paste", (ev) => pasteEvent(this, ev));
+		this.container.addEventListener("copy", (ev) => copyEvent(this, ev));
+		this.container.addEventListener("cut", (ev) => cutEvent(this, ev));
 
-		lineSelection(this)
-		caretControl(this)
-		lineDeletion(this)
-		initUndo(this)
+		lineSelection(this);
+		caretControl(this);
+		lineDeletion(this);
+		initUndo(this);
 
 		const lineObserverCallback = () => {
-			this.lines = Object.values(this.container.children) as HTMLElement[]
-		}
+			this.lines = Object.values(
+				this.container.children,
+			) as HTMLElement[];
+		};
 
-		const observer = new MutationObserver(lineObserverCallback)
-		observer.observe(this.container, { childList: true })
+		const observer = new MutationObserver(lineObserverCallback);
+		observer.observe(this.container, { childList: true });
 
-		this.lines = Object.values(this.container.children) as HTMLElement[]
+		this.lines = Object.values(this.container.children) as HTMLElement[];
 	}
 
 	/**
@@ -107,7 +122,7 @@ class PocketEditor {
 	 * @returns A valid markdown string
 	 */
 	get value(): string {
-		return toMarkdown(this.lines)
+		return toMarkdown(this.lines);
 	}
 
 	/**
@@ -128,10 +143,10 @@ class PocketEditor {
 	 */
 	set value(text: string) {
 		for (const node of Object.values(this.container.children)) {
-			node.remove()
+			node.remove();
 		}
 
-		this.container.appendChild(toHTML(this, text))
+		this.container.appendChild(toHTML(this, text));
 	}
 
 	/**
@@ -154,28 +169,32 @@ class PocketEditor {
 	 * })
  	 */
 	public oninput(listener: (content: string) => void): () => void {
-		const self = this
-		this.container.addEventListener("cut", cb)
-		this.container.addEventListener("paste", cb)
-		this.container.addEventListener("input", cb)
-		this.container.addEventListener("beforeinput", cb)
+		const self = this;
+		this.container.addEventListener("cut", cb);
+		this.container.addEventListener("paste", cb);
+		this.container.addEventListener("input", cb);
+		this.container.addEventListener("beforeinput", cb);
 
 		return () => {
-			this.container.removeEventListener("cut", cb)
-			this.container.removeEventListener("paste", cb)
-			this.container.removeEventListener("input", cb)
-			this.container.removeEventListener("beforeinput", cb)
-		}
+			this.container.removeEventListener("cut", cb);
+			this.container.removeEventListener("paste", cb);
+			this.container.removeEventListener("input", cb);
+			this.container.removeEventListener("beforeinput", cb);
+		};
 
 		function cb(e: Event) {
 			if (e.type === "beforeinput") {
 				// Apply beforeinput only on deleteContentBackward & insertParagraph
-				if (!(e as InputEvent).inputType.match(/(deleteContentBackward|insertParagraph)/g)) {
-					return
+				if (
+					!(e as InputEvent).inputType.match(
+						/(deleteContentBackward|insertParagraph)/g,
+					)
+				) {
+					return;
 				}
 			}
 
-			listener(self.value)
+			listener(self.value);
 		}
 	}
 
@@ -186,52 +205,57 @@ class PocketEditor {
 	 * @param listener Get the content as a markdown string
 	 * @returns An event cleanup function
 	 */
-	public addEventListener(_: "input", listener: (content: string) => void): () => void {
-		return this.oninput(listener)
+	public addEventListener(
+		_: "input",
+		listener: (content: string) => void,
+	): () => void {
+		return this.oninput(listener);
 	}
 
 	public getSelectedLines(): HTMLElement[] {
-		return this.lines.filter(line => line.dataset.selected !== undefined) ?? []
+		return this.lines.filter((line) =>
+			line.dataset.selected !== undefined
+		) ?? [];
 	}
 
 	public getPrevLine(line: HTMLElement): HTMLElement | null {
-		return this.lines[this.lines.indexOf(line) - 1]
+		return this.lines[this.lines.indexOf(line) - 1];
 	}
 
 	public getNextLine(line: HTMLElement): HTMLElement | null {
-		return this.lines[this.lines.indexOf(line) + 1]
+		return this.lines[this.lines.indexOf(line) + 1];
 	}
 
 	public getLineFromEditable(elem: HTMLElement): HTMLElement | null {
 		while (elem?.parentElement) {
-			const parent = elem.parentElement
-			const isDiv = parent.tagName === "DIV"
+			const parent = elem.parentElement;
+			const isDiv = parent.tagName === "DIV";
 
 			if (isDiv) {
-				return parent
+				return parent;
 			}
 
-			elem = parent
+			elem = parent;
 		}
 
-		return null
+		return null;
 	}
 
 	public removeLines(lines: HTMLElement[]): void {
-		const emptyLine = this.createLine()
-		const prevline = this.getPrevLine(lines[0])
+		const emptyLine = this.createLine();
+		const prevline = this.getPrevLine(lines[0]);
 
 		for (const line of lines) {
-			line.remove()
+			line.remove();
 		}
 
 		if (prevline) {
-			this.insertAfter(emptyLine, prevline)
+			this.insertAfter(emptyLine, prevline);
 		} else {
-			this.container.prepend(emptyLine)
+			this.container.prepend(emptyLine);
 		}
 
-		setCaret(emptyLine)
+		setCaret(emptyLine);
 
 		// Mock event to trigger oninput
 		this.container.dispatchEvent(
@@ -240,46 +264,47 @@ class PocketEditor {
 				bubbles: true,
 				data: "",
 			}),
-		)
+		);
 	}
 
 	public createLine(props?: { text?: string; modif?: string }): Node {
-		const notesline = document.createElement("div")
-		const editable = document.createElement("p")
-		const mod = props?.modif ?? ""
-		const mods = this.mods
+		const notesline = document.createElement("div");
+		const editable = document.createElement("p");
+		const mod = props?.modif ?? "";
+		const mods = this.mods;
 
-		editable.setAttribute("contenteditable", "true")
-		notesline.appendChild(editable)
+		editable.setAttribute("contenteditable", "true");
+		notesline.appendChild(editable);
 
 		// Add text if any
 		if (typeof props?.text === "string") {
-			editable.textContent = props.text
+			editable.textContent = props.text;
 		}
 
 		if (mod in mods) {
-			lineTransform(this, editable, mod as keyof typeof mods, false)
+			lineTransform(this, editable, mod as keyof typeof mods, false);
 		}
 
-		return notesline
+		return notesline;
 	}
 
 	private insertAfter(newNode: Node, existingNode: Node): void {
-		existingNode?.parentNode?.insertBefore(newNode, existingNode.nextSibling)
+		existingNode?.parentNode?.insertBefore(
+			newNode,
+			existingNode.nextSibling,
+		);
 	}
 }
 
 // Types
 
 type Options = {
-	id?: string
-	text?: string
-	defer?: true | number
-}
+	id?: string;
+	text?: string;
+	defer?: true | number;
+};
 
 // Exports
 
-export default PocketEditor
-
-//
-;(globalThis as Record<string, unknown>).PocketEditor = PocketEditor
+export default PocketEditor; //
+(globalThis as Record<string, unknown>).PocketEditor = PocketEditor;

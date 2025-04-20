@@ -2,10 +2,16 @@
 	"compilerOptions": {
 		"outDir": "./dist",
 		"target": "ES2022",
-		"lib": ["es2022", "DOM"],
+		"lib": [
+			"es2022",
+			"DOM"
+		],
 		"strict": true,
 		"declaration": true,
-		"emitDeclarationOnly": true
+		"emitDeclarationOnly": true,
+		"allowImportingTsExtensions": true
 	},
-	"include": ["src"]
+	"include": [
+		"src"
+	]
 }

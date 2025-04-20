@@ -1,6 +1,6 @@
-import { detectLineJump } from "../utils/detectLineJump"
-import { lastTextNode } from "../utils/lastTextNode"
-import type PocketEditor from "../index"
+import { detectLineJump } from "../utils/detectLineJump.ts"
+import { lastTextNode } from "../utils/lastTextNode.ts"
+import type PocketEditor from "../index.ts"
 
 export function caretControl(self: PocketEditor) {
 	let averageCharWidth = 0
@@ -18,7 +18,7 @@ export function caretControl(self: PocketEditor) {
 	}
 
 	function rangePosInCharLen(line: HTMLElement, str: string): number | null {
-		const sel = window.getSelection()
+		const sel = globalThis.getSelection()
 
 		let charCount = -1
 		const x = getHorizontalPosition(sel, line)
@@ -126,7 +126,7 @@ export function caretControl(self: PocketEditor) {
 		const goesRight = ev.key === "ArrowRight"
 		const goesLeft = ev.key === "ArrowLeft"
 		const { line, dir } = detectLineJump(self, ev) ?? {}
-		const sel = window.getSelection()
+		const sel = globalThis.getSelection()
 		const range = document.createRange()
 		let node: Node = document.createTextNode("")
 		let offset = 0

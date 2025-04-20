@@ -1,8 +1,8 @@
-import { lastTextNode } from "./lastTextNode"
+import { lastTextNode } from "./lastTextNode.ts"
 
 export function setCaret(elem: Element | Node, atStart?: boolean): void {
 	const node = lastTextNode(elem)
-	const sel = window.getSelection()
+	const sel = globalThis.getSelection()
 	const range = document.createRange()
 
 	const textlen = node.nodeValue?.length || 0

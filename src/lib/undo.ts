@@ -1,6 +1,6 @@
-import { toHTML, toMarkdown } from "./contentControl"
-import { setCaret } from "../utils/setCaret"
-import type PocketEditor from "../index"
+import { toHTML, toMarkdown } from "./contentControl.ts"
+import { setCaret } from "../utils/setCaret.ts"
+import type PocketEditor from "../index.ts"
 
 type History = {
 	index: number
@@ -44,7 +44,7 @@ export function initUndo(self: PocketEditor): void {
 
 	self.container.addEventListener("keydown", e => {
 		if ((e.ctrlKey || e.metaKey) && e.key === "z") {
-			timeout = window.setTimeout(() => {
+			timeout = globalThis.setTimeout(() => {
 				applyUndo(self)
 			}, 1)
 		}
