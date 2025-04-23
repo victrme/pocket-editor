@@ -5,11 +5,11 @@
 		"lineWidth": 120,
 		"indentWidth": 4,
 		"indentStyle": "tab",
-		"include": ["src", "example", "tests"]
+		"include": ["src", "example", "tests", "build.config.js"]
 	},
 	"linter": {
 		"enabled": true,
-		"include": ["src", "example", "tests"],
+		"include": ["src", "example", "tests", "build.config.js"],
 		"rules": {
 			"all": true,
 			"style": { "noParameterAssign": "info" },

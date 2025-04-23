@@ -9,7 +9,13 @@ import { keybindings } from "./lib/keybindings"
 import { initUndo } from "./lib/undo"
 import { setCaret } from "./utils/setCaret"
 
-class PocketEditor {
+interface Options {
+	id?: string
+	text?: string
+	defer?: true | number
+}
+
+export class PocketEditor {
 	container: HTMLElement
 	lines: HTMLElement[]
 	wrapper: Element | null
@@ -269,17 +275,5 @@ class PocketEditor {
 	}
 }
 
-// Types
-
-type Options = {
-	id?: string
-	text?: string
-	defer?: true | number
-}
-
-// Exports
-
 export default PocketEditor
-
-//
 ;(globalThis as Record<string, unknown>).PocketEditor = PocketEditor

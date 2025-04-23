@@ -17,7 +17,7 @@
 		"rich text"
 	],
 	"scripts": {
-		"build": " node ./build.config.js && tsc",
+		"build": "node ./build.config.js && tsc",
 		"test": "npx playwright test",
 		"dev": "pnpm --filter example dev",
 		"preview": "pnpm --filter example preview"
@@ -28,7 +28,7 @@
 		"esbuild": "^0.25.1"
 	},
 	"files": [
-		"./dist/**/*.js",
+		"./dist/index.js",
 		"./dist/index.d.ts",
 		"./dist/style.css"
 	],
