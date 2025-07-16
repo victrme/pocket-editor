@@ -1,12 +1,12 @@
-import { defineConfig, devices } from "@playwright/test"
+import { defineConfig, devices } from "@playwright/test";
 
-const isCI = process.env.CI
+const isCI = process.env.CI;
 
 export default defineConfig({
 	testDir: "tests",
 	fullyParallel: !isCI,
 	reporter: "list",
-	outputDir:"./tests/results",
+	outputDir: "./tests/results",
 	webServer: {
 		command: "pnpm --filter example preview",
 		reuseExistingServer: !isCI,
@@ -35,4 +35,4 @@ export default defineConfig({
 			use: { ...devices["iPhone 12"] },
 		},
 	],
-})
+});

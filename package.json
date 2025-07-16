@@ -23,9 +23,9 @@
 		"preview": "pnpm --filter example preview"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^1.9.4",
-		"@playwright/test": "^1.51.1",
-		"esbuild": "^0.25.1"
+		"@biomejs/biome": "^2.1.1",
+		"@playwright/test": "^1.54.1",
+		"esbuild": "^0.25.6"
 	},
 	"files": [
 		"./dist/index.js",
