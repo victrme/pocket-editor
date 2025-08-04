@@ -1,0 +1,22 @@
+{
+	"unstable": ["sloppy-imports"],
+	"lint": {
+		"include": ["src"],
+		"rules": {
+			"tags": ["recommended"],
+			"exclude": ["no-sloppy-imports", "no-window-prefix", "no-window"]
+		}
+	},
+	"fmt": {
+		"indentWidth": 4,
+		"lineWidth": 120,
+		"semiColons": false,
+		"useTabs": true
+	},
+	"compilerOptions": {
+		"strict": true,
+		"lib": ["deno.ns", "dom", "dom.iterable"]
+	},
+	"nodeModulesDir": "auto",
+	"$schema": "https://deno.land/x/deno/cli/schemas/config-file.v1.json"
+}

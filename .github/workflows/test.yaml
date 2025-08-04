@@ -8,24 +8,17 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
-            - uses: biomejs/setup-biome@v2
-              with:
-                  version: latest
-            - run: biome ci
+            - uses: denoland/setup-deno@v2
+            - run: deno lint
 
     test:
         needs: lint
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
-            - uses: pnpm/action-setup@v2
-              with:
-                  version: latest
             - uses: actions/setup-node@v4
               with:
                   node-version: 20
-                  cache: "pnpm"
-            - run: pnpm install --recursive
             - run: npx playwright install --with-deps
             - run: pnpm --filter example build
             - run: pnpm test
