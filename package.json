@@ -18,7 +18,7 @@
 	],
 	"scripts": {
 		"dev": "deno task --cwd=example dev",
-		"test": "npx playwright",
+		"test": "npx playwright test",
 		"build": "deno --allow-all ./build.config.ts && tsc",
 		"example:build": "deno task --cwd=example build",
 		"example:preview": "deno task --cwd=example preview"
