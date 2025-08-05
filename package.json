@@ -17,10 +17,11 @@
 		"rich text"
 	],
 	"scripts": {
+		"dev": "deno task --cwd=example dev",
+		"test": "npx playwright",
 		"build": "deno --allow-all ./build.config.ts && tsc",
-		"test": "npx playwright test",
-		"dev": "pnpm --filter example dev",
-		"preview": "pnpm --filter example preview"
+		"example:build": "deno task --cwd=example build",
+		"example:preview": "deno task --cwd=example preview"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.54.1",
