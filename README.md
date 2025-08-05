@@ -3,8 +3,8 @@
 </h3>
 
 <p align="center">
-    <a href="https://github.com/victrme/pocket-editor">Github</a> - 
-    <a href="https://www.npmjs.com/package/pocket-editor">Npm</a> - 
+    <a href="https://github.com/victrme/pocket-editor">Github</a> -
+    <a href="https://www.npmjs.com/package/pocket-editor">Npm</a> -
     <a href="https://pocketeditor.victr.me/">Example</a>
 </p>
 
@@ -27,7 +27,7 @@ npm install pocket-editor
 interface Options {
   text?: string
   id?: string
-  defer?: true | number 
+  defer?: true | number
 }
 
 class PocketEditor {
@@ -74,14 +74,31 @@ _Ctrl is Cmd key on MacOS_
 
 ### Developement
 
+- Install Deno for:
+	- linting
+	- formatter
+	- installing dependencies
+- Install Node for:
+	- Playwright
+	- npx
+
 ```bash
-# Install pnpm to use these scripts
-npm i -g pnpm
+# Install dependencies
+deno install
 
-# First install all
-pnpm i -r
+# Build example
+deno task example:build
 
-pnpm dev
-pnpm preview
-pnpm build
+# Build npm package
+deno task build
+
+# Work on it
+deno task dev
+
+# Test with playwright (node only!)
+npx playwright test
+# or
+npm run test
+
+
 ```

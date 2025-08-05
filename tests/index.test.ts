@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 
 test.beforeEach(async ({ page }) => {
 	await page.goto("/")
@@ -13,10 +13,10 @@ test("Pocket editor exists", async ({ page }) => {
 test("Add a new line", async ({ page }) => {
 	await page.locator("[data-pocket-editor] [contenteditable]").first().focus()
 
-	const oldlines = await page.$$eval("[data-pocket-editor] > div", lines => lines.length)
+	const oldlines = await page.$$eval("[data-pocket-editor] > div", (lines) => lines.length)
 	await page.keyboard.press("ArrowRight")
 	await page.keyboard.press("Enter")
-	const newlines = await page.$$eval("[data-pocket-editor] > div", lines => lines.length)
+	const newlines = await page.$$eval("[data-pocket-editor] > div", (lines) => lines.length)
 
 	expect(newlines).toBe(oldlines + 1)
 })

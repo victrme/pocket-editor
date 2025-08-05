@@ -1,4 +1,4 @@
-import { cutEvent, copyEvent, pasteEvent } from "./lib/clipboardControl"
+import { copyEvent, cutEvent, pasteEvent } from "./lib/clipboardControl"
 import { toHTML, toMarkdown } from "./lib/contentControl"
 import { paragraphControl } from "./lib/paragraphControl"
 import { lineTransform } from "./lib/lineTransform"
@@ -86,12 +86,12 @@ export class PocketEditor {
 			this.wrapper.appendChild(this.container)
 		}
 
-		this.container.addEventListener("beforeinput", ev => paragraphControl(this, ev))
-		this.container.addEventListener("input", ev => paragraphControl(this, ev))
-		this.container.addEventListener("keydown", ev => keybindings(this, ev))
-		this.container.addEventListener("paste", ev => pasteEvent(this, ev))
-		this.container.addEventListener("copy", ev => copyEvent(this, ev))
-		this.container.addEventListener("cut", ev => cutEvent(this, ev))
+		this.container.addEventListener("beforeinput", (ev) => paragraphControl(this, ev))
+		this.container.addEventListener("input", (ev) => paragraphControl(this, ev))
+		this.container.addEventListener("keydown", (ev) => keybindings(this, ev))
+		this.container.addEventListener("paste", (ev) => pasteEvent(this, ev))
+		this.container.addEventListener("copy", (ev) => copyEvent(this, ev))
+		this.container.addEventListener("cut", (ev) => cutEvent(this, ev))
 
 		lineSelection(this)
 		caretControl(this)
@@ -160,7 +160,17 @@ export class PocketEditor {
 	 * })
  	 */
 	public oninput(listener: (content: string) => void): () => void {
-		const self = this
+		const cb = (e: Event) => {
+			if (e.type === "beforeinput") {
+				// Apply beforeinput only on deleteContentBackward & insertParagraph
+				if (!(e as InputEvent).inputType.match(/(deleteContentBackward|insertParagraph)/g)) {
+					return
+				}
+			}
+
+			listener(this.value)
+		}
+
 		this.container.addEventListener("cut", cb)
 		this.container.addEventListener("paste", cb)
 		this.container.addEventListener("input", cb)
@@ -171,17 +181,6 @@ export class PocketEditor {
 			this.container.removeEventListener("paste", cb)
 			this.container.removeEventListener("input", cb)
 			this.container.removeEventListener("beforeinput", cb)
-		}
-
-		function cb(e: Event) {
-			if (e.type === "beforeinput") {
-				// Apply beforeinput only on deleteContentBackward & insertParagraph
-				if (!(e as InputEvent).inputType.match(/(deleteContentBackward|insertParagraph)/g)) {
-					return
-				}
-			}
-
-			listener(self.value)
 		}
 	}
 
@@ -197,7 +196,7 @@ export class PocketEditor {
 	}
 
 	public getSelectedLines(): HTMLElement[] {
-		return this.lines.filter(line => line.dataset.selected !== undefined) ?? []
+		return this.lines.filter((line) => line.dataset.selected !== undefined) ?? []
 	}
 
 	public getPrevLine(line: HTMLElement): HTMLElement | null {

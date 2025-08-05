@@ -1,10 +1,19 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
-		<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+		<link
+			rel="apple-touch-icon"
+			sizes="180x180"
+			href="apple-touch-icon.png"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="32x32"
+			href="favicon-32x32.png"
+		/>
 
 		<title>Pocket editor example</title>
 	</head>
@@ -12,20 +21,18 @@
 		<header>
 			<h1>pocket editor !</h1>
 			<div id="links">
-				<a href="https://github.com/victrme/pocket-editor" rel="noreferrer">
-					<img
-						src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjUwMCIgaGVpZ2h0PSIyNDMyIiB2aWV3Qm94PSIwIDAgMjU2IDI0OSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWluWU1pbiBtZWV0Ij48ZyBmaWxsPSIjNDk0OTQ5Ij48cGF0aCBkPSJNMTI3LjUwNSAwQzU3LjA5NSAwIDAgNTcuMDg1IDAgMTI3LjUwNWMwIDU2LjMzNiAzNi41MzQgMTA0LjEzIDg3LjE5NiAxMjAuOTkgNi4zNzIgMS4xOCA4LjcxMi0yLjc2NiA4LjcxMi02LjEzNCAwLTMuMDQtLjExOS0xMy4wODUtLjE3My0yMy43MzktMzUuNDczIDcuNzEzLTQyLjk1OC0xNS4wNDQtNDIuOTU4LTE1LjA0NC01LjgtMTQuNzM4LTE0LjE1Ny0xOC42NTYtMTQuMTU3LTE4LjY1Ni0xMS41NjgtNy45MTQuODcyLTcuNzUyLjg3Mi03Ljc1MiAxMi44MDQuOSAxOS41NDYgMTMuMTQgMTkuNTQ2IDEzLjE0IDExLjM3MiAxOS40OTMgMjkuODI4IDEzLjg1NyAzNy4xMDQgMTAuNiAxLjE0NC04LjI0MiA0LjQ0OS0xMy44NjYgOC4wOTUtMTcuMDUtMjguMzItMy4yMjUtNTguMDkyLTE0LjE1OC01OC4wOTItNjMuMDE0IDAtMTMuOTIgNC45ODEtMjUuMjk1IDEzLjEzOC0zNC4yMjQtMS4zMjQtMy4yMTItNS42ODgtMTYuMTggMS4yMzUtMzMuNzQzIDAgMCAxMC43MDctMy40MjcgMzUuMDczIDEzLjA3IDEwLjE3LTIuODI2IDIxLjA3OC00LjI0MiAzMS45MTQtNC4yOSAxMC44MzYuMDQ4IDIxLjc1MiAxLjQ2NCAzMS45NDIgNC4yOSAyNC4zMzctMTYuNDk3IDM1LjAyOS0xMy4wNyAzNS4wMjktMTMuMDcgNi45NCAxNy41NjMgMi41NzQgMzAuNTMxIDEuMjUgMzMuNzQzIDguMTc1IDguOTI5IDEzLjEyMiAyMC4zMDMgMTMuMTIyIDM0LjIyNCAwIDQ4Ljk3Mi0yOS44MjggNTkuNzU2LTU4LjIyIDYyLjkxMiA0LjU3MyAzLjk1NyA4LjY0OCAxMS43MTcgOC42NDggMjMuNjEyIDAgMTcuMDYtLjE0OCAzMC43OTEtLjE0OCAzNC45OTEgMCAzLjM5MyAyLjI5NSA3LjM2OSA4Ljc1OSA2LjExNyA1MC42MzQtMTYuODc5IDg3LjEyMi02NC42NTYgODcuMTIyLTEyMC45NzNDMjU1LjAwOSA1Ny4wODUgMTk3LjkyMiAwIDEyNy41MDUgMCIvPjxwYXRoIGQ9Ik00Ny43NTUgMTgxLjYzNGMtLjI4LjYzMy0xLjI3OC44MjMtMi4xODUuMzg5LS45MjUtLjQxNi0xLjQ0NS0xLjI4LTEuMTQ1LTEuOTE2LjI3NS0uNjUyIDEuMjczLS44MzQgMi4xOTYtLjM5Ni45MjcuNDE1IDEuNDU1IDEuMjg3IDEuMTM0IDEuOTIzTTU0LjAyNyAxODcuMjNjLS42MDguNTY0LTEuNzk3LjMwMi0yLjYwNC0uNTg5LS44MzQtLjg4OS0uOTktMi4wNzctLjM3My0yLjY1LjYyNy0uNTYzIDEuNzgtLjMgMi42MTYuNTkuODM0Ljg5OS45OTYgMi4wOC4zNiAyLjY1TTU4LjMzIDE5NC4zOWMtLjc4Mi41NDMtMi4wNi4wMzQtMi44NDktMS4xLS43ODEtMS4xMzMtLjc4MS0yLjQ5My4wMTctMy4wMzguNzkyLS41NDUgMi4wNS0uMDU1IDIuODUgMS4wNy43OCAxLjE1My43OCAyLjUxMy0uMDE5IDMuMDY5TTY1LjYwNiAyMDIuNjgzYy0uNjk5Ljc3LTIuMTg3LjU2NC0zLjI3Ny0uNDg4LTEuMTE0LTEuMDI4LTEuNDI1LTIuNDg3LS43MjQtMy4yNTguNzA3LS43NzIgMi4yMDQtLjU1NSAzLjMwMi40ODggMS4xMDcgMS4wMjYgMS40NDUgMi40OTYuNyAzLjI1OE03NS4wMSAyMDUuNDgzYy0uMzA3Ljk5OC0xLjc0MSAxLjQ1Mi0zLjE4NSAxLjAyOC0xLjQ0Mi0uNDM3LTIuMzg2LTEuNjA3LTIuMDk1LTIuNjE2LjMtMS4wMDUgMS43NC0xLjQ3OCAzLjE5NS0xLjAyNCAxLjQ0LjQzNSAyLjM4NiAxLjU5NiAyLjA4NiAyLjYxMk04NS43MTQgMjA2LjY3Yy4wMzYgMS4wNTItMS4xODkgMS45MjQtMi43MDUgMS45NDMtMS41MjUuMDMzLTIuNzU4LS44MTgtMi43NzQtMS44NTIgMC0xLjA2MiAxLjE5Ny0xLjkyNiAyLjcyMS0xLjk1MSAxLjUxNi0uMDMgMi43NTguODE1IDIuNzU4IDEuODZNOTYuMjI4IDIwNi4yNjdjLjE4MiAxLjAyNi0uODcyIDIuMDgtMi4zNzcgMi4zNi0xLjQ4LjI3LTIuODUtLjM2My0zLjAzOS0xLjM4LS4xODQtMS4wNTIuODktMi4xMDUgMi4zNjctMi4zNzggMS41MDgtLjI2MiAyLjg1Ny4zNTUgMy4wNDkgMS4zOTgiLz48L2c+PC9zdmc+"
-						width="20"
-						alt=""
-					/>
+				<a
+					href="https://github.com/victrme/pocket-editor"
+					rel="noreferrer"
+				>
+					<img src="./assets/github.svg" width="20" alt="" />
 					<span>Github</span>
 				</a>
-				<a href="https://www.npmjs.com/package/pocket-editor" rel="noreferrer ">
-					<img
-						src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIyNjguNSAyNjguNSAxOTYyLjkgMTk2Mi45IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNTAwIiBoZWlnaHQ9IjI1MDAiPjxwYXRoIGZpbGw9IiM0OTQ5NDkiIGQ9Ik0xMjQxLjUgMjY4LjVoLTk3M3YxOTYyLjloOTcyLjlWNzYzLjVoNDk1djE0NjcuOWg0OTVWMjY4LjV6Ii8+PC9zdmc+"
-						width="16"
-						alt=""
-					/>
+				<a
+					href="https://www.npmjs.com/package/pocket-editor"
+					rel="noreferrer"
+				>
+					<img src="./assets/npm.svg" width="16" alt="" />
 					<span>Npmjs</span>
 				</a>
 			</div>

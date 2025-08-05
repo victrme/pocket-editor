@@ -1099,7 +1099,14 @@
     	 * })
      	 */
     oninput(listener) {
-      const self = this;
+      const cb = (e) => {
+        if (e.type === "beforeinput") {
+          if (!e.inputType.match(/(deleteContentBackward|insertParagraph)/g)) {
+            return;
+          }
+        }
+        listener(this.value);
+      };
       this.container.addEventListener("cut", cb);
       this.container.addEventListener("paste", cb);
       this.container.addEventListener("input", cb);
@@ -1110,14 +1117,6 @@
         this.container.removeEventListener("input", cb);
         this.container.removeEventListener("beforeinput", cb);
       };
-      function cb(e) {
-        if (e.type === "beforeinput") {
-          if (!e.inputType.match(/(deleteContentBackward|insertParagraph)/g)) {
-            return;
-          }
-        }
-        listener(self.value);
-      }
     }
     /**
      * An addEventListener wrapper for esthetic purposes.

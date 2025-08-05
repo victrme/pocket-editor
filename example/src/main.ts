@@ -1,8 +1,6 @@
-import "@fontsource/reenie-beanie"
-
-import PocketEditor from "../../src/index.ts"
-import "../../src/style.css"
-import "./style.css"
+import PocketEditor from "../../src/index.ts";
+import "../../src/style.css";
+import "./style.css";
 
 const intro = `## This is pocket editor
 
@@ -16,22 +14,22 @@ You can transform a line by starting with these characters:
 ### Today's list
 
 [x] Check sitting posture
-[ ] Stay hydrated`
+[ ] Stay hydrated`;
 
 if (!sessionStorage.pcktdtr) {
-	sessionStorage.pcktdtr = intro
+  sessionStorage.pcktdtr = intro;
 }
 
 const editor = new PocketEditor("#wrapper", {
-	text: sessionStorage.pcktdtr,
-	id: "pocket-editor",
-})
+  text: sessionStorage.pcktdtr,
+  id: "pocket-editor",
+});
 
-editor.oninput(content => {
-	sessionStorage.pcktdtr = content
-})
+editor.oninput((content) => {
+  sessionStorage.pcktdtr = content;
+});
 
 document.getElementById("b_reset")?.addEventListener("click", () => {
-	sessionStorage.pcktdtr = intro
-	editor.value = intro
-})
+  sessionStorage.pcktdtr = intro;
+  editor.value = intro;
+});

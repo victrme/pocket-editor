@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 import type { Locator } from "@playwright/test"
 
 let element: Locator
