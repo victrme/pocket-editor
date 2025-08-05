@@ -17,8 +17,9 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4
-              with:
-                  node-version: 20
-            - run: npx playwright install --with-deps
-            - run: pnpm --filter example build
-            - run: pnpm test
+            - uses: denoland/setup-deno@v2
+            - run: |
+                  deno install
+                  deno task example:build
+                  npx playwright install --with-deps
+                  npx playwright test

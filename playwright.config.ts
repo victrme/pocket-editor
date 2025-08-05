@@ -1,6 +1,7 @@
-import { defineConfig, devices } from "@playwright/test";
+import { defineConfig, devices } from "@playwright/test"
 
-const isCI = process.env.CI;
+// @ts-expect-error -> Cannot find name 'process'
+const isCI = process.env.CI
 
 export default defineConfig({
 	testDir: "tests",
@@ -8,7 +9,7 @@ export default defineConfig({
 	reporter: "list",
 	outputDir: "./tests/results",
 	webServer: {
-		command: "pnpm --filter example preview",
+		command: "cd example && npm run preview",
 		reuseExistingServer: !isCI,
 		port: 4173,
 		timeout: 10000,
@@ -35,4 +36,4 @@ export default defineConfig({
 			use: { ...devices["iPhone 12"] },
 		},
 	],
-});
+})
