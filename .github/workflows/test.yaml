@@ -1,7 +1,7 @@
 name: Tests
 on:
     push:
-        branches: [main]
+        branches: [main, use-deno]
 
 jobs:
     lint:
