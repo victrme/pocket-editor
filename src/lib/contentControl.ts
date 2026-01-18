@@ -64,6 +64,11 @@ export function toMarkdown(lines: HTMLElement[]): string {
 	}
 
 	lines.forEach((line, i) => {
+		// Remove automatic "pe-mock-selection" from lineSelection.ts
+		if (line.textContent === "pe-mock-selection") {
+			return
+		}
+
 		// Add markdown
 		modif = addModif(line)
 		plaintext += modif + line.textContent

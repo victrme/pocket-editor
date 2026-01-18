@@ -1,4 +1,4 @@
-import { toHTML, toMarkdown, checkModifs } from "./contentControl"
+import { checkModifs, toHTML, toMarkdown } from "./contentControl"
 import { addUndoHistory } from "./undo"
 import { setCaret } from "../utils/setCaret"
 
@@ -36,7 +36,9 @@ export function pasteEvent(self: PocketEditor, ev: ClipboardEvent): void {
 	if (checkModifs(text, self.mods) !== "") {
 		const editable = ev.target as HTMLElement
 		const newHtml = toHTML(self, text)
-		const linesInNew = newHtml.childElementCount - 1 // before document fragment gets consumed
+
+		// before document fragment gets consumed
+		const linesInNew = newHtml.childElementCount - 1
 		let line = self.getLineFromEditable(editable)
 
 		// When pasting after selection, line is last selected block
@@ -45,7 +47,7 @@ export function pasteEvent(self: PocketEditor, ev: ClipboardEvent): void {
 			line = selected[selected.length - 1] as HTMLElement
 		}
 
-		if (!line?.parentElement?.dataset.pocketEditor) {
+		if (line?.parentElement?.dataset.pocketEditor === undefined) {
 			return
 		}
 

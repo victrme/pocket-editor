@@ -32,7 +32,7 @@ export function lineSelection(self: PocketEditor): void {
 		document.querySelector("#pocket-editor-mock-sel")?.remove()
 		const mockSelection = document.createElement("pre")
 		mockSelection.id = "pocket-editor-mock-sel"
-		mockSelection.textContent = "mock-selection"
+		mockSelection.textContent = "pe-mock-selection"
 		mockSelection.setAttribute("contenteditable", "true")
 		self.container.appendChild(mockSelection)
 
