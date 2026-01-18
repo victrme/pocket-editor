@@ -1,5 +1,11 @@
 {
 	"$schema": "https://deno.land/x/deno/cli/schemas/config-file.v1.json",
+	"name": "@victr/pocket-editor",
+	"version": "2.6.0",
+	"license": "MIT",
+	"exports": {
+		".": "./src/index.ts"
+	},
 	"fmt": {
 		"indentWidth": 4,
 		"lineWidth": 120,
@@ -7,17 +13,33 @@
 		"useTabs": true
 	},
 	"lint": {
-		"include": ["src"],
+		"include": [
+			"src"
+		],
 		"rules": {
-			"tags": ["recommended"],
-			"exclude": ["no-sloppy-imports", "no-window-prefix", "no-window"]
+			"tags": [
+				"recommended"
+			],
+			"exclude": [
+				"no-sloppy-imports",
+				"no-window-prefix",
+				"no-window"
+			]
 		}
 	},
 	"compilerOptions": {
 		"strict": true,
-		"lib": ["deno.ns", "dom", "dom.iterable"]
+		"lib": [
+			"deno.ns",
+			"dom",
+			"dom.iterable"
+		]
 	},
-	"unstable": ["sloppy-imports"],
-	"workspace": ["./example"],
+	"unstable": [
+		"sloppy-imports"
+	],
+	"workspace": [
+		"./example"
+	],
 	"nodeModulesDir": "auto"
 }
