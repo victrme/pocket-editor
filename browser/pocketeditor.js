@@ -51,6 +51,9 @@
       return line?.dataset.list || line?.dataset.todo;
     };
     lines.forEach((line, i) => {
+      if (line.textContent === "pe-mock-selection") {
+        return;
+      }
       modif = addModif(line);
       plaintext += modif + line.textContent;
       const isWithinList = isList(lines[i + 1]) && isList(line);
@@ -177,7 +180,7 @@
       if (selected.length > 0) {
         line = selected[selected.length - 1];
       }
-      if (!line?.parentElement?.dataset.pocketEditor) {
+      if (line?.parentElement?.dataset.pocketEditor === void 0) {
         return;
       }
       self.container.insertBefore(newHtml, self.getNextLine(line));
@@ -509,7 +512,7 @@
       document.querySelector("#pocket-editor-mock-sel")?.remove();
       const mockSelection = document.createElement("pre");
       mockSelection.id = "pocket-editor-mock-sel";
-      mockSelection.textContent = "mock-selection";
+      mockSelection.textContent = "pe-mock-selection";
       mockSelection.setAttribute("contenteditable", "true");
       self.container.appendChild(mockSelection);
       const sel = window.getSelection();
@@ -743,10 +746,15 @@
       if (prevline) {
         if (editable.textContent === "") {
           removeLineNoText(editable, prevline);
-        }
-        if (editable.textContent !== "") {
+        } else {
           removeLineWithText(editable, prevline);
         }
+        self.container.dispatchEvent(
+          new InputEvent("beforeinput", {
+            inputType: "deleteContentBackward",
+            bubbles: true
+          })
+        );
       }
     }
     self.container.addEventListener("beforeinput", applyLineRemove);
@@ -1099,11 +1107,19 @@
     	 * })
      	 */
     oninput(listener) {
-      const cb = (e) => {
-        if (e.type === "beforeinput") {
-          if (!e.inputType.match(/(deleteContentBackward|insertParagraph)/g)) {
-            return;
+      const cb = (event) => {
+        const isBeforeInput = event.type === "beforeinput";
+        if (isBeforeInput) {
+          const inputEvent = event;
+          const inputType = inputEvent.inputType;
+          const acceptedTypes = inputType === "deleteContentBackward" || inputType === "insertParagraph";
+          if (acceptedTypes) {
+            queueMicrotask(() => {
+              listener(this.value);
+              console.log(this.value);
+            });
           }
+          return;
         }
         listener(this.value);
       };
