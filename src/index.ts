@@ -160,12 +160,24 @@ export class PocketEditor {
 	 * })
  	 */
 	public oninput(listener: (content: string) => void): () => void {
-		const cb = (e: Event) => {
-			if (e.type === "beforeinput") {
-				// Apply beforeinput only on deleteContentBackward & insertParagraph
-				if (!(e as InputEvent).inputType.match(/(deleteContentBackward|insertParagraph)/g)) {
-					return
+		const cb = (event: Event) => {
+			const isBeforeInput = event.type === "beforeinput"
+
+			// Defer listener on actions that only works on beforeinput
+			// This allows the user to get the new content when the event triggers
+			if (isBeforeInput) {
+				const inputEvent = event as InputEvent
+				const inputType = inputEvent.inputType
+				const acceptedTypes = inputType === "deleteContentBackward" || inputType === "insertParagraph"
+
+				if (acceptedTypes) {
+					queueMicrotask(() => {
+						listener(this.value)
+						console.log(this.value)
+					})
 				}
+
+				return
 			}
 
 			listener(this.value)
