@@ -24,8 +24,8 @@
 		"example:preview": "deno task --cwd=example preview"
 	},
 	"devDependencies": {
-		"@playwright/test": "^1.57.0",
-		"esbuild": "^0.27.2"
+		"@playwright/test": "^1.59.1",
+		"esbuild": "^0.28.0"
 	},
 	"files": [
 		"./dist/index.js",
